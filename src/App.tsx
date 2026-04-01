@@ -1,10 +1,12 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { Home } from './pages/Home';
+import { Simulations } from './pages/Simulations';
 import { KinematicsDemo } from './pages/KinematicsDemo';
 import { Kinematics2DDemo } from './pages/Kinematics2DDemo';
 import { ForceSimulator } from './pages/ForceSimulator';
 import { SimpleGravityAndFriction } from './pages/SimpleGravityAndFriction';
 import { BoxOnIncline } from './pages/BoxOnIncline';
+import { PulleySystem } from './pages/PulleySystem';
 
 export function App() {
   return (
@@ -26,22 +28,10 @@ export function App() {
               Welcome
             </Link>
             <Link
-              to="/kinematics"
+              to="/simulations"
               className="text-[0.7rem] text-slate-300 transition hover:text-sky-300"
             >
-              1-D Kinematics
-            </Link>
-            <Link
-              to="/kinematics-2d"
-              className="text-[0.7rem] text-slate-300 transition hover:text-sky-300"
-            >
-              2-D Kinematics
-            </Link>
-            <Link
-              to="/gravity-friction"
-              className="text-[0.7rem] text-slate-300 transition hover:text-sky-300"
-            >
-              Friction (Rope)
+              Simulations
             </Link>
           </nav>
         </div>
@@ -49,11 +39,13 @@ export function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/simulations" element={<Simulations />} />
         <Route path="/kinematics" element={<KinematicsDemo />} />
         <Route path="/kinematics-2d" element={<Kinematics2DDemo />} />
         <Route path="/forces" element={<ForceSimulator />} />
         <Route path="/gravity-friction" element={<SimpleGravityAndFriction />} />
         <Route path="/box-incline" element={<BoxOnIncline />} />
+        <Route path="/pulley-system" element={<PulleySystem />} />
       </Routes>
     </div>
   );
