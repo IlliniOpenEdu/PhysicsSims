@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, NavLink } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Simulations } from './pages/Simulations';
 import { KinematicsDemo } from './pages/KinematicsDemo';
@@ -6,7 +6,11 @@ import { Kinematics2DDemo } from './pages/Kinematics2DDemo';
 import { ForceSimulator } from './pages/ForceSimulator';
 import { SimpleGravityAndFriction } from './pages/SimpleGravityAndFriction';
 import { BoxOnIncline } from './pages/BoxOnIncline';
+import { SpringForce } from './pages/SpringForce';
 import { PulleySystem } from './pages/PulleySystem';
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  `text-[0.7rem] transition ${isActive ? 'font-semibold text-sky-300' : 'text-slate-300 hover:text-sky-300'}`;
 
 export function App() {
   return (
@@ -18,21 +22,15 @@ export function App() {
             className="flex items-center gap-2 font-semibold tracking-[0.18em] text-sky-300"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-            PHYSICS LABS
+            PHYSICS SIMS
           </Link>
           <nav className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="text-[0.7rem] text-slate-300 transition hover:text-sky-300"
-            >
-              Welcome
-            </Link>
-            <Link
-              to="/simulations"
-              className="text-[0.7rem] text-slate-300 transition hover:text-sky-300"
-            >
+            <NavLink to="/" end className={navLinkClass}>
+              Home
+            </NavLink>
+            <NavLink to="/simulations" className={navLinkClass}>
               Simulations
-            </Link>
+            </NavLink>
           </nav>
         </div>
       </div>
@@ -45,6 +43,7 @@ export function App() {
         <Route path="/forces" element={<ForceSimulator />} />
         <Route path="/gravity-friction" element={<SimpleGravityAndFriction />} />
         <Route path="/box-incline" element={<BoxOnIncline />} />
+        <Route path="/spring-force" element={<SpringForce />} />
         <Route path="/pulley-system" element={<PulleySystem />} />
       </Routes>
     </div>
