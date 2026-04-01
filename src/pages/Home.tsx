@@ -1,5 +1,30 @@
-import { type MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+/** Shown when a referenced PNG is missing from `public/thumbnails/`. */
+const PREVIEW_FALLBACK = '/thumbnails/placeholder.svg';
+
+function SimPreviewImg({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt?: string;
+  className?: string;
+}) {
+  return (
+    <img
+      src={src}
+      alt={alt ?? ''}
+      className={className}
+      onError={(e) => {
+        const el = e.currentTarget;
+        if (el.src.includes('placeholder.svg')) return;
+        el.src = PREVIEW_FALLBACK;
+      }}
+    />
+  );
+}
 
 const mechanicsSims = [
   {
@@ -38,6 +63,18 @@ const mechanicsSims = [
     path: '/spring-force',
     description: "Hooke's Law and spring dynamics.",
     preview: '/thumbnails/spring.png',
+  },
+  {
+    title: 'Pulley system',
+    path: '/pulley-system',
+    description: 'Two-mass Atwood machine: tension, gravity, and motion when masses differ.',
+    preview: '/thumbnails/pulley.png',
+  },
+  {
+    title: 'Energy Hills',
+    path: '/energy-hills',
+    description: 'Potential ↔ kinetic energy conversion on smooth, bumpy, and looped terrain.',
+    preview: '/thumbnails/energy-hills.png',
   },
 ];
 
@@ -147,11 +184,11 @@ export function Home() {
                 to={sim.path}
                 className="group rounded-2xl border border-slate-800/80 bg-slate-900/80 p-6 shadow-lg shadow-slate-950/40 transition hover:-translate-y-1 hover:border-sky-500/60 hover:bg-slate-900"
               >
-                <img
-                      src={sim.preview}
-                      alt={`${sim.title} preview`}
-                className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
-                    />
+                <SimPreviewImg
+                  src={sim.preview}
+                  alt={`${sim.title} preview`}
+                  className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                />
                 <h2 className="text-lg font-semibold text-slate-50 transition group-hover:text-sky-300">
                   {sim.title}
                 </h2>
@@ -186,8 +223,9 @@ export function Home() {
                     <div className="mb-4 inline-flex rounded-full border border-emerald-700/50 bg-emerald-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-emerald-200">
                       {sim.status}
                     </div>
-                    <img
+                    <SimPreviewImg
                       src={sim.preview}
+                      alt=""
                       className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
                     />
                     <h3 className="text-lg font-semibold text-slate-100">{sim.title}</h3>
@@ -202,10 +240,11 @@ export function Home() {
 
               return (
                 <article key={sim.title} className={cardClass}>
-                  <img
-                      src={sim.preview}
-                      className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
-                    />
+                  <SimPreviewImg
+                    src={sim.preview}
+                    alt=""
+                    className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                  />
                   <div className="mb-4 inline-flex rounded-full border border-emerald-700/50 bg-emerald-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-emerald-200">
                     {sim.status}
                   </div>
@@ -238,8 +277,9 @@ export function Home() {
                     <div className="mb-4 inline-flex rounded-full border border-red-700/50 bg-red-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-red-200">
                       {sim.status}
                     </div>
-                    <img
+                    <SimPreviewImg
                       src={sim.preview}
+                      alt=""
                       className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
                     />
                     <h3 className="text-lg font-semibold text-slate-100">{sim.title}</h3>
@@ -254,10 +294,11 @@ export function Home() {
 
               return (
                 <article key={sim.title} className={cardClass}>
-                  <img
-                      src={sim.preview}
-                      className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
-                    />
+                  <SimPreviewImg
+                    src={sim.preview}
+                    alt=""
+                    className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                  />
                   <div className="mb-4 inline-flex rounded-full border border-red-700/50 bg-red-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-red-200">
                     {sim.status}
                   </div>

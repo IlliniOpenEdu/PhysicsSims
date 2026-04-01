@@ -36,6 +36,13 @@ const FRAME_INTERVAL_MS = 1000 / TARGET_FPS;
 /** Simulation bounds in meters: corners at (±BOUND_M, ±BOUND_M) */
 const BOUND_M = 5;
 
+/** SVG container for the playfield (matches the rounded rect below). Box is 6×6 centered on mapping points. */
+const BOX_HALF_SVG = 3;
+const CONTAINER_MIN_SVG = 3;
+const CONTAINER_MAX_SVG = 97;
+const MIN_CENTER_SVG = CONTAINER_MIN_SVG + BOX_HALF_SVG;
+const MAX_CENTER_SVG = CONTAINER_MAX_SVG - BOX_HALF_SVG;
+
 function degToRad(deg: number): number {
   return (deg * Math.PI) / 180;
 }
@@ -50,11 +57,12 @@ function forceToVector(force: ForceControl): Vec2 {
   };
 }
 
-/** Map world position (meters, y up) to SVG coords (viewBox 0 0 100 100). */
+/** Map world position (meters, y up) to SVG coords where the playfield matches ±BOUND_M at the container edges. */
 function worldToSvg(pos: Vec2): Vec2 {
+  const span = MAX_CENTER_SVG - MIN_CENTER_SVG;
   return {
-    x: (pos.x + BOUND_M) * (100 / (2 * BOUND_M)),
-    y: (BOUND_M - pos.y) * (100 / (2 * BOUND_M)),
+    x: MIN_CENTER_SVG + ((pos.x + BOUND_M) / (2 * BOUND_M)) * span,
+    y: MIN_CENTER_SVG + ((BOUND_M - pos.y) / (2 * BOUND_M)) * span,
   };
 }
 
@@ -274,18 +282,8 @@ export function ForceSimulator() {
   const netForceMag = vecMagnitude(netForce);
   const accelerationMag = controls.mass > 0 ? netForceMag / controls.mass : 0;
 
-  // Visualization: one arrow per force; box and arrows in SVG coords
-  // Clamp the visual box center slightly inside the container so it always appears within the grid
-  const rawBoxCenterSvg = worldToSvg(boxPos);
-  const BOX_HALF = 3; // matches the box rect half-size in SVG units
-  const CONTAINER_MIN = 3;
-  const CONTAINER_MAX = 97;
-  const MIN_BOX_CENTER = CONTAINER_MIN + BOX_HALF;
-  const MAX_BOX_CENTER = CONTAINER_MAX - BOX_HALF;
-  const boxCenterSvg: Vec2 = {
-    x: Math.min(MAX_BOX_CENTER, Math.max(MIN_BOX_CENTER, rawBoxCenterSvg.x)),
-    y: Math.min(MAX_BOX_CENTER, Math.max(MIN_BOX_CENTER, rawBoxCenterSvg.y)),
-  };
+  // Visualization: one arrow per force; box and arrows in SVG coords (worldToSvg aligns ±BOUND_M with container edges)
+  const boxCenterSvg = worldToSvg(boxPos);
   const arrowScale = 1.2; // N → SVG units length
   const maxArrowLength = 35;
 
@@ -525,10 +523,10 @@ export function ForceSimulator() {
 
                 {/* Box */}
                 <rect
-                  x={boxCenterSvg.x - 3}
-                  y={boxCenterSvg.y - 3}
-                  width={6}
-                  height={6}
+                  x={boxCenterSvg.x - BOX_HALF_SVG}
+                  y={boxCenterSvg.y - BOX_HALF_SVG}
+                  width={BOX_HALF_SVG * 2}
+                  height={BOX_HALF_SVG * 2}
                   rx={1}
                   ry={1}
                   fill="#38bdf8"
