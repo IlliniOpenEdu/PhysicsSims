@@ -72,6 +72,19 @@ export function Home() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
         <header className="mb-10">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400 ">
+      <header className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="w-full">
+          <div className="mb-6 border-b border-slate-800/80 pb-4">
+            <Link
+              to="/simulations"
+              className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 shadow-md shadow-sky-900/50 transition hover:bg-sky-400"
+            >
+              Browse all simulations
+              <span className="text-xs">→</span>
+            </Link>
+          </div>
+
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
             Welcome to
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl md:text-5xl bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-transparent">
@@ -104,6 +117,28 @@ export function Home() {
             </Link>
           ))}
         </section>
+        </div>
+
+        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-xs text-slate-300">
+          <p className="font-semibold text-sky-200">What&apos;s here now?</p>
+          <p className="mt-2">
+            This is the welcome page. Use &quot;Browse all simulations&quot; above to open the
+            catalog, grouped by topic (kinematics first, then forces).
+          </p>
+          <p className="mt-2">
+            As you add more simulations, register new routes and list them on the simulations page
+            — for example future topics like
+            <span className="mx-1 rounded bg-slate-900 px-1 py-0.5 font-mono text-[0.6rem] text-sky-200">
+              /waves
+            </span>
+            or
+            <span className="mx-1 rounded bg-slate-900 px-1 py-0.5 font-mono text-[0.6rem] text-sky-200">
+              /circuits
+            </span>
+            .
+          </p>
+        </div>
+      </header>
 
         <section className="mt-16">
           <h2 className="text-xl font-semibold text-slate-50">Developers</h2>
@@ -141,6 +176,14 @@ export function Home() {
                   </h3>
                   <p className="text-sm text-slate-400">{dev.role}</p>
                 </div>
+        <aside className="space-y-5 rounded-2xl border border-slate-800/80 bg-slate-950/80 p-6 shadow-lg shadow-slate-950/40">
+          <h2 className="text-sm font-semibold tracking-wide text-sky-300">
+            Where the simulations will live
+          </h2>
+          <p className="text-sm text-slate-300">
+            Each simulation has its own route; the simulations page collects links to all of them in
+            one place.
+          </p>
 
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-sm font-semibold text-black">
                   {dev.name.split(' ').map(n => n[0]).join('')}
