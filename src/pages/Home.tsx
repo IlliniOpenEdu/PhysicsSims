@@ -1,7 +1,7 @@
 import { type MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const sims = [
+const mechanicsSims = [
   {
     title: '1-D Kinematics',
     path: '/kinematics',
@@ -10,7 +10,8 @@ const sims = [
   },
   {
     title: '2-D Kinematics',
-    path: '/kinematics-2d',
+    path: '/mag-field',
+    status: 'Available now',
     description: 'Projectile and planar motion.',
     preview: '/thumbnails/kinematics2d.png',
   },
@@ -40,26 +41,66 @@ const sims = [
   },
 ];
 
-const devs = [
-  { name: 'Evan Doubek', role: 'Physics / Content' },
-  { name: 'Bryan Chen', role: 'UX / Frontend' },
+const enmSims = [
+  {
+    title: 'Columb\'s Law Explorer',
+    description: 'Map field lines and force vectors around charges.',
+    path: '/columbs-law',
+    status: 'Available now',
+    preview: '/thumbnails/columbs.png',
+  },
+  {
+    title: 'Gauss\'s Law Visualizer',
+    description: 'Explore electric flux and field distributions for different charge configurations.',
+    path: '/gauss-law',
+    status: 'Available now',
+    preview: '/thumbnails/gauss.png',
+  },
+  {
+    title: 'Maxwell\'s Equations Explorer',
+    description: 'Interactively visualize the interplay of electric and magnetic fields as described by Maxwell\'s equations.',
+    status: 'Coming soon',
+    preview: '/thumbnails/preview.png',
+  }, 
+  {
+    title: 'Ampere\'s Law Simulator',
+    description: 'Build and analyze resistor-inductor-capacitor circuits with real-time voltage and current graphs.',
+    status: 'Coming soon',
+    preview: '/thumbnails/preview.png',
+  },
+  {
+    title: 'Faraday\'s Law Simulator',
+    description: 'Visualize changing magnetic flux and induced EMF.',
+    status: 'Coming soon',
+    preview: '/thumbnails/preview.png',
+  },
+  {
+    title: 'Lenz\'s Law Simulator',
+    description: 'Explore the direction of induced currents and their magnetic effects.',
+    status: 'Coming soon',
+    preview: '/thumbnails/preview.png',
+  },
+  {
+    title: 'Magnetic Field Simulator',
+    description: 'Visualize magnetic fields around point charges and magnets.',
+    path: '/mag-field',
+    status: 'Coming now',
+    preview: '/thumbnails/preview.png',
+  }
+];
+
+const staticsSims = [
+  {
+    title: 'Beam Balance Simulator',
+    description: 'Explore torque and equilibrium with a virtual beam balance.',
+    path: '/beam-balance',
+    status: 'Available now',
+    preview: '/thumbnails/beambalance.png',
+  },
+
 ];
 
 export function Home() {
-  const [devParallax, setDevParallax] = useState({ x: 0, y: 0 });
-
-  const handleDevMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-    const x = (px - 0.5) * 2;
-    const y = (py - 0.5) * 2;
-    setDevParallax({ x, y });
-  };
-
-  const handleDevMouseLeave = () => {
-    setDevParallax({ x: 0, y: 0 });
-  };
 
   return (
     <div className="relative flex min-h-screen flex-col bg-slate-950 text-white">
@@ -84,8 +125,8 @@ export function Home() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
               Welcome to
             </p>
-            <h1 className="mt-2 bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl md:text-5xl">
-              PhysicsSims
+            <h1 className="mt-2 bg-[linear-gradient(90deg,#fca5a5_0%,#fdba74_22%,#fde68a_40%,#86efac_58%,#93c5fd_78%,#c4b5fd_100%)] bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl md:text-5xl">
+              PhysicsSimsssssssssssssssssssssssssssssssssssssssssssss
             </h1>
             <p className="mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
               Interactive simulations for mechanics and core physics topics, all in the browser.
@@ -93,93 +134,143 @@ export function Home() {
           </div>
         </header>
 
-        <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {sims.map((sim) => (
-            <Link
-              key={sim.path}
-              to={sim.path}
-              className="group rounded-2xl border border-slate-800/80 bg-slate-900/80 p-6 shadow-lg shadow-slate-950/40 transition hover:-translate-y-1 hover:border-sky-500/60 hover:bg-slate-900"
-            >
-              <img
-                src={sim.preview}
-                alt={`${sim.title} preview`}
-                className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
-              />
-              <h2 className="text-lg font-semibold text-slate-50 transition group-hover:text-sky-300">
-                {sim.title}
-              </h2>
-              <p className="mt-2 text-sm text-slate-400">{sim.description}</p>
-              <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-sky-400">
-                Open simulation
-                <span className="transition group-hover:translate-x-1">→</span>
-              </div>
-            </Link>
-          ))}
-        </section>
+        <section id="mechanics" data-hash="mehcanics">
+          <div className="mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-400">Mechanics</p>
+            <h2 className="mt-1 text-xl font-semibold text-slate-50">Kinematics and Dynamics</h2>
+          </div>
 
-        <section className="mt-16">
-          <h2 className="text-xl font-semibold text-slate-50">Developers</h2>
-
-          <div
-            className="relative mt-6 flex flex-col gap-4 sm:flex-row"
-            onMouseMove={handleDevMouseMove}
-            onMouseLeave={handleDevMouseLeave}
-          >
-            <div
-              className="pointer-events-none absolute inset-0 -z-10 opacity-80"
-              style={{
-                transform: `translate(${devParallax.x * -10}px, ${devParallax.y * -8}px)`,
-                transition: 'transform 120ms linear',
-              }}
-            >
-              <div className="absolute -left-8 top-2 h-28 w-28 rounded-full bg-sky-500/20 blur-2xl" />
-              <div className="absolute right-0 top-10 h-24 w-24 rounded-full bg-blue-400/20 blur-2xl" />
-            </div>
-
-            {devs.map((dev, i) => (
-              <div
-                key={dev.name}
-                className="flex flex-1 items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 px-5 py-4 transition hover:border-sky-500/60 hover:bg-slate-900"
-                style={{
-                  transform: `translate3d(${devParallax.x * (i === 0 ? 12 : -12)}px, ${devParallax.y * (i === 0 ? 8 : -8)}px, 0) rotateY(${devParallax.x * (i === 0 ? 3 : -3)}deg) rotateX(${devParallax.y * (i === 0 ? -2 : 2)}deg)`,
-                  transition:
-                    'transform 120ms ease-out, border-color 150ms ease-out, background-color 150ms ease-out',
-                  transformStyle: 'preserve-3d',
-                  willChange: 'transform',
-                }}
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {mechanicsSims.map((sim) => (
+              <Link
+                key={sim.path}
+                to={sim.path}
+                className="group rounded-2xl border border-slate-800/80 bg-slate-900/80 p-6 shadow-lg shadow-slate-950/40 transition hover:-translate-y-1 hover:border-sky-500/60 hover:bg-slate-900"
               >
-                <div>
-                  <h3 className="text-base font-medium text-slate-100">{dev.name}</h3>
-                  <p className="text-sm text-slate-400">{dev.role}</p>
+                <img
+                      src={sim.preview}
+                      alt={`${sim.title} preview`}
+                className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                    />
+                <h2 className="text-lg font-semibold text-slate-50 transition group-hover:text-sky-300">
+                  {sim.title}
+                </h2>
+                <p className="mt-2 text-sm text-slate-400">{sim.description}</p>
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-sky-400">
+                  Open simulation
+                  <span className="transition group-hover:translate-x-1">→</span>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-sm font-semibold text-black">
-                  {dev.name
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')}
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
-      </main>
 
-      <footer className="border-t border-slate-800 bg-slate-950/90">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 PhysicsSims</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-sky-300">
-              Contribution
-            </a>
-            <a href="#" className="hover:text-sky-300">
-              Resources
-            </a>
-            <a href="#" className="hover:text-sky-300">
-              Terms
-            </a>
+        <section id="enm" data-hash="enm" className="mt-12">
+          <div className="mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-400">ENM</p>
+            <h2 className="mt-1 text-xl font-semibold text-slate-50">Electricity and Magnetism</h2>
           </div>
-        </div>
-      </footer>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {enmSims.map((sim) => {
+              const cardClass =
+                'rounded-2xl border border-emerald-900/60 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/30 transition';
+
+              if (sim.path) {
+                return (
+                  <Link
+                    key={sim.title}
+                    to={sim.path}
+                    className={`${cardClass} hover:-translate-y-1 hover:border-emerald-500/60 hover:bg-slate-900`}
+                  >
+                    <div className="mb-4 inline-flex rounded-full border border-emerald-700/50 bg-emerald-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-emerald-200">
+                      {sim.status}
+                    </div>
+                    <img
+                      src={sim.preview}
+                      className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                    />
+                    <h3 className="text-lg font-semibold text-slate-100">{sim.title}</h3>
+                    <p className="mt-2 text-sm text-slate-400">{sim.description}</p>
+                    <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-emerald-300">
+                      Open simulation
+                      <span className="transition">→</span>
+                    </div>
+                  </Link>
+                );
+              }
+
+              return (
+                <article key={sim.title} className={cardClass}>
+                  <img
+                      src={sim.preview}
+                      className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                    />
+                  <div className="mb-4 inline-flex rounded-full border border-emerald-700/50 bg-emerald-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-emerald-200">
+                    {sim.status}
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-100">{sim.title}</h3>
+                  <p className="mt-2 text-sm text-slate-400">{sim.description}</p>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section id="statics" className="mt-16" data-hash="statics">
+          <div className="mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-400">Statics</p>
+            <h2 className="mt-1 text-xl font-semibold text-slate-50">Equilibrium and Statics</h2>
+          </div>
+          
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {staticsSims.map((sim) => {
+              const cardClass =
+                'rounded-2xl border border-red-900/60 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/30 transition';
+
+              if (sim.path) {
+                return (
+                  <Link
+                    key={sim.title}
+                    to={sim.path}
+                    className={`${cardClass} hover:-translate-y-1 hover:border-red-500/60 hover:bg-slate-900`}
+                  >
+                    <div className="mb-4 inline-flex rounded-full border border-red-700/50 bg-red-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-red-200">
+                      {sim.status}
+                    </div>
+                    <img
+                      src={sim.preview}
+                      className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                    />
+                    <h3 className="text-lg font-semibold text-slate-100">{sim.title}</h3>
+                    <p className="mt-2 text-sm text-slate-400">{sim.description}</p>
+                    <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-red-300">
+                      Open simulation
+                      <span className="transition">→</span>
+                    </div>
+                  </Link>
+                );
+              }
+
+              return (
+                <article key={sim.title} className={cardClass}>
+                  <img
+                      src={sim.preview}
+                      className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                    />
+                  <div className="mb-4 inline-flex rounded-full border border-red-700/50 bg-red-900/30 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-red-200">
+                    {sim.status}
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-100">{sim.title}</h3>
+                  <p className="mt-2 text-sm text-slate-400">{sim.description}</p>
+                </article>
+              );
+            })}
+          </div>
+
+        </section>
+
+      </main>
     </div>
   );
 }

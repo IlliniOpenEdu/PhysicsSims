@@ -214,8 +214,8 @@ export function KinematicsDemo() {
   const ballBottomPercent = clampedRatio * 100;
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8 text-slate-100">
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+    <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-3 py-6 text-slate-100 sm:px-4 sm:py-8">
+      <header className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-slate-800 pb-4 sm:mb-6 sm:items-center sm:gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
             Kinematics demo
@@ -243,8 +243,8 @@ export function KinematicsDemo() {
         </div>
       </header>
 
-      <main className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1.4fr)]">
-        <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg shadow-slate-950/40">
+      <main className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1.4fr)]">
+        <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-slate-950/40 sm:p-5">
           <div className="pointer-events-none absolute inset-0 -z-10 opacity-70">
             <div className="absolute -left-32 top-0 h-64 w-64 rounded-full bg-sky-700/30 blur-3xl" />
             <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-blue-500/25 blur-3xl" />
@@ -259,8 +259,8 @@ export function KinematicsDemo() {
           </p>
 
           <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-stretch">
-            <div className="relative flex min-w-0 h-[30rem] flex-[2] rounded-xl border border-slate-800 bg-gradient-to-t from-slate-950 via-slate-950/95 to-slate-900/80 p-4">
-              <div className="relative mr-4 flex w-10 flex-col text-[0.6rem] text-slate-400">
+            <div className="relative flex min-w-0 h-[24rem] flex-[2] rounded-xl border border-slate-800/90 bg-gradient-to-b from-slate-900/90 via-slate-950 to-slate-950 p-3 shadow-[inset_0_1px_0_rgba(148,163,184,0.14),0_14px_30px_rgba(2,6,23,0.55)] sm:h-[28rem] sm:p-3 lg:h-[30rem] lg:p-4">
+              <div className="relative mr-3 flex w-9 flex-col text-[0.58rem] text-slate-400 sm:mr-4 sm:w-10 sm:text-[0.6rem]">
                 <div className="relative flex-1 min-h-0">
                   <div className="absolute left-0 right-0 top-0 flex items-center gap-1">
                     <div className="h-px w-3 bg-slate-600" />
@@ -285,10 +285,15 @@ export function KinematicsDemo() {
                 </div>
               </div>
 
-              <div className="relative flex-1 rounded-lg border border-slate-800/70 bg-gradient-to-t from-slate-950 via-slate-950/95 to-slate-900/80">
+              <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border border-slate-800/70 bg-gradient-to-t from-slate-950 via-slate-950/95 to-slate-900/80">
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(56,189,248,0.16),transparent_58%)]" />
+                <div className="pointer-events-none absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-700/50" />
+                <div className="pointer-events-none absolute inset-x-0 top-1/4 h-px bg-slate-700/40" />
+                <div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-slate-700/40" />
+                <div className="pointer-events-none absolute inset-x-0 top-3/4 h-px bg-slate-700/40" />
                 {!isOffscreen && (
                   <div
-                    className="absolute left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-sky-400"
+                    className="absolute left-1/2 h-4 w-4 -translate-x-1/2 rounded-full border border-sky-200/70 bg-sky-400 shadow-[0_0_0_3px_rgba(56,189,248,0.18),0_0_16px_rgba(56,189,248,0.55)]"
                     style={{ bottom: `${ballBottomPercent}%` }}
                   />
                 )}
@@ -297,7 +302,7 @@ export function KinematicsDemo() {
               </div>
             </div>
 
-            <div className="flex min-w-0 flex-1 flex-shrink-0 max-w-[180px] sm:max-w-[200px] flex-col gap-2 rounded-xl border border-slate-800 bg-slate-950/80 p-2.5 text-[0.75rem] text-slate-300">
+            <div className="flex min-w-0 flex-1 flex-col gap-2 rounded-xl border border-slate-800 bg-slate-950/80 p-2.5 text-[0.75rem] text-slate-300 sm:max-w-[200px] sm:flex-shrink-0">
               <p className="shrink-0 font-semibold text-sky-200">Live quantities</p>
               <div className="min-w-0 space-y-1.5">
                 <MetricRow label="Time" value={simTimeRef.current} units="s" />
@@ -309,7 +314,7 @@ export function KinematicsDemo() {
           </div>
         </section>
 
-        <section className="flex min-h-[30rem] flex-col space-y-4 rounded-2xl border border-slate-800 bg-slate-950/80 p-5 shadow-lg shadow-slate-950/40">
+        <section className="flex min-h-0 flex-col space-y-4 rounded-2xl border border-slate-800 bg-slate-950/80 p-4 shadow-lg shadow-slate-950/40 sm:p-5 lg:min-h-[30rem]">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold tracking-wide text-sky-300">
               Launch parameters
@@ -381,7 +386,7 @@ export function KinematicsDemo() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg shadow-slate-950/40 lg:col-span-2">
+        <section className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-slate-950/40 sm:p-5 lg:col-span-2">
           <h2 className="text-sm font-semibold tracking-wide text-sky-300">
             Metrics vs. time
           </h2>
@@ -430,7 +435,7 @@ export function KinematicsDemo() {
                 </div>
               )}
             </div>
-            <div className="flex shrink-0 flex-col gap-2 rounded-xl border border-slate-800 bg-slate-950/80 p-3 text-[0.75rem] sm:ml-4">
+            <div className="flex flex-col gap-2 rounded-xl border border-slate-800 bg-slate-950/80 p-3 text-[0.75rem] sm:ml-4 sm:shrink-0">
               <p className="font-semibold text-sky-200">Key</p>
               <div className="flex items-center gap-2">
                 <span className="h-0.5 w-6 shrink-0 rounded bg-blue-500" aria-hidden />
