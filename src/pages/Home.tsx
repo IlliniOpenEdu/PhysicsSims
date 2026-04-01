@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const sims = [
@@ -35,21 +35,20 @@ const sims = [
   {
     title: 'Spring Force',
     path: '/spring-force',
-    description: 'Hooke\'s Law and spring dynamics.',
+    description: "Hooke's Law and spring dynamics.",
     preview: '/thumbnails/spring.png',
-  }
+  },
 ];
 
 const devs = [
   { name: 'Evan Doubek', role: 'Physics / Content' },
-  { name: 'Bryan Chen', role: 'UX / Frontend' }
-  
+  { name: 'Bryan Chen', role: 'UX / Frontend' },
 ];
 
 export function Home() {
   const [devParallax, setDevParallax] = useState({ x: 0, y: 0 });
 
-  const handleDevMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleDevMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
@@ -70,29 +69,28 @@ export function Home() {
       </div>
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
-        <header className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400 ">
-      <header className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="w-full">
-          <div className="mb-6 border-b border-slate-800/80 pb-4">
-            <Link
-              to="/simulations"
-              className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 shadow-md shadow-sky-900/50 transition hover:bg-sky-400"
-            >
-              Browse all simulations
-              <span className="text-xs">→</span>
-            </Link>
-          </div>
+        <header className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="w-full">
+            <div className="mb-6 border-b border-slate-800/80 pb-4">
+              <Link
+                to="/simulations"
+                className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 shadow-md shadow-sky-900/50 transition hover:bg-sky-400"
+              >
+                Browse all simulations
+                <span className="text-xs">→</span>
+              </Link>
+            </div>
 
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
-            Welcome to
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl md:text-5xl bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-transparent">
-            PhysicsSims
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
-            Interactive simulations for mechanics and core physics topics, all in the browser.
-          </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
+              Welcome to
+            </p>
+            <h1 className="mt-2 bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl md:text-5xl">
+              PhysicsSims
+            </h1>
+            <p className="mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
+              Interactive simulations for mechanics and core physics topics, all in the browser.
+            </p>
+          </div>
         </header>
 
         <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -104,6 +102,7 @@ export function Home() {
             >
               <img
                 src={sim.preview}
+                alt={`${sim.title} preview`}
                 className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
               />
               <h2 className="text-lg font-semibold text-slate-50 transition group-hover:text-sky-300">
@@ -117,28 +116,6 @@ export function Home() {
             </Link>
           ))}
         </section>
-        </div>
-
-        <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-xs text-slate-300">
-          <p className="font-semibold text-sky-200">What&apos;s here now?</p>
-          <p className="mt-2">
-            This is the welcome page. Use &quot;Browse all simulations&quot; above to open the
-            catalog, grouped by topic (kinematics first, then forces).
-          </p>
-          <p className="mt-2">
-            As you add more simulations, register new routes and list them on the simulations page
-            — for example future topics like
-            <span className="mx-1 rounded bg-slate-900 px-1 py-0.5 font-mono text-[0.6rem] text-sky-200">
-              /waves
-            </span>
-            or
-            <span className="mx-1 rounded bg-slate-900 px-1 py-0.5 font-mono text-[0.6rem] text-sky-200">
-              /circuits
-            </span>
-            .
-          </p>
-        </div>
-      </header>
 
         <section className="mt-16">
           <h2 className="text-xl font-semibold text-slate-50">Developers</h2>
@@ -165,28 +142,21 @@ export function Home() {
                 className="flex flex-1 items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 px-5 py-4 transition hover:border-sky-500/60 hover:bg-slate-900"
                 style={{
                   transform: `translate3d(${devParallax.x * (i === 0 ? 12 : -12)}px, ${devParallax.y * (i === 0 ? 8 : -8)}px, 0) rotateY(${devParallax.x * (i === 0 ? 3 : -3)}deg) rotateX(${devParallax.y * (i === 0 ? -2 : 2)}deg)`,
-                  transition: 'transform 120ms ease-out, border-color 150ms ease-out, background-color 150ms ease-out',
+                  transition:
+                    'transform 120ms ease-out, border-color 150ms ease-out, background-color 150ms ease-out',
                   transformStyle: 'preserve-3d',
                   willChange: 'transform',
                 }}
               >
                 <div>
-                  <h3 className="text-base font-medium text-slate-100">
-                    {dev.name}
-                  </h3>
+                  <h3 className="text-base font-medium text-slate-100">{dev.name}</h3>
                   <p className="text-sm text-slate-400">{dev.role}</p>
                 </div>
-        <aside className="space-y-5 rounded-2xl border border-slate-800/80 bg-slate-950/80 p-6 shadow-lg shadow-slate-950/40">
-          <h2 className="text-sm font-semibold tracking-wide text-sky-300">
-            Where the simulations will live
-          </h2>
-          <p className="text-sm text-slate-300">
-            Each simulation has its own route; the simulations page collects links to all of them in
-            one place.
-          </p>
-
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-sm font-semibold text-black">
-                  {dev.name.split(' ').map(n => n[0]).join('')}
+                  {dev.name
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')}
                 </div>
               </div>
             ))}
@@ -196,11 +166,17 @@ export function Home() {
 
       <footer className="border-t border-slate-800 bg-slate-950/90">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 PhysicsSsim</p>
+          <p>© 2026 PhysicsSims</p>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-sky-300">Contribution</a>
-            <a href="#" className="hover:text-sky-300">Resources</a>
-            <a href="#" className="hover:text-sky-300">Terms</a>
+            <a href="#" className="hover:text-sky-300">
+              Contribution
+            </a>
+            <a href="#" className="hover:text-sky-300">
+              Resources
+            </a>
+            <a href="#" className="hover:text-sky-300">
+              Terms
+            </a>
           </div>
         </div>
       </footer>

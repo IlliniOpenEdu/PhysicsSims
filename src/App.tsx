@@ -6,7 +6,7 @@ import { Kinematics2DDemo } from './pages/Kinematics2DDemo';
 import { ForceSimulator } from './pages/ForceSimulator';
 import { SimpleGravityAndFriction } from './pages/SimpleGravityAndFriction';
 import { BoxOnIncline } from './pages/BoxOnIncline';
-import { SpringForce } from './pages/SpringsForce';
+import { SpringForce } from './pages/SpringForce';
 import { PulleySystem } from './pages/PulleySystem';
 
 export function App() {

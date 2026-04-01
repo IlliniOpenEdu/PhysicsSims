@@ -56,7 +56,7 @@ export function SpringForce() {
 
   const force = -controls.k * controls.x;
   const springPotentialEnergy = 0.5 * controls.k * controls.x * controls.x;
-  const springLengthPx = clamp(200 + controls.x * 25, 50, 380);
+  const springLengthPx = clamp(200 + controls.x * 25, 60, 380);
   const blockSizePx = clamp(34 + controls.mass * 3.6, 36, 78);
   const blockLeftPx = SPRING_START_PX + springLengthPx - blockSizePx / 2;
   const normalizedForce = clamp(Math.abs(force) / (MAX_K * MAX_X), 0, 1);
