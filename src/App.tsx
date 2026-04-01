@@ -2,17 +2,18 @@ import { useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { About } from './pages/About';
+import { Simulations } from './pages/Simulations';
 import { KinematicsDemo } from './pages/mechanics/KinematicsDemo';
 import { Kinematics2DDemo } from './pages/mechanics/Kinematics2DDemo';
 import { ForceSimulator } from './pages/mechanics/ForceSimulator';
 import { SimpleGravityAndFriction } from './pages/mechanics/SimpleGravityAndFriction';
 import { BoxOnIncline } from './pages/mechanics/BoxOnIncline';
-import { SpringForce } from './pages/enm/SpringsForce';
+import { SpringForce } from './pages/SpringForce';
 import { ColumbsLaw } from './pages/enm/ColumbsLaw';
 import { GaussLaw } from './pages/enm/GaussLaw';
 import { MagField } from './pages/enm/MagField';
 import { BeamBalance } from './pages/statics/BeamBalance';
-
+import { PulleySystem } from './pages/PulleySystem';
 
 export function App() {
   const location = useLocation();
@@ -76,6 +77,12 @@ export function App() {
             >
               About
             </Link>
+            <Link
+              to="/simulations"
+              className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
+            >
+              Simulations
+            </Link>
           </nav>
         </div>
       </div>
@@ -85,6 +92,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/simulations" element={<Simulations />} />
         <Route path="/kinematics" element={<KinematicsDemo />} />
         <Route path="/kinematics-2d" element={<Kinematics2DDemo />} />
         <Route path="/forces" element={<ForceSimulator />} />
@@ -95,6 +103,7 @@ export function App() {
         <Route path="/gauss-law" element={<GaussLaw />} />
         <Route path="/mag-field" element={<MagField />} />
         <Route path="/beam-balance" element={<BeamBalance />} />
+        <Route path="/pulley-system" element={<PulleySystem />} />
       </Routes>
       
 {/* FOOTER BOX */}

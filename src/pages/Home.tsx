@@ -1,3 +1,4 @@
+import { type MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const mechanicsSims = [
@@ -35,9 +36,9 @@ const mechanicsSims = [
   {
     title: 'Spring Force',
     path: '/spring-force',
-    description: 'Hooke\'s Law and spring dynamics.',
+    description: "Hooke's Law and spring dynamics.",
     preview: '/thumbnails/spring.png',
-  }
+  },
 ];
 
 const enmSims = [
@@ -109,16 +110,28 @@ export function Home() {
       </div>
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
-        <header className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400 ">
-            Welcome to
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl md:text-5xl bg-[linear-gradient(90deg,#fca5a5_0%,#fdba74_22%,#fde68a_40%,#86efac_58%,#93c5fd_78%,#c4b5fd_100%)] bg-clip-text text-transparent">
-            PhysicsSimsssssssssssssssssssssssssssssssssssssssssssss
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
-            Interactive simulations for mechanics and core physics topics, all in the browser.
-          </p>
+        <header className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="w-full">
+            <div className="mb-6 border-b border-slate-800/80 pb-4">
+              <Link
+                to="/simulations"
+                className="inline-flex items-center gap-2 rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 shadow-md shadow-sky-900/50 transition hover:bg-sky-400"
+              >
+                Browse all simulations
+                <span className="text-xs">→</span>
+              </Link>
+            </div>
+
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
+              Welcome to
+            </p>
+            <h1 className="mt-2 bg-[linear-gradient(90deg,#fca5a5_0%,#fdba74_22%,#fde68a_40%,#86efac_58%,#93c5fd_78%,#c4b5fd_100%)] bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl md:text-5xl">
+              PhysicsSimsssssssssssssssssssssssssssssssssssssssssssss
+            </h1>
+            <p className="mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
+              Interactive simulations for mechanics and core physics topics, all in the browser.
+            </p>
+          </div>
         </header>
 
         <section id="mechanics" data-hash="mehcanics">
@@ -136,7 +149,8 @@ export function Home() {
               >
                 <img
                       src={sim.preview}
-                      className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
+                      alt={`${sim.title} preview`}
+                className="mb-4 h-40 w-full rounded-xl object-cover border border-slate-800"
                     />
                 <h2 className="text-lg font-semibold text-slate-50 transition group-hover:text-sky-300">
                   {sim.title}
