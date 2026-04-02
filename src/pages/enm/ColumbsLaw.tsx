@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ConceptBox } from '../../components/ConceptBox';
 import { SliderWithInput } from '../../components/SliderWithInput';
 
 type ControlsState = {
@@ -28,6 +29,49 @@ function roundTo2(n: number): number {
 function chargeColor(q: number): string {
   return q >= 0 ? '#38bdf8' : '#f87171';
 }
+
+const conceptItems = [
+  {
+    title: 'Force between 2 charges',
+    description: (
+      <>
+        Coulomb&apos;s law states that the electrostatic force (F) between two point charges is proportional to the
+        product of their magnitudes (|q1q2|) and inversely proportional to the square of the distance (r^2)
+        between them, with a constant of proportionality (k) that depends on the medium. The force is attractive
+        if the charges have opposite signs and repulsive if they have the same sign.
+      </>
+    ),
+  },
+  {
+    title: 'Exam Question',
+    description: (
+      <>
+        A charge of +2.0 μC is placed at the origin, and a charge of -3.0 μC is placed at x = 4.0 m. What is the
+        magnitude of the electrostatic force between them? Use F = k|q1q2|/r^2 with q1 = 2.0e-6 C,
+        q2 = -3.0e-6 C, r = 4.0 m. Then F = (8.99e9)(6.0e-12)/16 = 3.37e-3 N. The force is attractive because
+        the charges have opposite signs.
+      </>
+    ),
+  },
+  {
+    title: 'Units and scaling',
+    description: (
+      <>
+        Always convert microcoulombs to coulombs before substituting into the formula: 1 μC = 1e-6 C. If distance
+        doubles, force drops by a factor of 4 since F is proportional to 1/r^2.
+      </>
+    ),
+  },
+  {
+    title: 'Quick direction check',
+    description: (
+      <>
+        Like charges (+/+ or -/-) repel, so arrows point away from each other. Unlike charges (+/-) attract, so
+        arrows point toward each other. If either charge is zero, the electrostatic force is zero.
+      </>
+    ),
+  },
+];
 
 export function ColumbsLaw() {
   const [controls, setControls] = useState<ControlsState>(DEFAULT_CONTROLS);
@@ -268,6 +312,7 @@ export function ColumbsLaw() {
             </svg>
           </div>
         </section>
+        <ConceptBox heading="Concept explanation" items={conceptItems} />
       </main>
     </div>
   );

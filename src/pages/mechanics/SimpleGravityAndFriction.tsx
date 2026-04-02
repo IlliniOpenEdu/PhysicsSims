@@ -144,9 +144,8 @@ export function SimpleGravityAndFriction() {
       if (!parent) return;
       const rect = parent.getBoundingClientRect();
       const dpr = Math.max(1, window.devicePixelRatio || 1);
-      // Keep canvas responsive and compact for horizontal-only motion.
-      const nextW = Math.max(280, Math.floor(rect.width));
-      const nextH = Math.max(170, Math.floor(rect.height));
+      const nextW = Math.max(320, Math.floor(rect.width));
+      const nextH = Math.max(320, Math.floor(rect.height));
       canvas.width = Math.floor(nextW * dpr);
       canvas.height = Math.floor(nextH * dpr);
       canvas.style.width = `${nextW}px`;
@@ -439,8 +438,8 @@ export function SimpleGravityAndFriction() {
   }, [uiSnapshot.frictionMode]);
 
   return (
-    <div className="mx-auto flex min-h-[100dvh] max-w-6xl flex-col px-3 py-6 text-slate-100 sm:px-4 sm:py-8">
-      <header className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-slate-800 pb-4 sm:mb-6 sm:items-center sm:gap-4">
+    <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8 text-slate-100">
+      <header className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
             Friction demo
@@ -468,8 +467,8 @@ export function SimpleGravityAndFriction() {
         </div>
       </header>
 
-      <main className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-        <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-slate-950/40 sm:p-5">
+      <main className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <section className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg shadow-slate-950/40">
           <div className="pointer-events-none absolute inset-0 -z-10 opacity-70">
             <div className="absolute -left-32 top-0 h-64 w-64 rounded-full bg-sky-700/30 blur-3xl" />
             <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-blue-500/25 blur-3xl" />
@@ -484,8 +483,8 @@ export function SimpleGravityAndFriction() {
             possible.
           </p>
 
-          <div className="mt-5 flex flex-col gap-3 min-[390px]:flex-row min-[390px]:items-stretch sm:gap-4">
-            <div className="relative flex min-w-0 h-[12rem] flex-[2] rounded-xl border border-slate-800 bg-gradient-to-t from-slate-950 via-slate-950/95 to-slate-900/80 p-2 sm:h-[15rem] sm:p-3 lg:h-[18rem] lg:p-4">
+          <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-stretch">
+            <div className="relative flex min-w-0 h-[30rem] flex-[2] overflow-hidden rounded-xl border border-slate-800 bg-gradient-to-t from-slate-950 via-slate-950/95 to-slate-900/80 p-4">
               <canvas ref={canvasRef} className="h-full w-full rounded-lg bg-slate-950/60" />
 
               <div className="absolute left-3 top-3 rounded-md bg-slate-950/80 px-2 py-1 text-[0.6rem] text-slate-300 shadow">
@@ -503,7 +502,7 @@ export function SimpleGravityAndFriction() {
               </div>
             </div>
 
-            <div className="flex min-w-0 w-full flex-col gap-2 rounded-xl border border-slate-800 bg-slate-950/80 p-2.5 text-[0.75rem] text-slate-300 min-[390px]:w-[168px] min-[390px]:max-w-[168px] min-[520px]:w-[210px] min-[520px]:max-w-[210px] sm:w-auto sm:max-w-[220px]">
+            <div className="flex min-w-0 flex-1 max-w-[220px] flex-col gap-2 rounded-xl border border-slate-800 bg-slate-950/80 p-2.5 text-[0.75rem] text-slate-300">
               <p className="shrink-0 font-semibold text-sky-200">Live summary</p>
               <div className="space-y-1.5">
                 <MetricRow label="Mass" value={controls.massKg} units="kg" />
@@ -525,7 +524,7 @@ export function SimpleGravityAndFriction() {
           </div>
         </section>
 
-        <section className="flex min-h-0 flex-col space-y-4 rounded-2xl border border-slate-800 bg-slate-950/80 p-4 shadow-lg shadow-slate-950/40 sm:p-5 lg:min-h-[30rem]">
+        <section className="flex min-h-[30rem] flex-col space-y-4 rounded-2xl border border-slate-800 bg-slate-950/80 p-5 shadow-lg shadow-slate-950/40">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold tracking-wide text-sky-300">
               Controls
@@ -608,7 +607,7 @@ export function SimpleGravityAndFriction() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-slate-950/40 sm:p-5 lg:col-span-2">
+        <section className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg shadow-slate-950/40 lg:col-span-2">
           <h2 className="text-sm font-semibold tracking-wide text-sky-300">
             Concept explanation
           </h2>
@@ -751,4 +750,3 @@ function ControlRow({
     </div>
   );
 }
-

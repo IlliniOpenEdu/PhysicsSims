@@ -1,6 +1,7 @@
 // id="5r6p2z"
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ConceptBox } from '../../components/ConceptBox';
 
 type Vec2 = { x: number; y: number };
 
@@ -241,6 +242,51 @@ type UiSnapshot = {
   netForceParallelN: number;
   boxCenterPx: Vec2;
 };
+
+const conceptItems = [
+  {
+    title: 'Force decomposition',
+    description: (
+      <>
+        Weight has two components relative to the incline: parallel to the slope
+        \(F_parallel = m g \sin\theta\), and perpendicular to the slope
+        \(F_perp = m g \cos\theta\).
+      </>
+    ),
+  },
+  {
+    title: 'Normal force and friction',
+    description: (
+      <>
+        The normal force is \(N = m g \cos\theta\). Friction depends on this normal force:
+        static friction can scale up to \(F_s \le \mu_s N\), while kinetic friction is
+        \(F_k = \mu_k N\) once the box is sliding.
+      </>
+    ),
+  },
+  {
+    title: 'Why it starts or stops',
+    description: (
+      <>
+        If \(F_parallel \le \mu_s N\), static friction matches the needed value and the
+        net force along the incline is ~0, so the box stays at rest. If not, static friction
+        can&apos;t hold and kinetic friction takes over, producing a non-zero net force and
+        downhill acceleration.
+      </>
+    ),
+  },
+  {
+    title: 'What to look for in the arrows',
+    description: (
+      <>
+        The violet arrow shows gravity, the green arrow shows the normal force, and the orange
+        arrow shows friction (opposite the would-be motion). When the box is stuck, friction
+        nearly cancels the gravity-parallel component; when it&apos;s sliding, the net arrow turns
+        on and grows.
+      </>
+    ),
+  },
+];
 
 export function BoxOnIncline() {
   const [controls, setControls] = useState<ControlsState>(DEFAULT_CONTROLS);
@@ -1059,48 +1105,7 @@ export function BoxOnIncline() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-lg shadow-slate-950/40 lg:col-span-2">
-          <h2 className="text-sm font-semibold tracking-wide text-sky-300">Concept explanation</h2>
-          <div className="mt-3 grid gap-4 text-sm text-slate-300 md:grid-cols-2">
-            <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
-              <p className="font-semibold text-slate-50">Force decomposition</p>
-              <p className="mt-2 text-xs leading-relaxed">
-                Weight has two components relative to the incline: parallel to the slope
-                \(F_parallel = m g \sin\theta\), and perpendicular to the slope
-                \(F_perp = m g \cos\theta\).
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
-              <p className="font-semibold text-slate-50">Normal force and friction</p>
-              <p className="mt-2 text-xs leading-relaxed">
-                The normal force is \(N = m g \cos\theta\). Friction depends on this normal force:
-                static friction can scale up to \(F_s \le \mu_s N\), while kinetic friction is
-                \(F_k = \mu_k N\) once the box is sliding.
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
-              <p className="font-semibold text-slate-50">Why it starts or stops</p>
-              <p className="mt-2 text-xs leading-relaxed">
-                If \(F_parallel \le \mu_s N\), static friction matches the needed value and the
-                net force along the incline is ~0, so the box stays at rest. If not, static friction
-                can&apos;t hold and kinetic friction takes over, producing a non-zero net force and
-                downhill acceleration.
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-4">
-              <p className="font-semibold text-slate-50">What to look for in the arrows</p>
-              <p className="mt-2 text-xs leading-relaxed">
-                The violet arrow shows gravity, the green arrow shows the normal force, and the orange
-                arrow shows friction (opposite the would-be motion). When the box is stuck, friction
-                nearly cancels the gravity-parallel component; when it&apos;s sliding, the net arrow turns
-                on and grows.
-              </p>
-            </div>
-          </div>
-        </section>
+        <ConceptBox heading="Concept explanation" items={conceptItems} />
       </main>
     </div>
   );

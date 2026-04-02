@@ -1,21 +1,56 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Home } from './pages/Home';
-import { About } from './pages/About';
-import { Simulations } from './pages/Simulations';
-import { KinematicsDemo } from './pages/mechanics/KinematicsDemo';
-import { Kinematics2DDemo } from './pages/mechanics/Kinematics2DDemo';
-import { ForceSimulator } from './pages/mechanics/ForceSimulator';
-import { SimpleGravityAndFriction } from './pages/mechanics/SimpleGravityAndFriction';
-import { BoxOnIncline } from './pages/mechanics/BoxOnIncline';
-import { SpringForce } from './pages/mechanics/SpringForce';
-import { ColumbsLaw } from './pages/enm/ColumbsLaw';
-import { GaussLaw } from './pages/enm/GaussLaw';
-import { MagField } from './pages/enm/MagField';
-import { BeamBalance } from './pages/statics/BeamBalance';  
-import { EnergyHills } from './pages/EnergyHills';
-import { PulleySystem } from './pages/mechanics/PulleySystem';
-import { DistributedLoad } from './pages/statics/DistributedLoad';
+import packageJson from '../package.json';
+
+
+const Home = lazy(() => import('./pages/Home').then((m) => ({ default: m.Home })));
+const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About })));
+const Simulations = lazy(() => import('./pages/Simulations').then((m) => ({ default: m.Simulations })));
+const KinematicsDemo = lazy(() => import('./pages/mechanics/KinematicsDemo').then((m) => ({ default: m.KinematicsDemo })));
+const Kinematics2DDemo = lazy(() => import('./pages/mechanics/Kinematics2DDemo').then((m) => ({ default: m.Kinematics2DDemo })));
+const ForceSimulator = lazy(() => import('./pages/mechanics/ForceSimulator').then((m) => ({ default: m.ForceSimulator })));
+const SimpleGravityAndFriction = lazy(() => import('./pages/mechanics/SimpleGravityAndFriction').then((m) => ({ default: m.SimpleGravityAndFriction })));
+const BoxOnIncline = lazy(() => import('./pages/mechanics/BoxOnIncline').then((m) => ({ default: m.BoxOnIncline })));
+const SpringForce = lazy(() => import('./pages/mechanics/SpringForce').then((m) => ({ default: m.SpringForce })));
+const PulleySystem = lazy(() => import('./pages/mechanics/PulleySystem').then((m) => ({ default: m.PulleySystem })));
+const ColumbsLaw = lazy(() => import('./pages/enm/ColumbsLaw').then((m) => ({ default: m.ColumbsLaw })));
+const FaradaysLaw = lazy(() => import('./pages/enm/FaradaysLaw').then((m) => ({ default: m.FaradaysLaw })));
+const RCCircuit = lazy(() => import('./pages/enm/RCCircuit').then((m) => ({ default: m.RCCircuit })));
+const GaussLaw = lazy(() => import('./pages/enm/GaussLaw').then((m) => ({ default: m.GaussLaw })));
+const MagField = lazy(() => import('./pages/enm/MagField').then((m) => ({ default: m.MagField })));
+const BeamBalance = lazy(() => import('./pages/statics/BeamBalance').then((m) => ({ default: m.BeamBalance })));
+const DistributedLoad = lazy(() => import('./pages/statics/DistributedLoad').then((m) => ({ default: m.DistributedLoad })));
+const EnergyHills = lazy(() => import('./pages/EnergyHills').then((m) => ({ default: m.EnergyHills })));
+
+const NAV_LINKS = [
+  { to: '/', label: 'Home' },
+  { to: '/#mehcanics', label: 'Mechanics' },
+  { to: '/#enm', label: 'E&M' },
+  { to: '/#statics', label: 'Statics' },
+  { to: '/about', label: 'About' },
+  { to: '/simulations', label: 'PHYS211' },
+];
+
+const APP_ROUTES = [
+  { path: '/', element: <Home /> },
+  { path: '/about', element: <About /> },
+  { path: '/simulations', element: <Simulations /> },
+  { path: '/kinematics', element: <KinematicsDemo /> },
+  { path: '/kinematics-2d', element: <Kinematics2DDemo /> },
+  { path: '/forces', element: <ForceSimulator /> },
+  { path: '/gravity-friction', element: <SimpleGravityAndFriction /> },
+  { path: '/box-incline', element: <BoxOnIncline /> },
+  { path: '/spring-force', element: <SpringForce /> },
+  { path: '/pulley-system', element: <PulleySystem /> },
+  { path: '/energy-hills', element: <EnergyHills /> },
+  { path: '/columbs-law', element: <ColumbsLaw /> },
+  { path: '/faradays-law', element: <FaradaysLaw /> },
+  { path: '/rc-circuit', element: <RCCircuit /> },
+  { path: '/gauss-law', element: <GaussLaw /> },
+  { path: '/mag-field', element: <MagField /> },
+  { path: '/beam-balance', element: <BeamBalance /> },
+  { path: '/distributed-load', element: <DistributedLoad /> },
+];
 
 export function App() {
   const location = useLocation();
@@ -49,74 +84,35 @@ export function App() {
             PHYSICS SIMS
           </Link>
           <nav className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
-            >
-              Home
-            </Link>
-            <Link
-              to="/#mehcanics"
-              className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
-            >
-              Mechanics
-            </Link>
-            <Link
-              to="/#enm"
-              className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
-            >
-              E&M
-            </Link>
-            <Link
-              to="/#statics"
-              className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
-            >
-              Statics
-            </Link>
-            <Link
-              to="about"
-              className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
-            >
-              About
-            </Link>
-            <Link
-              to="/simulations"
-              className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
-            >
-              PHYS211
-            </Link>
+            {NAV_LINKS.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="text-[0.9rem] text-slate-300 transition hover:text-sky-300"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </div>
 
-{/* ROUTES */}
-
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/simulations" element={<Simulations />} />
-        <Route path="/kinematics" element={<KinematicsDemo />} />
-        <Route path="/kinematics-2d" element={<Kinematics2DDemo />} />
-        <Route path="/forces" element={<ForceSimulator />} />
-        <Route path="/gravity-friction" element={<SimpleGravityAndFriction />} />
-        <Route path="/box-incline" element={<BoxOnIncline />} />
-        <Route path="/spring-force" element={<SpringForce />} />
-        <Route path="/columbs-law" element={<ColumbsLaw />} />
-        <Route path="/gauss-law" element={<GaussLaw />} />
-        <Route path="/mag-field" element={<MagField />} />
-        <Route path="/beam-balance" element={<BeamBalance />} />
-        <Route path="/distributed-load" element={<DistributedLoad />} />
-        <Route path="/pulley-system" element={<PulleySystem />} />
-        <Route path="/energy-hills" element={<EnergyHills />} />
-      </Routes>
+      {/* ROUTES */}
+      <Suspense fallback={<div className="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-400">Loading simulation...</div>}>
+        <Routes>
+          {APP_ROUTES.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Routes>
+      </Suspense>
       
 {/* FOOTER BOX */}
       <footer className="border-t border-slate-800 bg-slate-950/90" >
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between ">
-          <p>© 2026 PhysicsSsim</p>
-          <p className="text-center sm:text-left ">This website is better in landscape mode.</p>
+          <p>© 2026 PhysicsSsim v{packageJson.version}</p>
+          <p className="text-center sm:text-left ">PhET we gon be after yo job</p>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-sky-300">Contribution</a>
+            <a href="https://github.com/Edoubek1024/PhysicsSims?tab=readme-ov-file#contributing" className="hover:text-sky-300">Contribution</a>
             <a href="#" className="hover:text-sky-300">Resources</a>
             <a href="#" className="hover:text-sky-300">Terms</a>
             <a href="#" className="hover:text-sky-300">Contact</a>

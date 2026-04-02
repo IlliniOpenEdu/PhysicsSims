@@ -47,7 +47,8 @@ export function About() {
 				<p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
 					PhysicsSims started at UIUC as a response to one simple problem: most learning tools felt either
 					visually boring or cognitively overloaded. We wanted simulations with personality, clarity, and
-					enough rigor to trust in real coursework.
+					enough rigor to trust in real coursework. 
+					This website will always be free to use, and we are committed to building the best physics sim library for students everywhere.
 				</p>
 
 				<div className="mt-5 flex flex-wrap gap-3 text-xs">
