@@ -1,8 +1,9 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import packageJson from '../package.json';
 
 const GA_MEASUREMENT_ID = 'G-RBV8F88DKB';
+const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
 
 declare global {
   interface Window {
@@ -64,6 +65,8 @@ const APP_ROUTES = [
 
 export function App() {
   const location = useLocation();
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window.gtag !== 'function') return;
@@ -144,11 +147,143 @@ export function App() {
               <img src="/uiuc.png" alt="UIUC I-Block" className="h-7 w-7 object-contain" />
             </a>
             <a href="/about" className="hover:text-sky-300">About</a>
+            <a
+              type="button"
+              onClick={() => setIsPrivacyOpen(true)}
+              className="hover:text-sky-300"
+            >
+              Privacy
+            </a>
             <a href="https://github.com/Edoubek1024/PhysicsSims?tab=readme-ov-file#contributing" className="hover:text-sky-300">Contribution</a>
-            <a href="#" className="hover:text-sky-300">Contact</a>
+            <a
+              type="button"
+              onClick={() => setIsContactOpen(true)}
+              className="hover:text-sky-300"
+            >
+              Contact
+            </a>
           </div>
         </div>
       </footer>
+
+      {isPrivacyOpen ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-slate-950/70 p-4"
+          onClick={() => setIsPrivacyOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="privacy-modal-title"
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-xl shadow-slate-950/70"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 id="privacy-modal-title" className="text-lg font-semibold text-slate-100">
+              Privacy Notice
+            </h2>
+            <p className="mt-3 text-sm text-slate-300">
+              PhysicsSims does not collect any personal data from users. However, we use Google Analytics to collect anonymous usage data to help us improve the site. 
+              This data includes information about your device, browser, and interactions with the site, but it does not include any personally identifiable information. 
+              By using PhysicsSims, you consent to the collection of this anonymous usage data.
+            </p>
+            <div className="mt-5 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsPrivacyOpen(false)}
+                className="rounded-md bg-blue-300 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {isContactOpen ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-slate-950/70 p-4"
+          onClick={() => setIsContactOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="contact-modal-title"
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-xl shadow-slate-950/70"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 id="contact-modal-title" className="text-lg font-semibold text-slate-100">
+              Contact Us
+            </h2>
+
+            {FORMSPREE_ENDPOINT ? (
+              <form action={FORMSPREE_ENDPOINT} method="POST" className="mt-4 space-y-3">
+                <input type="hidden" name="_subject" value="PhysicsSims Contact Form" />
+
+                <label className="block text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Name
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-sky-400"
+                  />
+                </label>
+
+                <label className="block text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Email
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-sky-400"
+                  />
+                </label>
+
+                <label className="block text-xs font-medium uppercase tracking-wide text-slate-300">
+                  Message
+                  <textarea
+                    name="message"
+                    rows={4}
+                    required
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-sky-400"
+                  />
+                </label>
+
+                <div className="mt-5 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsContactOpen(false)}
+                    className="rounded-md border border-slate-600 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-slate-400"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-md bg-blue-300 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+                  >
+                    Send
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="mt-3 space-y-4">
+                <p className="text-sm text-slate-300">
+                  Formspree is not configured yet. Add VITE_FORMSPREE_ENDPOINT in your environment to enable this form.
+                </p>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsContactOpen(false)}
+                    className="rounded-md bg-blue-300 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
     
   );
