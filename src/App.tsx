@@ -242,7 +242,7 @@ export function App() {
       
 {/* FOOTER BOX */}
       <footer className="border-t border-slate-950/90 bg-slate-900/2" >
-        <img src="/adl.png" alt="Physics Sims Logo" className="mx-auto h-15 w-15" />
+        <img src={`${import.meta.env.BASE_URL}adl.png`} alt="Physics Sims Logo" className="mx-auto h-15 w-15" />
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between ">
           <p>© 2026 PhysicsSim v{packageJson.version}</p>
           <p className="text-center center">Made with ❤️</p>
@@ -252,7 +252,7 @@ export function App() {
               aria-label="Grainger Engineering Physics Website"
               className="inline-flex items-center justify-center rounded-sm transition hover:scale-105"
             >
-              <img src="/uiuc.png" alt="UIUC I-Block" className="h-7 w-7 object-contain" />
+              <img src={`${import.meta.env.BASE_URL}uiuc.png`} alt="UIUC I-Block" className="h-7 w-7 object-contain" />
             </a>
             <Link to="/about" className="hover:text-sky-300">About</Link>
             <a
