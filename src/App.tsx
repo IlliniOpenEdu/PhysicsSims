@@ -44,8 +44,9 @@ const initializeGtagStub = () => {
   }
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = (...args: unknown[]) => {
-    window.dataLayer?.push(args);
+  window.gtag = function gtag(...args: unknown[]) {
+    void args;
+    window.dataLayer?.push(arguments);
   };
   window.gtag('js', new Date());
   window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
