@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import packageJson from '../package.json';
 
-const GA_MEASUREMENT_ID = 'G-RBV8F88DKB';
+const GA_MEASUREMENT_ID = 'G-5XJFVLZQ0Z';
 const GA_SCRIPT_ID = 'google-analytics-gtag';
 const COOKIE_CONSENT_KEY = 'physicssims-cookie-consent';
 const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
