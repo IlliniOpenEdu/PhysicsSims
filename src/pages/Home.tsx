@@ -1,5 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AnnouncementPopup } from '../components/AnnouncementPopup';
+
+
+const HOME_ANNOUNCEMENT = {
+  id: 'official-launch-2026-04',
+  title: '🎉 PhysicsSims Official Launch',
+  description:
+    'We are officially live as an interactive learning platform. Additional simulations and features will be introduced throughout the semester.',
+  buttons: [
+    { text: 'Start Exploring', url: '#mechanics' },
+    { text: 'Project Repository', url: 'https://github.com/IlliniOpenEdu/PhysicsSims', newTab: true },
+    { text: 'Feedback & Suggestions', url: '#contact' },
+  ],
+};
+
+// Put this in console to reset the announcement for testing:
+// localStorage.removeItem('home-announcement-dismissed:official-launch-2026-04')
 
 /** Shown when a referenced PNG is missing from `public/thumbnails/`. */
 const PREVIEW_FALLBACK = '/thumbnails/placeholder.svg';
@@ -164,6 +181,27 @@ const staticsSims = [
 
 export function Home() {
   const [viewMode, setViewMode] = useState<'grid' | 'compact'>('grid');
+  const [isLaunchAnnouncementOpen, setIsLaunchAnnouncementOpen] = useState(false);
+  const dismissKey = `home-announcement-dismissed:${HOME_ANNOUNCEMENT.id}`;
+
+  useEffect(() => {
+    try {
+      const isDismissed = window.localStorage.getItem(dismissKey) === 'true';
+      setIsLaunchAnnouncementOpen(!isDismissed);
+    } catch {
+      setIsLaunchAnnouncementOpen(true);
+    }
+  }, [dismissKey]);
+
+  const closeLaunchAnnouncement = () => {
+    setIsLaunchAnnouncementOpen(false);
+    try {
+      window.localStorage.setItem(dismissKey, 'true');
+    } catch {
+      // Ignore storage failures in restricted browsing environments.
+    }
+  };
+
   const isCompact = viewMode === 'compact';
   const sectionGridClass = isCompact
     ? 'grid gap-3 sm:grid-cols-2 lg:grid-cols-3'
@@ -176,7 +214,14 @@ export function Home() {
     : 'mb-4 h-40 w-full rounded-xl object-cover border border-slate-800';
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-slate-950 text-white">
+    <>
+      <AnnouncementPopup
+        announcement={HOME_ANNOUNCEMENT}
+        isOpen={isLaunchAnnouncementOpen}
+        onClose={closeLaunchAnnouncement}
+      />
+
+      <div className="relative flex min-h-screen flex-col bg-slate-950 text-white">
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-70">
         <div className="absolute -left-40 top-0 h-72 w-72 rounded-full bg-sky-700/30 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-blue-500/25 blur-3xl" />
@@ -422,5 +467,6 @@ export function Home() {
 
       </main>
     </div>
+    </>
   );
 }

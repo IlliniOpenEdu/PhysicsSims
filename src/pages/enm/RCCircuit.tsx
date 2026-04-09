@@ -753,7 +753,7 @@ export function RCCircuit() {
                     description: "The current in the circuit also follows an exponential curve, decreasing as the capacitor charges."
                   }
                 ]}></ConceptBox>
-			</main>
+			</main>	
 		</div>
 	);
 }
