@@ -303,10 +303,10 @@ export function App() {
           height={56}
           className="mx-auto h-14 w-14"
         />
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 PhysicsSim v{packageJson.version}</p>
-          <p className="text-center center">Made with <Link className="text-red-500" to="/admin">❤</Link></p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-4 text-sm text-slate-400 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+          <p className="sm:justify-self-start">© 2026 PhysicsSim v{packageJson.version}</p>
+          <p className="text-center sm:justify-self-center">Made with <Link className="text-red-500" to="/admin">❤</Link></p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 sm:justify-self-end sm:justify-end">
             <a
               href="https://courses.physics.illinois.edu"
               aria-label="Grainger Engineering Physics Website"

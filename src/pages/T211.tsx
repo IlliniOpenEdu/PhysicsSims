@@ -55,7 +55,7 @@ const unit2Problems: CodeProblemEntry[] = [
   {
     problem: {
       title: 'Equilibrium of pulley',
-      imageUrl: `${base}public/tam/951.png`,
+      imageUrl: `${base}tam/951.png`,
       description:
         'A cable runs along a pulley: one side of the cable is perpendicular to the base holding the pulley. The other side of the cable is pulled at an angle with tension.',
       code: `import numpy as np
@@ -200,7 +200,7 @@ F = ((L1+L2)*F*np.sin(theta)) / L2`,
   {
     problem: {
       title: 'Basic Frame Problem',
-      imageUrl: `${base}public/tam/4B5.png`,
+      imageUrl: `${base}tam/4B5.png`,
       description:
         'Beams ac, bd, df, and cg are pinned together at all intersections to make a frame. Forces F1 and F2 act perpendicularly to members ac and df, respectively. Assuming that the frame is pinned to the ground at points a and g, and neglecting the weight of the frame, calculate the magnitude of the force acting in member bd. Note that b and e are horizontal and that the beams at joint d form a right angle.',
       code: `import numpy as np

@@ -138,13 +138,13 @@ const mechanicsSims: SimItem[] = [
     title: 'Pulley system',
     path: '/pulley-system',
     description: 'Two-mass Atwood machine: tension, gravity, and motion when masses differ.',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/pulley.png`,
   },
   {
     title: 'Energy Hills',
     path: '/energy-hills',
     description: 'Potential ↔ kinetic energy conversion on smooth, bumpy, and looped terrain.',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/work.png`,
   },
   {
     title: 'Spring Energy',
@@ -156,7 +156,7 @@ const mechanicsSims: SimItem[] = [
     title: 'Work in Dynamics',
     path: '/work-in-dynamics',
     description: 'Incline, rope pull, and spring tabs with live work tracking (W = F·Δr) per force.',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/incline.png`,
   },
 ];
 
@@ -180,35 +180,35 @@ const enmSims: SimItem[] = [
     description: 'Interactively visualize the interplay of electric and magnetic fields as described by Maxwell\'s equations.',
     path: '/maxwell',
     status: 'Available now',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/maxwell.png`,
   }, 
   {
     title: 'Ampere\'s Law Simulator',
     description: 'Build and analyze resistor-inductor-capacitor circuits with real-time voltage and current graphs.',
     path: '/amperes-law',
     status: 'Available now',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/ampere.png`,
   },
   {
     title: 'Faraday\'s Law Simulator',
     description: 'Visualize changing magnetic flux and induced EMF.',
     path: '/faradays-law',
     status: 'IOLab module',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/faraday.png`,
   },
   {
     title: 'RC Circuit Lab',
     description: 'Explore capacitor charging and discharging with live voltage and current scopes.',
     path: '/rc-circuit',
     status: 'Available now',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/RC.png`,
   },
   {
     title: 'Magnetic Field Simulator',
     description: 'Visualize magnetic fields around point charges and magnets.',
     path: '/mag-field',
     status: 'Available now',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/mag.png`,
   }
 ];
 
@@ -225,7 +225,7 @@ const staticsSims: SimItem[] = [
     description: 'Set end supports, apply forces/moments/UDLs, and inspect reactions, shear, and moment.',
     path: '/distributed-load',
     status: 'Available now',
-    preview: `${base}thumbnails/preview.png`,
+    preview: `${base}thumbnails/beam.png`,
   },
 
 ];
