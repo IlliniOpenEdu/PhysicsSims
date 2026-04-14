@@ -89,6 +89,10 @@ const DistributedLoad = lazy(() => import('./pages/statics/DistributedLoad').the
 const EnergyHills = lazy(() => import('./pages/mechanics/EnergyHills').then((m) => ({ default: m.EnergyHills })));
 const SpringEnergy = lazy(() => import('./pages/mechanics/SpringEnergy').then((m) => ({ default: m.SpringEnergy })));
 const WorkInDynamics = lazy(() => import('./pages/WorkInDynamics').then((m) => ({ default: m.WorkInDynamics })));
+const CenterOfMass = lazy(() => import('./mechanics/momentum/CenterOfMass').then((m) => ({ default: m.CenterOfMass })));
+const ImpulseBuilder = lazy(() => import('./mechanics/momentum/ImpulseBuilder').then((m) => ({ default: m.ImpulseBuilder })));
+const MomentumCollision1D = lazy(() => import('./mechanics/momentum/MomentumCollision1D').then((m) => ({ default: m.MomentumCollision1D })));
+const Collision2D = lazy(() => import('./mechanics/momentum/Collision2D').then((m) => ({ default: m.Collision2D })));
 const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 
 const NAV_LINKS = [
@@ -123,6 +127,10 @@ const APP_ROUTES = [
   { path: '/energy-hills', element: <EnergyHills /> },
   { path: '/spring-energy', element: <SpringEnergy /> },
   { path: '/work-in-dynamics', element: <WorkInDynamics /> },
+  { path: '/center-of-mass', element: <CenterOfMass /> },
+  { path: '/impulse-builder', element: <ImpulseBuilder /> },
+  { path: '/momentum-collision-1d', element: <MomentumCollision1D /> },
+  { path: '/momentum-collision-2d', element: <Collision2D /> },
   { path: '/columbs-law', element: <ColumbsLaw /> },
   { path: '/amperes-law', element: <AmperesLaw /> },
   { path: '/maxwell', element: <Maxwell /> },
