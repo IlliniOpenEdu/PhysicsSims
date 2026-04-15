@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 type SliderWithInputProps = {
@@ -27,6 +27,14 @@ function roundTo3(value: number) {
 
 function isSameNumber(a: number, b: number) {
   return Math.abs(a - b) < 1e-9;
+}
+
+function formatValueForInput(n: number, step: number) {
+  if (!Number.isFinite(n)) return '';
+  const s = String(step);
+  const decimals = s.includes('.') ? s.replace(/^\d*\./, '').length : 0;
+  if (decimals > 0) return n.toFixed(Math.min(decimals, 6)).replace(/\.?0+$/, '') || '0';
+  return String(Math.round(n));
 }
 
 function toQueryKey(label: React.ReactNode): string | null {
@@ -61,6 +69,8 @@ export function SliderWithInput({
   const skipNextWriteRef = useRef(false);
   const userEditedRef = useRef(false);
   const lastSeenRawRef = useRef<string | null>(null);
+  const [numberFocused, setNumberFocused] = useState(false);
+  const [numberDraft, setNumberDraft] = useState('');
 
   const percent = ((value - min) / (max - min)) * 100;
   const resolvedQueryKey = useMemo(() => queryKey ?? toQueryKey(label), [label, queryKey]);
@@ -170,19 +180,42 @@ export function SliderWithInput({
 
         <div className="flex items-center gap-1">
           <input
-            type="number"
-            min={min}
-            max={max}
-            step={step}
-            value={value}
+            type="text"
+            inputMode="decimal"
+            aria-label={typeof label === 'string' ? label : 'Value'}
+            value={numberFocused ? numberDraft : formatValueForInput(value, step)}
+            onFocus={() => {
+              if (disabled) return;
+              setNumberFocused(true);
+              setNumberDraft(formatValueForInput(value, step));
+            }}
             onChange={(e) => {
               if (disabled) return;
-              const next = Number(e.target.value);
-              if (Number.isNaN(next)) return;
+              setNumberDraft(e.target.value);
+            }}
+            onBlur={() => {
+              if (disabled) return;
+              setNumberFocused(false);
+              const raw = numberDraft.trim();
+              if (raw === '' || raw === '-' || raw === '.' || raw === '-.') {
+                userEditedRef.current = true;
+                onChange(clamp(value, min, max));
+                return;
+              }
+              const next = Number(raw);
+              if (!Number.isFinite(next)) {
+                userEditedRef.current = true;
+                onChange(clamp(value, min, max));
+                return;
+              }
               const normalized = clamp(roundTo3(next), min, max);
               if (isSameNumber(normalized, value)) return;
               userEditedRef.current = true;
               onChange(normalized);
+            }}
+            onKeyDown={(e) => {
+              if (e.key !== 'Enter') return;
+              e.currentTarget.blur();
             }}
             disabled={disabled}
             className={`${inputClassName} disabled:cursor-not-allowed`}

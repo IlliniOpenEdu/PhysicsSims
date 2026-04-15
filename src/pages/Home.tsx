@@ -158,6 +158,30 @@ const mechanicsSims: SimItem[] = [
     description: 'Incline, rope pull, and spring tabs with live work tracking (W = F·Δr) per force.',
     preview: `${base}thumbnails/incline.png`,
   },
+  {
+    title: 'Momentum · Center of Mass',
+    path: '/center-of-mass',
+    description: 'Drag multiple masses in 2D and track the system center of mass in real time.',
+    preview: `${base}thumbnails/forces.png`,
+  },
+  {
+    title: 'Momentum · Impulse Builder',
+    path: '/impulse-builder',
+    description: 'Constant horizontal force over a chosen duration: J = FΔt, Δp, and coasting motion on a frictionless track.',
+    preview: `${base}thumbnails/forces.png`,
+  },
+  {
+    title: 'Momentum · 1D Collision',
+    path: '/momentum-collision-1d',
+    description: 'Compare elastic and inelastic 1D collisions while tracking p1, p2, and conserved total momentum.',
+    preview: `${base}thumbnails/pulley.png`,
+  },
+  {
+    title: 'Momentum · 2D Collisions',
+    path: '/momentum-collision-2d',
+    description: 'Elastic balls in a square arena: ball–ball and wall collisions with per-ball and total momentum readouts.',
+    preview: `${base}thumbnails/pulley.png`,
+  },
 ];
 
 const enmSims: SimItem[] = [

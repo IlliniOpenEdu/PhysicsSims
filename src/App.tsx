@@ -94,7 +94,10 @@ const MagField = lazy(() => import('./pages/enm/MagField').then((m) => ({ defaul
 
 const BeamBalance = lazy(() => import('./pages/statics/BeamBalance').then((m) => ({ default: m.BeamBalance })));
 const DistributedLoad = lazy(() => import('./pages/statics/DistributedLoad').then((m) => ({ default: m.DistributedLoad })));
-
+const CenterOfMass = lazy(() => import('./mechanics/momentum/CenterOfMass').then((m) => ({ default: m.CenterOfMass })));
+const ImpulseBuilder = lazy(() => import('./mechanics/momentum/ImpulseBuilder').then((m) => ({ default: m.ImpulseBuilder })));
+const MomentumCollision1D = lazy(() => import('./mechanics/momentum/MomentumCollision1D').then((m) => ({ default: m.MomentumCollision1D })));
+const Collision2D = lazy(() => import('./mechanics/momentum/Collision2D').then((m) => ({ default: m.Collision2D })));
 const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 
 
@@ -132,6 +135,10 @@ const APP_ROUTES = [
   { path: '/energy-hills', element: <EnergyHills /> },
   { path: '/spring-energy', element: <SpringEnergy /> },
   { path: '/work-in-dynamics', element: <WorkInDynamics /> },
+  { path: '/center-of-mass', element: <CenterOfMass /> },
+  { path: '/impulse-builder', element: <ImpulseBuilder /> },
+  { path: '/momentum-collision-1d', element: <MomentumCollision1D /> },
+  { path: '/momentum-collision-2d', element: <Collision2D /> },
   { path: '/columbs-law', element: <ColumbsLaw /> },
   { path: '/amperes-law', element: <AmperesLaw /> },
   { path: '/maxwell', element: <Maxwell /> },
