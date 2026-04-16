@@ -26,3 +26,6 @@ dist-ssr
 # .env file
 .env
 .env.*.local
+
+# wiki stays in the repo, but we don't want to track changes to it
+/wiki

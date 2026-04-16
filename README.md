@@ -1,155 +1,40 @@
-# PhysicsSims
+<p align="center">
+  <img width="400" src="https://raw.githubusercontent.com/IlliniOpenEdu/PhysicsSims/main/public/logo.png" alt="logo">
+  <h3 align="center" style="color: #333;">Physics Sims</h3>
+</p>
+
+![repo status](https://www.repostatus.org/badges/latest/active.svg) 
+![deploy status](https://github.com/IlliniOpenEdu/PhysicsSims/actions/workflows/deploy.yml/badge.svg?style=for-the-badge) 
+![visitors](https://visitor-badge.laobi.icu/badge?page_id=IlliniOpenEdu.PhysicsSims&left_color=black&right_color=red) 
+![license](https://img.shields.io/badge/License-MIT-green)
+![Documentation](https://img.shields.io/badge/Documentation-Wiki-blue)
+---
 
 Interactive, browser-native physics simulations built with React + TypeScript.
 
-PhysicsSims is designed for students who want to *see* the math happen: tweak parameters, watch behavior change instantly, and build intuition for mechanics, E&M, and statics.
+PhysicsSims is designed for students who want to see the math happen: tweak parameters, watch behavior change instantly, and build intuition for mechanics, E&M, and statics.
 
-PhET set the standard. We’re building what comes next.
+## Documentation
 
-![status](https://github.com/IlliniOpenEdu/PhysicsSims/actions/workflows/deploy.yml/badge.svg?style=for-the-badge)
-![visitors](https://visitor-badge.laobi.icu/badge?page_id=IlliniOpenEdu.PhysicsSims&left_color=black&right_color=red)
-![qr code](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://IlliniOpenEdu.github.io/PhysicsSims)
+This README stays intentionally short. Full project docs now live in the [wiki](https://github.com/IlliniOpenEdu/PhysicsSims/wiki):
 
-## Project Highlights
+- [Wiki Home](wiki/Home)
+- [Development Setup](wiki/Development)
+- [Simulation Catalog](wiki/Simulations)
+- [Deployment](wiki/Deployment)
+- [Contributing](wiki/Contributing)
 
-- Multiple simulation tracks for mechanics, electricity and magnetism, and statics
-- A homepage that surfaces the full library, live deploy status, and featured content
-- Announcement and content controls for internal testing and site updates
-- GitHub Pages deployment with router refresh support
+## Preview
 
-## Why This Exists
-
-Too many classroom sims are either visually outdated or overloaded with friction-heavy UI.
-
-PhysicsSims aims for:
-
-- clear controls
-- readable visuals
-- physically meaningful behavior
-- modern, fast frontend architecture
-
-## Current Simulation Library
-
-### Mechanics
-
-- 1-D Kinematics
-- 2-D Kinematics
-- Force Simulator
-- Simple Friction
-- Spring Force
-- Box on Incline
-- Pulley System
-- Energy Hills
-- Spring Energy
-- Work in Dynamics
-
-### Electricity and Magnetism
-
-- Coulomb's Law Explorer
-- Capacitor Lab
-- Gauss's Law Visualizer
-- Maxwell's Equations Explorer
-- Ampere's Law Simulator
-- Faraday's Law Simulator
-- RC Circuit Lab
-- Magnetic Field Simulator
+<p align="center">
+  <img src="public/demo/hero.png" alt="Hero Image" width="420" height="300"/>
+  <img src="public/demo/modules.png" alt="Modules" width="420" height="300"/>
+</p>
 
 
-### Statics
+<!-- ## Acknowledgements
 
-- Beam Balance Simulator
-- Beam Load and Support Analyzer
-
-## Tech Stack
-
-- React 18
-- TypeScript
-- Vite
-- React Router
-- Tailwind CSS
-
-## Quick Start
-
-```bash
-git clone https://github.com/IlliniOpenEdu/PhysicsSims.git
-cd PhysicsSims
-npm install
-npm run dev
-```
-
-Open the local URL shown by Vite (typically `http://localhost:5173`).
-
-## Scripts
-
-```bash
-npm run dev      # start development server
-npm run build    # type-check + production build
-npm run preview  # preview production build locally
-npm run lint     # run eslint
-npm run deploy   # build and publish dist/ to GitHub Pages
-```
-
-## Deploy To GitHub Pages
-
-This project is configured for the repository URL:
-
-- `https://IlliniOpenEdu.github.io/PhysicsSims`
-
-One-time setup:
-
-1. Ensure the GitHub repository exists at `IlliniOpenEdu/PhysicsSims`
-2. In GitHub, open **Settings -> Pages**
-3. Set **Source** to **Deploy from a branch**
-4. Choose branch **gh-pages** and folder **/(root)**
-
-Deploy:
-
-```bash
-npm install
-npm run deploy
-```
-
-Notes:
-
-- `vite.config.ts` uses `base: '/PhysicsSims/'` for project-page hosting.
-- Build output includes `dist/404.html` copied from `dist/index.html` so React Router routes load correctly on refresh.
-
-## Project Structure
-
-```text
-src/
-	pages/
-		mechanics/
-		enm/
-		statics/
-	components/
-	styles/
-```
-
-## Design Principles
-
-- **Visual first:** concepts should be obvious before reading formulas
-- **Physics honest:** assumptions are explicit, behavior stays physically grounded
-- **Student centered:** quick experimentation beats buried controls
-
-## Roadmap
-
-- More mechanics modules
-- More E&M modules
-- More statics and rigid-body modules
-- Learner-friendly guidance and polish pass on the existing sims
-- Additional E&M ideas: equipotential maps, induction variants, and current-loop magnetic fields
-
-## Contributing
-
-Issues, ideas, and improvements are welcome.
-
-If you want to contribute:
-
-1. Fork the repo
-2. Create a feature branch
-3. Commit focused changes
-4. Open a pull request with screenshots or short clips for UI-heavy updates
+This project is developed by the University of Illinois Open Education Initiative, with support from the University of Illinois Urbana-Champaign and the Grainger College of Engineering Physics Department. -->
 
 ## License
 
