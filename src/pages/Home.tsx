@@ -189,57 +189,65 @@ const enmSims: SimItem[] = [
     title: "Columb's Law Explorer",
     description: 'Map field lines and force vectors around charges.',
     path: '/columbs-law',
-    status: 'Available now',
+    status: 'Real time force vectors',
     preview: `${base}thumbnails/columbs.png`,
   },
   {
     title: 'Gauss\'s Law Visualizer',
     description: 'Explore electric flux and field distributions for different charge configurations.',
     path: '/gauss-law',
-    status: 'Available now',
+    status: '',
     preview: `${base}thumbnails/gauss.png`,
   },
   {
     title: 'Maxwell\'s Equations Explorer',
     description: 'Interactively visualize the interplay of electric and magnetic fields as described by Maxwell\'s equations.',
     path: '/maxwell',
-    status: 'Available now',
+    status: 'Wave Physics Playground',
     preview: `${base}thumbnails/maxwell.png`,
   }, 
   {
     title: 'Ampere\'s Law Simulator',
     description: 'Build and analyze resistor-inductor-capacitor circuits with real-time voltage and current graphs.',
     path: '/amperes-law',
-    status: 'Available now',
+    status: 'Current Loops in area',
     preview: `${base}thumbnails/ampere.png`,
   },
   {
     title: 'Faraday\'s Law Simulator',
     description: 'Visualize changing magnetic flux and induced EMF.',
     path: '/faradays-law',
-    status: 'IOLab module',
+    status: 'IOLab Pratical Mode',
     preview: `${base}thumbnails/faraday.png`,
   },
   {
     title: 'RC Circuit Lab',
     description: 'Explore capacitor charging and discharging with live voltage and current scopes.',
     path: '/rc-circuit',
-    status: 'Available now',
+    status: 'Charge and Discharge Curves',
     preview: `${base}thumbnails/RC.png`,
   },
   {
     title: 'Magnetic Field Simulator',
     description: 'Visualize magnetic fields around point charges and magnets.',
     path: '/mag-field',
-    status: 'Available now',
+    status: 'Magnets and moving charges',
     preview: `${base}thumbnails/mag.png`,
   },
   {
     title: 'Capacitor',
     description: 'Understand how capacitors store charge and energy.',
     path: '/capacitor',
-    status: 'Available now',
+    status: 'Energy Storage',
     preview: `${base}thumbnails/capacitor.png`,
+  },
+  {
+    title: 'Large Hadron Collider',
+    description: 'Simulate particle collisions in the Large Hadron Collider.',
+    path: '/lhc',
+    status: 'BEST EXPERIENCE OF THE SIMULATION - TRY THIS ONE FIRST!',
+    preview: `${base}thumbnails/LCH.png`,
+
   }
 ];
 
@@ -248,14 +256,14 @@ const staticsSims: SimItem[] = [
     title: 'Beam Balance Simulator',
     description: 'Explore torque and equilibrium with a virtual beam balance.',
     path: '/beam-balance',
-    status: 'Available now',
+    status: 'Torque Challenge Live Lab',
     preview: `${base}thumbnails/beambalance.png`,
   },
   {
     title: 'Beam Load and Support Analyzer',
     description: 'Set end supports, apply forces/moments/UDLs, and inspect reactions, shear, and moment.',
     path: '/distributed-load',
-    status: 'Available now',
+    status: 'Structural Response in Real Time',
     preview: `${base}thumbnails/beam.png`,
   },
 
@@ -642,7 +650,8 @@ export function Home() {
               ) : (
                 <div className={sectionGridClass}>
                   {section.sims.map((sim, simIndex) => {
-                    const isFeatured = section.id === 'mechanics' && sim.path === featuredSimPath;
+                    // const isFeatured = new Set([featuredSimPath, '/kinematics-2d', '/lhc']).has(sim.path);
+                    const isFeatured = sim.path === '/kinematics-2d';
                     const cardClass = isFeatured
                       ? `${baseCardClass} md:col-span-2 ring-2 ring-cyan-300/45 shadow-2xl shadow-cyan-950/25 ${section.hoverClass} framer-rise framer-press hover:-translate-y-1.5 hover:bg-white/[0.08]`
                       : `${baseCardClass} ${section.hoverClass} framer-rise framer-press opacity-90 hover:-translate-y-1 hover:bg-white/[0.05] hover:opacity-100`;

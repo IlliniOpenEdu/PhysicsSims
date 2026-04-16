@@ -64,6 +64,10 @@ export const KNOWN_SIM_PATHS = [
   '/energy-hills',
   '/spring-energy',
   '/work-in-dynamics',
+  '/center-of-mass',
+  '/impulse-builder',
+  '/momentum-collision-1d',
+  '/momentum-collision-2d',
   '/columbs-law',
   '/gauss-law',
   '/maxwell',
@@ -72,6 +76,7 @@ export const KNOWN_SIM_PATHS = [
   '/capacitor',
   '/rc-circuit',
   '/mag-field',
+  '/lhc',
   '/beam-balance',
   '/distributed-load',
 ] as const;

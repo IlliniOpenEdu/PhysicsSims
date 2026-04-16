@@ -81,7 +81,7 @@ const SpringForce = lazy(() => import('./pages/mechanics/SpringForce').then((m) 
 const PulleySystem = lazy(() => import('./pages/mechanics/PulleySystem').then((m) => ({ default: m.PulleySystem })));
 const EnergyHills = lazy(() => import('./pages/mechanics/EnergyHills').then((m) => ({ default: m.EnergyHills })));
 const SpringEnergy = lazy(() => import('./pages/mechanics/SpringEnergy').then((m) => ({ default: m.SpringEnergy })));
-const WorkInDynamics = lazy(() => import('./pages/WorkInDynamics').then((m) => ({ default: m.WorkInDynamics })));
+const WorkInDynamics = lazy(() => import('./pages/mechanics/WorkInDynamics').then((m) => ({ default: m.WorkInDynamics })));
 
 const ColumbsLaw = lazy(() => import('./pages/enm/ColumbsLaw').then((m) => ({ default: m.ColumbsLaw })));
 const AmperesLaw = lazy(() => import('./pages/enm/AmperesLaw').then((m) => ({ default: m.AmperesLaw })));
@@ -91,13 +91,14 @@ const CapacitorLab = lazy(() => import('./pages/enm/Capacitor').then((m) => ({ d
 const RCCircuit = lazy(() => import('./pages/enm/RCCircuit').then((m) => ({ default: m.RCCircuit })));
 const GaussLaw = lazy(() => import('./pages/enm/GaussLaw').then((m) => ({ default: m.GaussLaw })));
 const MagField = lazy(() => import('./pages/enm/MagField').then((m) => ({ default: m.MagField })));
+const LHC = lazy(() => import('./pages/enm/LHC').then((m) => ({ default: m.LHC })));
 
 const BeamBalance = lazy(() => import('./pages/statics/BeamBalance').then((m) => ({ default: m.BeamBalance })));
 const DistributedLoad = lazy(() => import('./pages/statics/DistributedLoad').then((m) => ({ default: m.DistributedLoad })));
-const CenterOfMass = lazy(() => import('./mechanics/momentum/CenterOfMass').then((m) => ({ default: m.CenterOfMass })));
-const ImpulseBuilder = lazy(() => import('./mechanics/momentum/ImpulseBuilder').then((m) => ({ default: m.ImpulseBuilder })));
-const MomentumCollision1D = lazy(() => import('./mechanics/momentum/MomentumCollision1D').then((m) => ({ default: m.MomentumCollision1D })));
-const Collision2D = lazy(() => import('./mechanics/momentum/Collision2D').then((m) => ({ default: m.Collision2D })));
+const CenterOfMass = lazy(() => import('./pages/mechanics/CenterOfMass').then((m) => ({ default: m.CenterOfMass })));
+const ImpulseBuilder = lazy(() => import('./pages/mechanics/ImpulseBuilder').then((m) => ({ default: m.ImpulseBuilder })));
+const MomentumCollision1D = lazy(() => import('./pages/mechanics/MomentumCollision1D').then((m) => ({ default: m.MomentumCollision1D })));
+const Collision2D = lazy(() => import('./pages/mechanics/Collision2D').then((m) => ({ default: m.Collision2D })));
 const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 
 
@@ -147,6 +148,7 @@ const APP_ROUTES = [
   { path: '/rc-circuit', element: <RCCircuit /> },
   { path: '/gauss-law', element: <GaussLaw /> },
   { path: '/mag-field', element: <MagField /> },
+  { path: '/lhc', element: <LHC /> },
   { path: '/beam-balance', element: <BeamBalance /> },
   { path: '/distributed-load', element: <DistributedLoad /> },
   { path: '/admin', element: <Admin /> },
