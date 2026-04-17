@@ -92,6 +92,7 @@ const RCCircuit = lazy(() => import('./pages/enm/RCCircuit').then((m) => ({ defa
 const GaussLaw = lazy(() => import('./pages/enm/GaussLaw').then((m) => ({ default: m.GaussLaw })));
 const MagField = lazy(() => import('./pages/enm/MagField').then((m) => ({ default: m.MagField })));
 const LHC = lazy(() => import('./pages/enm/LHC').then((m) => ({ default: m.LHC })));
+const WaveEq3D = lazy(() => import('./pages/enm/wave-3d').then((m) => ({ default: m.WaveEquation3D })));
 
 const BeamBalance = lazy(() => import('./pages/statics/BeamBalance').then((m) => ({ default: m.BeamBalance })));
 const DistributedLoad = lazy(() => import('./pages/statics/DistributedLoad').then((m) => ({ default: m.DistributedLoad })));
@@ -149,6 +150,8 @@ const APP_ROUTES = [
   { path: '/gauss-law', element: <GaussLaw /> },
   { path: '/mag-field', element: <MagField /> },
   { path: '/lhc', element: <LHC /> },
+  { path: '/wave-3d', element: <WaveEq3D /> },
+  { path: '/wave-equation-3d', element: <WaveEq3D /> },
   { path: '/beam-balance', element: <BeamBalance /> },
   { path: '/distributed-load', element: <DistributedLoad /> },
   { path: '/admin', element: <Admin /> },

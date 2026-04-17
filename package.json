@@ -2,7 +2,7 @@
   "name": "physics-labs",
   "private": true,
   "homepage": "https://illiniopenedu.github.io/PhysicsSims",
-  "version": "1.0.0",
+  "version": "1.1.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,10 +13,13 @@
     "lint": "eslint src --ext ts,tsx"
   },
   "dependencies": {
+    "@react-three/drei": "^9.112.1",
+    "@react-three/fiber": "^8.17.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.13.1",
-    "react-syntax-highlighter": "^16.1.1"
+    "react-syntax-highlighter": "^16.1.1",
+    "three": "^0.181.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

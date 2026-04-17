@@ -248,6 +248,13 @@ const enmSims: SimItem[] = [
     status: 'BEST EXPERIENCE OF THE SIMULATION - TRY THIS ONE FIRST!',
     preview: `${base}thumbnails/LCH.png`,
 
+  },
+  {
+    title: 'Wave Equation 3D',
+    description: 'Real-time wave equation visualization with camera orbit, mode switching, and live parameter control.',
+    path: '/wave-3d',
+    status: 'Full 3D live-rendered wave fields',
+    preview: `${base}thumbnails/wave.png`,
   }
 ];
 

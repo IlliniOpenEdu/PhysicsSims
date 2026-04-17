@@ -30,13 +30,13 @@ const timeline = [
 	{ phase: 'Development', text: 'Done' },
 	{ phase: 'Initial Release', text: 'Done' },
 	{ phase: 'More Modules', text: 'In Progress' },
-	{ phase: 'Full Release', text: 'TBD' },
+	{ phase: 'Full Release', text: 'Very Soon' },
 ];
 
 const upcomingPatches = [
-	{ title: 'More E&M and 211 simulation modules', eta: 'Patch v0.6' },
-	{ title: 'Thumbnail previews for simulations', eta: 'Patch v0.6' },
-	{ title: 'First Release with student feedback', eta: 'Release v1.0' },
+	{ title: 'Finalize PHYS 211 page', eta: 'Patch v1.2' },
+	{ title: 'Finalize E&M simulations', eta: 'Patch v1.4' },
+	{ title: 'Finalize all simulation pages', eta: 'Release v1.5' },
 ];
 
 const team = [
@@ -71,6 +71,7 @@ export function About() {
 					<span className="rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-emerald-100">Browser native</span>
 					<span className="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-cyan-100">Classroom ready</span>
 					<span className="rounded-full border border-pink-300/40 bg-pink-300/10 px-3 py-1 text-pink-100">Shareable Modules</span>
+					<span className="rounded-full border border-slate-300/40 bg-slate-300/10 px-3 py-1 text-slate-100">Professor Endorsed</span>
 				</div>
 
 				<div className="mt-6">

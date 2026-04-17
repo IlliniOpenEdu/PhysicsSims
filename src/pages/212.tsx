@@ -35,6 +35,11 @@ const dcCircuitsSims: SimLink[] = [
 
 const magnetismSims: SimLink[] = [
   {
+    to: '/wave-3d',
+    title: 'Wave Equation 3D',
+    description: 'Interact with traveling, standing, and EM wave modes in a real-time 3D field view.',
+  },
+  {
     to: '/mag-field',
     title: 'Magnetic Field Simulator',
     description: 'Visualize magnetic field patterns around sources and inspect direction and magnitude.',
