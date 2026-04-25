@@ -183,9 +183,21 @@ const mechanicsSims: SimItem[] = [
     preview: `${base}thumbnails/pulley.png`,
   },
   {
-    title: 'Rotational Kinematics · Taut Ball on String',
+    title: 'Angular Motion · Simple Anguler Motion Visualizer',
+    path: '/rotational-angular-motion-builder',
+    description: 'Rotational kinematics visualizer with θ₀, ω₀, α controls and live θ/ω/α graphs vs time.',
+    preview: `${base}thumbnails/kinematics.png`,
+  },
+  {
+    title: 'Angular Motion · Taut Ball on String',
     path: '/rotational-taut-string',
     description: 'Uniform circular motion with live tension, tangential velocity, and centripetal acceleration vectors.',
+    preview: `${base}thumbnails/forces.png`,
+  },
+  {
+    title: 'Angular Motion · Gravity & Orbital Motion',
+    path: '/orbital-motion',
+    description: 'Central gravity and 2D orbital trajectories with Sun-Earth and Earth-Moon presets.',
     preview: `${base}thumbnails/forces.png`,
   },
 ];

@@ -83,10 +83,22 @@ const momentumSims: SimLink[] = [
 
 const rotationalSims: SimLink[] = [
   {
+    to: '/rotational-angular-motion-builder',
+    title: 'Simple Anguler Motion Visualizer',
+    description:
+      'Set θ₀, ω₀, and α to visualize rotational kinematics, with live θ-ω-α readouts and time graphs.',
+  },
+  {
     to: '/rotational-taut-string',
     title: 'Taut Ball on a String (Uniform Circular Motion)',
     description:
       'Ball constrained to a circle by a taut string with live tension, tangential velocity, and centripetal acceleration vectors.',
+  },
+  {
+    to: '/orbital-motion',
+    title: 'Gravity & Orbital Motion',
+    description:
+      'Two-body gravity with presets (Sun-Earth, Earth-Moon): tune mass, distance, and speed for orbit, escape, or crash.',
   },
 ];
 
@@ -210,7 +222,7 @@ export function Simulations() {
 
         <section>
           <h2 className="border-b border-slate-800 pb-2 text-sm font-semibold uppercase tracking-[0.15em] text-violet-300/90">
-            Unit 5 — Rotational Kinematics
+            Unit 5 — Angular Motion
           </h2>
           <ul className="mt-5 grid gap-4 sm:grid-cols-2">
             {rotationalSims.map((sim) => (
