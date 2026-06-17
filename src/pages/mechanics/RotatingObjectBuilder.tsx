@@ -174,6 +174,11 @@ export function RotatingObjectBuilder() {
     [effectiveOmegaRadPerS, totalInertia]
   );
 
+  const totalRotationalEnergy = useMemo(
+    () => 0.5 * totalInertia * effectiveOmegaRadPerS * effectiveOmegaRadPerS,
+    [effectiveOmegaRadPerS, totalInertia]
+  );
+
   const maxContribution = useMemo(
     () => Math.max(1e-6, ...contributions.map((c) => c.totalInertia)),
     [contributions]
@@ -721,18 +726,16 @@ export function RotatingObjectBuilder() {
 
       <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
         <h2 className="text-sm font-semibold tracking-wide text-sky-300">
-          Moment of inertia and angular momentum
+          Moment of inertia, angular momentum, and rotational energy
         </h2>
-        <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="mt-3 grid gap-4 lg:grid-cols-3">
           <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
             <p className="text-xs text-slate-400">Total moment of inertia</p>
             <p className="mt-1 font-mono text-xl text-sky-200">{totalInertia.toFixed(4)} kg·m²</p>
             <p className="mt-2 text-[0.75rem] text-slate-400">
               I<sub>total</sub> = Σ(I<sub>connector</sub> + I<sub>object</sub>) with parallel-axis shifts.
             </p>
-          </div>
-          <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
-            <p className="text-xs font-medium text-slate-200">Contribution breakdown</p>
+            <p className="mt-3 text-xs font-medium text-slate-200">Contribution breakdown</p>
             <div className="mt-2 space-y-2">
               {contributions.length === 0 ? (
                 <p className="text-xs text-slate-400">No branches yet. Add one to start.</p>
@@ -786,6 +789,33 @@ export function RotatingObjectBuilder() {
               )}
             </div>
           </div>
+          <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+            <p className="text-xs text-slate-400">Total rotational kinetic energy</p>
+            <p className="mt-1 font-mono text-xl text-violet-200">
+              {totalRotationalEnergy.toFixed(4)} J
+            </p>
+            <p className="mt-2 text-[0.75rem] text-slate-400">
+              K<sub>rot</sub> = ½Iω² using current ω = {effectiveOmegaRadPerS.toFixed(2)} rad/s.
+            </p>
+            <div className="mt-3 space-y-2">
+              {contributions.length === 0 ? (
+                <p className="text-xs text-slate-400">No components yet. Add one to start.</p>
+              ) : (
+                contributions.map((item) => {
+                  const componentK =
+                    0.5 * item.totalInertia * effectiveOmegaRadPerS * effectiveOmegaRadPerS;
+                  return (
+                    <div key={`K-${item.id}`} className="rounded-md border border-slate-800 bg-slate-900/70 p-2">
+                      <div className="flex items-center justify-between gap-2 text-[0.72rem]">
+                        <span className="text-slate-200">{item.name}</span>
+                        <span className="font-mono text-violet-200">{componentK.toFixed(4)} J</span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -805,6 +835,10 @@ export function RotatingObjectBuilder() {
           <p>
             Extended bodies use I = I<sub>cm</sub> + md², while connector rods are modeled as thin
             rods attached at one end: I = (1/3)mL².
+          </p>
+          <p>
+            Rotational kinetic energy K<sub>rot</sub> = ½Iω² grows with the square of angular speed,
+            so doubling ω quadruples stored rotational energy for the same object geometry.
           </p>
         </div>
       </section>

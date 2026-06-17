@@ -54,12 +54,6 @@ const energySims: SimLink[] = [
     title: 'Spring Energy Simulation',
     description: 'Horizontal spring–mass oscillator: velocity, KE, spring PE, and total energy with a live force arrow.',
   },
-  {
-    to: '/rolling-energy-split',
-    title: 'Rolling Without Slipping (Energy Split Explorer)',
-    description:
-      'Roll down a no-slip ramp: gravitational PE splits into translational and rotational kinetic energy (v = ωr), with live stacked energy bars.',
-  },
 ];
 
 const momentumSims: SimLink[] = [
@@ -108,15 +102,6 @@ const rotationalSims: SimLink[] = [
   },
 ];
 
-const rotationalEnergySims: SimLink[] = [
-  {
-    to: '/rolling-energy-split',
-    title: 'Rolling Without Slipping (Energy Split Explorer)',
-    description:
-      'Roll on a no-slip ramp: see PE convert into translational and rotational KE with β = I/(mr²), conserved total energy, and live stacked energy bars.',
-  },
-];
-
 const rotationalDynamicsSims: SimLink[] = [
   {
     to: '/rotational-dynamics-rotating-object-builder',
@@ -141,6 +126,72 @@ const rotationalDynamicsSims: SimLink[] = [
     title: 'Active Torque Disk Simulator (Hold-to-Apply Torque)',
     description:
       'Hold a button to apply continuous tangential force and watch torque-driven changes in ω, L, and ΔL = τΔt.',
+  },
+  {
+    to: '/rolling-energy-split',
+    title: 'Rolling Without Slipping (Energy Split Explorer)',
+    description:
+      'Roll on a no-slip ramp: see PE convert into translational and rotational KE with β = I/(mr²), conserved total energy, and live stacked energy bars.',
+  },
+];
+
+const oscillationsSims: SimLink[] = [
+  {
+    to: '/oscillations-vertical-spring',
+    title: 'Vertical Spring Oscillator',
+    description:
+      'Hang a mass from a ceiling spring: tune k, m, and g, release from displacement y₀, and watch SHM with live forces and energy graphs.',
+  },
+  {
+    to: '/oscillations-pendulum',
+    title: 'Pendulum Motion Explorer',
+    description:
+      'Release a simple pendulum by angle or height: explore period, tension, energy exchange, and why mass does not affect small-angle timing.',
+  },
+  {
+    to: '/oscillations-wave-generator',
+    title: 'Wave Generator',
+    description:
+      'Traveling transverse wave on a string: tune amplitude, frequency, and speed, watch crests propagate, and verify v = fλ live.',
+  },
+  {
+    to: '/oscillations-standing-waves',
+    title: 'Standing Waves',
+    description:
+      'Fixed-fixed string driven at selectable frequencies: nodes, antinodes, harmonic resonance, and optional counter-propagating components.',
+  },
+];
+
+const pressureSims: SimLink[] = [
+  {
+    to: '/pressure-point-explorer',
+    title: 'Pressure Point Explorer',
+    description:
+      'Place circular contact patches on paper: tune force and radius, watch the live heatmap, and compare thumbtacks, coins, heels, and snowshoes via P = F/A.',
+  },
+  {
+    to: '/buoyancy-explorer',
+    title: 'Buoyancy Explorer',
+    description:
+      'Square block in a water tank: weight vs buoyant force, displaced volume, density presets, and float/sink/neutral status.',
+  },
+  {
+    to: '/ideal-gas-law-explorer',
+    title: 'Ideal Gas Law Explorer',
+    description:
+      '2D particle gas in a piston cylinder: collision-based pressure, PV vs nRT, constant-V/P modes, and live P–V–T–n graphs.',
+  },
+  {
+    to: '/fluid-flow-explorer',
+    title: 'Fluid Flow Explorer',
+    description:
+      'Horizontal pipe with adjustable radii: watch A₁v₁ = A₂v₂ — particles speed up in narrow sections and slow in wide ones.',
+  },
+  {
+    to: '/bernoulli-flow-explorer',
+    title: 'Bernoulli Flow Explorer',
+    description:
+      'Sloping tapering pipe: continuity + Bernoulli P + ½ρv² + ρgh = const, pressure-colored flow, energy profiles.',
   },
 ];
 
@@ -311,21 +362,45 @@ export function Simulations() {
         </section>
 
         <section>
-          <h2 className="border-b border-slate-800 pb-2 text-sm font-semibold uppercase tracking-[0.15em] text-indigo-300/90">
-            Unit 7 — Rotational Energy
+          <h2 className="border-b border-slate-800 pb-2 text-sm font-semibold uppercase tracking-[0.15em] text-rose-300/90">
+            Oscillations &amp; Waves
           </h2>
           <ul className="mt-5 grid gap-4 sm:grid-cols-2">
-            {rotationalEnergySims.map((sim) => (
+            {oscillationsSims.map((sim) => (
               <li key={sim.to}>
                 <Link
                   to={sim.to}
-                  className="group flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-md shadow-slate-950/30 transition hover:border-indigo-500/50 hover:bg-slate-900"
+                  className="group flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-md shadow-slate-950/30 transition hover:border-rose-500/50 hover:bg-slate-900"
                 >
-                  <span className="text-base font-semibold text-slate-50 group-hover:text-indigo-200/95">
+                  <span className="text-base font-semibold text-slate-50 group-hover:text-rose-200/95">
                     {sim.title}
                   </span>
                   <p className="mt-2 flex-1 text-sm text-slate-400">{sim.description}</p>
-                  <span className="mt-4 text-xs font-medium text-indigo-300/90 transition group-hover:text-indigo-200">
+                  <span className="mt-4 text-xs font-medium text-rose-300/90 transition group-hover:text-rose-200">
+                    Open lab →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="border-b border-slate-800 pb-2 text-sm font-semibold uppercase tracking-[0.15em] text-amber-300/90">
+            Pressure
+          </h2>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+            {pressureSims.map((sim) => (
+              <li key={sim.to}>
+                <Link
+                  to={sim.to}
+                  className="group flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-md shadow-slate-950/30 transition hover:border-amber-500/50 hover:bg-slate-900"
+                >
+                  <span className="text-base font-semibold text-slate-50 group-hover:text-amber-200/95">
+                    {sim.title}
+                  </span>
+                  <p className="mt-2 flex-1 text-sm text-slate-400">{sim.description}</p>
+                  <span className="mt-4 text-xs font-medium text-amber-300/90 transition group-hover:text-amber-200">
                     Open lab →
                   </span>
                 </Link>
