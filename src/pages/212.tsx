@@ -61,6 +61,32 @@ const magnetismSims: SimLink[] = [
   },
 ];
 
+const ACCircuitsSims: SimLink[] = [
+  {
+    to: '/rc-circuit',
+    title: 'RC Circuit Lab',
+    description: 'Analyze the behavior of resistive and capacitive elements in a RC circuits.',
+  },
+  {
+    to: '/capacitor',
+    title: 'Capacitor',
+    description: 'Examine how capacitors store energy and affect current flow.',
+  },
+];
+
+const LightSims: SimLink[] = [
+  {
+    to: '/wave-3d',
+    title: 'Wave Equation 3D',
+    description: 'Interact with traveling, standing, and EM wave modes in a real-time 3D field view.'
+  },
+  {
+    to: '/optics',
+    title: "Optics Simulator",
+    description: 'Explore the behavior of light waves and their interactions with optical components.'
+  }
+]
+
 export function Simulations() {
   return (
     <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col overflow-hidden px-4 py-10">
@@ -149,6 +175,54 @@ export function Simulations() {
                     Open lab →
                   </span>
                 </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="border-b border-slate-800 pb-2 text-sm font-semibold uppercase tracking-[0.15em] text-yellow-300/90">
+            Unit 4 — AC Circuits
+          </h2>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+            {ACCircuitsSims.map((sim) => (
+              <li key={sim.to}>
+                <Link
+                  to={sim.to}
+                  className="group flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-md shadow-slate-950/30 transition hover:border-yellow-600/50 hover:bg-slate-900"
+                >
+                  <span className="text-base font-semibold text-slate-50 group-hover:text-yellow-200/95">
+                    {sim.title}
+                  </span>
+                  <p className="mt-2 flex-1 text-sm text-slate-400">{sim.description}</p>
+                  <span className="mt-4 text-xs font-medium text-yellow-400/90 transition group-hover:text-yellow-300">
+                    Open lab →
+                  </span>
+                </Link> 
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="border-b border-slate-800 pb-2 text-sm font-semibold uppercase tracking-[0.15em] text-red-300/90">
+            Unit 5 — Light and Optics
+          </h2>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+            {LightSims.map((sim) => (
+              <li key={sim.to}>
+                <Link
+                  to={sim.to}
+                  className="group flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-md shadow-slate-950/30 transition hover:border-red-600/50 hover:bg-slate-900"
+                >
+                  <span className="text-base font-semibold text-slate-50 group-hover:text-red-200/95">
+                    {sim.title}
+                  </span>
+                  <p className="mt-2 flex-1 text-sm text-slate-400">{sim.description}</p>
+                  <span className="mt-4 text-xs font-medium text-red-400/90 transition group-hover:text-red-300">
+                    Open lab →
+                  </span>
+                </Link> 
               </li>
             ))}
           </ul>

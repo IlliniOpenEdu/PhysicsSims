@@ -29,7 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 px-4 text-slate-100">
           <h1 className="text-2xl font-semibold text-red-400">Uh Oh! Something went against the laws of physics.</h1>
           <p className="mt-3 max-w-md text-center text-sm text-slate-400">
-            An unexpected error occurred while loading the simulation. Please try refreshing the page.
+            An unexpected error occurred while loading the page. Please try refreshing the page.
           </p>
           <button
             type="button"

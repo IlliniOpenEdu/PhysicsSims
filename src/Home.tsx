@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { initEasterEgg } from './utils/easteregg';
+import { loadAdminState } from './config/internalAdmin';
+import { AnnouncementPopup } from './components/AnnouncementPopup';
+import UnderMaintenanceBanner from './components/UnderMaintenanceBanner';
+import HalideLanding from './components/ui/HalideLanding';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -212,80 +216,85 @@ function Navbar() {
 export function Home() {
   useEffect(() => initEasterEgg(), []);
 
+  const [adminControls, setAdminControls] = useState(loadAdminState);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
+  const experimentalMechanicsEnabled = adminControls.featureFlags.experimentalMechanics;
+
+  useEffect(() => {
+    const onStorage = () => setAdminControls(loadAdminState());
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (!adminControls.announcement.enabled) {
+        setIsAnnouncementOpen(false);
+        return;
+      }
+
+      const dismissKey = `home-announcement-dismissed:${adminControls.announcement.id}`;
+      const dismissed = window.localStorage.getItem(dismissKey) === 'true';
+      setIsAnnouncementOpen(!dismissed);
+    } catch {
+      setIsAnnouncementOpen(false);
+    }
+  }, [adminControls.announcement]);
+
+  useEffect(() => {
+    if (!experimentalMechanicsEnabled) {
+      return;
+    }
+
+    const previousTransition = document.body.style.transition;
+    const previousFilter = document.body.style.filter;
+
+    document.body.style.transition = 'filter 0.6s ease';
+    document.body.style.filter = 'hue-rotate(35deg) saturate(1.3)';
+
+    return () => {
+      document.body.style.transition = previousTransition;
+      document.body.style.filter = previousFilter;
+    };
+  }, [experimentalMechanicsEnabled]);
+
+  const featuredSimPath = adminControls.contentOverrides.featuredSimPath || '/dashboard';
+
   return (
     <div className="bg-[#030507] text-white min-h-screen">
+      {adminControls.announcement.enabled ? (
+        <AnnouncementPopup
+          announcement={{
+            id: adminControls.announcement.id,
+            title: adminControls.announcement.title,
+            description: adminControls.announcement.description,
+            buttons: [
+              { text: adminControls.announcement.primaryButtonText, url: adminControls.announcement.primaryButtonUrl, newTab: adminControls.announcement.openPrimaryInNewTab },
+            ],
+          }}
+          isOpen={isAnnouncementOpen}
+          showDismiss
+          onClose={() => {
+            try {
+              window.localStorage.setItem(`home-announcement-dismissed:${adminControls.announcement.id}`, 'true');
+            } catch {
+              // ignore
+            }
+            setIsAnnouncementOpen(false);
+          }}
+        />
+      ) : null}
+      {adminControls.featureFlags.maintenanceMode ? (
+        <div className="fixed inset-x-0 top-20 z-[80] flex justify-center pointer-events-none">
+            <UnderMaintenanceBanner 
+            statusUrl='/system'
+            />
+        </div>
+      ) : null}
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
-        {/* Background elements */}
-        <div className="pointer-events-none absolute inset-0 select-none">
-          <div className="absolute top-0 inset-x-0 h-[60vh] bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(56,189,248,0.15),transparent)]" />
-          <div className="absolute bottom-1/3 right-0 w-96 h-96 rounded-full blur-3xl opacity-20 bg-blue-500" />
-          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20 bg-cyan-500" />
-        </div>
-
-        <div className="relative max-w-6xl mx-auto">
-          <motion.div
-            className="text-center max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease }}
-          >
-            <motion.div
-              className="inline-block mb-6"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.1, ease }}
-            >
-              <span className="px-4 py-2 rounded-full border border-blue-400/30 bg-blue-400/10 text-blue-200 text-[0.75rem] font-semibold uppercase tracking-[0.3em]">
-                Illini Open Edu
-              </span>
-            </motion.div>
-
-            <motion.h1
-              className="text-[clamp(2.5rem,8vw,5.5rem)] font-bold leading-[1.1] tracking-[-0.02em] mt-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.15, ease }}
-            >
-              Visualize Physics in
-              <span className="block bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-                Real Time
-              </span>
-            </motion.h1>
-
-            <motion.p
-              className="text-lg text-slate-400 mt-8 leading-relaxed max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.25, ease }}
-            >
-              Explore kinematics, dynamics, electromagnetism, and more with our interactive simulations. Designed for students and educators who want to deeply understand physics through hands-on exploration.
-            </motion.p>
-
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center mt-10"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35, ease }}
-            >
-              <Link
-                to="/dashboard"
-                className="px-8 py-4 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-200 active:scale-95 text-center"
-              >
-                Explore All Labs
-              </Link>
-              <Link
-                to="/about"
-                className="px-8 py-4 rounded-lg border border-white/20 text-white font-semibold hover:border-white/40 hover:bg-white/[0.05] transition-all duration-200 text-center"
-              >
-                About the Project
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+      <HalideLanding />
 
       {/* Stats Section */}
       <motion.section
@@ -538,17 +547,61 @@ export function Home() {
         </div>
       </motion.section>
 
+      {experimentalMechanicsEnabled ? (
+        <motion.section
+          className="relative px-4 pb-20"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="mx-auto max-w-4xl">
+            <div className="rounded-3xl border border-fuchsia-300/20 bg-fuchsia-950/20 p-5 shadow-2xl shadow-fuchsia-500/10 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-fuchsia-200">Debug Panel</p>
+                  <h2 className="mt-1 text-xl font-semibold text-slate-50">Experimental Mechanics</h2>
+                </div>
+                <span className="rounded-full border border-fuchsia-300/30 bg-fuchsia-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-fuchsia-100">
+                  Active
+                </span>
+              </div>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-[0.65rem] uppercase tracking-[0.18em] text-slate-400">Theme filter</p>
+                  <p className="mt-2 text-sm font-medium text-slate-100">hue-rotate(35deg) saturate(1.3)</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-[0.65rem] uppercase tracking-[0.18em] text-slate-400">featuredSimPath</p>
+                  <p className="mt-2 break-words text-sm font-medium text-slate-100">{featuredSimPath}</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-[0.65rem] uppercase tracking-[0.18em] text-slate-400">maintenanceMode</p>
+                  <p className="mt-2 text-sm font-medium text-slate-100">{String(adminControls.featureFlags.maintenanceMode)}</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-[0.65rem] uppercase tracking-[0.18em] text-slate-400">showDebugPanel</p>
+                  <p className="mt-2 text-sm font-medium text-slate-100">{String(adminControls.featureFlags.showDebugPanel)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+      ) : null}
+
     </div>
   );
 }
 
+export default Home;
 
 
 
 
 
-// this might sound a bit crazy, but i actual
+{/* // this code is powered by this little guy:
 
 //  ▐▛███▜▌   
 //▝▜█████▛▘  
-//  ▘▘ ▝▝    
+//  ▘▘ ▝▝    */}

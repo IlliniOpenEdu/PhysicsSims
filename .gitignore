@@ -44,3 +44,6 @@ manim/scenes/__pycache__/
 media/Tex/
 media/texts/
 media/images/
+
+# graphify
+graphify-out/

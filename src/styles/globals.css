@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* shadcn-compatible design tokens — required by GlassButton */
+:root {
+  --foreground: #f8fafc;
+  --background: #030507;
+}
+
 html,
 body,
 #root {

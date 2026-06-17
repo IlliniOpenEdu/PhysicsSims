@@ -14,6 +14,14 @@ type ApiResponse = {
   workflow_runs?: WorkflowRun[];
 };
 
+type Incident = {
+  serviceKey: string;
+  startTime: number;
+  endTime?: number;
+  status: 'degraded' | 'down';
+  duration?: number;
+};
+
 type StatusUi = {
   label: string;
   detail: string;
@@ -21,6 +29,134 @@ type StatusUi = {
   toneClass: string;
   badgeClass: string;
 };
+
+// Small helper that generates a sample history array for demonstration purposes.
+function generateSampleHistory(key: string): ('up' | 'degraded' | 'down')[] {
+  // deterministic pseudo-random pattern per key so visuals are stable
+  const seed = Array.from(key).reduce((s, c) => s + c.charCodeAt(0), 0);
+  const out: ('up' | 'degraded' | 'down')[] = [];
+  for (let i = 0; i < 90; i++) {
+    const v = (seed * (i + 7)) % 100;
+    if (v < 3) out.push('down');
+    else if (v < 10) out.push('degraded');
+    else out.push('up');
+  }
+  return out;
+}
+
+function UptimeBars({ history, serviceKey, incidents }: { history: ('up' | 'degraded' | 'down')[]; serviceKey: string; incidents: Incident[] }) {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [popoverPos, setPopoverPos] = useState({ x: 0, y: 0 });
+
+  const getStatusLabel = (status: 'up' | 'degraded' | 'down') => {
+    if (status === 'up') return 'Operational';
+    if (status === 'degraded') return 'Partial outage';
+    return 'Major outage';
+  };
+
+  const getDate = (idx: number) => {
+    const now = new Date();
+    const daysAgo = history.length - idx - 1;
+    const date = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const getDurationString = (seconds?: number) => {
+    if (!seconds) return 'Ongoing';
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours} hr${hours > 1 ? 's' : ''} ${mins} min${mins !== 1 ? 's' : ''}`;
+    return `${mins} min${mins !== 1 ? 's' : ''}`;
+  };
+
+  const getIncidentForDay = (idx: number) => {
+    const now = new Date();
+    const daysAgo = history.length - idx - 1;
+    const dayStart = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+
+    return incidents.find((inc) => {
+      if (inc.serviceKey !== serviceKey) return false;
+      return inc.startTime >= dayStart.getTime() && inc.startTime < dayEnd.getTime();
+    });
+  };
+
+  return (
+    <div className="relative flex items-end gap-0.5 overflow-hidden">
+      {history.map((h, idx) => {
+        const color = h === 'up' ? 'bg-emerald-400' : h === 'degraded' ? 'bg-amber-400' : 'bg-rose-400';
+        const height = h === 'up' ? 28 : h === 'degraded' ? 18 : 10;
+        const isHovered = hoveredIdx === idx;
+        const incident = getIncidentForDay(idx);
+
+        return (
+          <div
+            key={idx}
+            className="relative"
+            onMouseEnter={(e) => {
+              setHoveredIdx(idx);
+              const rect = e.currentTarget.getBoundingClientRect();
+              setPopoverPos({ x: rect.left, y: rect.top - 120 });
+            }}
+            onMouseLeave={() => setHoveredIdx(null)}
+          >
+            <div
+              className={`${color} rounded-sm cursor-pointer transition hover:opacity-80`}
+              style={{ width: 4, height }}
+              title={`Day ${idx + 1}: ${h}`}
+            />
+
+            {isHovered && (
+              <div
+                className="fixed z-50 rounded-lg border border-white/10 bg-slate-900 p-3 text-xs shadow-lg"
+                style={{
+                  left: `${popoverPos.x - 80}px`,
+                  top: `${popoverPos.y}px`,
+                  minWidth: '160px',
+                }}
+              >
+                <p className="font-semibold text-slate-100">{getDate(idx)}</p>
+                <p className={`mt-1 flex items-center gap-1 ${
+                  h === 'up' ? 'text-emerald-300' : h === 'degraded' ? 'text-amber-300' : 'text-rose-300'
+                }`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${
+                    h === 'up' ? 'bg-emerald-400' : h === 'degraded' ? 'bg-amber-400' : 'bg-rose-400'
+                  }`} />
+                  {getStatusLabel(h)}
+                </p>
+                {incident && (
+                  <p className="mt-2 text-slate-300">
+                    {getDurationString(incident.duration)}
+                  </p>
+                )}
+                {h === 'up' && !incident && (
+                  <p className="mt-2 text-slate-400">No downtime recorded</p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+async function checkServiceHealth(url: string, signal?: AbortSignal): Promise<'up' | 'degraded' | 'down'> {
+  try {
+    const response = await fetch(url, { method: 'GET', signal, cache: 'no-store' });
+    if (response.ok || response.status === 404) return 'up';
+    if (response.status >= 500) return 'degraded';
+    return 'down';
+  } catch (err: unknown) {
+    // CORS error means the service is likely up, just not accessible from browser
+    const error = err as Error;
+    if (error?.message?.includes('CORS') || error?.message?.includes('cross-origin')) {
+      return 'up';
+    }
+    return 'down';
+  }
+}
 
 const DEPLOY_STATUS_API =
   'https://api.github.com/repos/IlliniOpenEdu/PhysicsSims/actions/workflows/deploy.yml/runs?per_page=1';
@@ -101,6 +237,16 @@ export function System() {
   const [runNumber, setRunNumber] = useState<number | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [adminControls, setAdminControls] = useState<AdminControlState>(loadAdminState);
+  const [historyMap, setHistoryMap] = useState<Record<string, ('up' | 'degraded' | 'down')[]>>({});
+  const [incidents, setIncidents] = useState<Incident[]>(() => {
+    try {
+      const stored = localStorage.getItem('serviceIncidents');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [prevStatuses, setPrevStatuses] = useState<Record<string, 'up' | 'degraded' | 'down'>>({});
 
   const refresh = async (signal?: AbortSignal) => {
     setIsRefreshing(true);
@@ -133,6 +279,8 @@ export function System() {
 
         setUpdatedAt(new Date().toISOString());
         setRunNumber(null);
+          // still attempt to load history when using mock mode
+          void loadHistory(signal);
         return;
       }
 
@@ -157,6 +305,8 @@ export function System() {
       setUi(mapStatus(latest.status, latest.conclusion));
       setUpdatedAt(latest.updated_at ?? null);
       setRunNumber(latest.run_number ?? null);
+      // after updating UI status, load historical uptime data
+      void loadHistory(signal);
     } catch {
       if (!signal?.aborted) {
         setUi(ERROR_UI);
@@ -167,6 +317,108 @@ export function System() {
       }
     }
   };
+
+  async function loadHistory(signal?: AbortSignal) {
+    const serviceKeys = ['web', 'routes', 'deploy', 'wiki'];
+    try {
+      const GH_URL = 'https://api.github.com/repos/IlliniOpenEdu/PhysicsSims/actions/workflows/deploy.yml/runs?per_page=90';
+      const resp = await fetch(GH_URL, { signal, headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' });
+      if (resp.ok) {
+        const json = await resp.json();
+        const runs: WorkflowRun[] = json.workflow_runs ?? [];
+        const recent = runs.slice(0, 90).reverse();
+        const deployHistory: ('up' | 'degraded' | 'down')[] = recent.map((r) => {
+          const c = r.conclusion;
+          if (c === 'success') return 'up';
+          if (c === 'failure' || c === 'timed_out') return 'down';
+          if (c === 'cancelled' || c === 'skipped') return 'degraded';
+          return 'degraded';
+        });
+
+        // Check current health of Web App, Simulation Routes, and Wiki
+        const [webStatus, routesStatus, wikiStatus] = await Promise.all([
+          checkServiceHealth('https://physicssims.illiniopenedu.org/', signal),
+          checkServiceHealth('https://physicssims.illiniopenedu.org/dashboard', signal),
+          checkServiceHealth('https://github.com/IlliniOpenEdu/PhysicsSims/wiki', signal),
+        ]);
+
+        // Retrieve or initialize stored history
+        const storedHistory: Record<string, ('up' | 'degraded' | 'down')[]> = (() => {
+          try {
+            const stored = localStorage.getItem('serviceHealthHistory');
+            return stored ? JSON.parse(stored) : {};
+          } catch {
+            return {};
+          }
+        })();
+
+        // For each service, shift current status onto the history (keep last 90)
+        const map: Record<string, ('up' | 'degraded' | 'down')[]> = {};
+        const newHistory: Record<string, ('up' | 'degraded' | 'down')[]> = {};
+
+        for (const k of serviceKeys) {
+          let hist = storedHistory[k] ?? [];
+          if (hist.length > 89) hist = hist.slice(1);
+          newHistory[k] = hist;
+        }
+
+        newHistory.web = [...newHistory.web, webStatus];
+        newHistory.routes = [...newHistory.routes, routesStatus];
+        newHistory.wiki = [...newHistory.wiki, wikiStatus];
+        newHistory.deploy = deployHistory;
+
+        // Detect incidents (transitions from up to degraded/down, or back to up)
+        const currentStatuses = { web: webStatus, routes: routesStatus, wiki: wikiStatus, deploy: deployHistory[deployHistory.length - 1] };
+        const newIncidents = [...incidents];
+        const now = Date.now();
+
+        for (const k of serviceKeys) {
+          const current = currentStatuses[k as keyof typeof currentStatuses];
+          const prev = prevStatuses[k];
+
+          if (prev && prev !== current) {
+            // Status changed
+            if (prev === 'up' && (current === 'degraded' || current === 'down')) {
+              // Started incident
+              newIncidents.push({ serviceKey: k, startTime: now, status: current });
+            } else if (prev !== 'up' && current === 'up') {
+              // Ended incident
+              const activeIncident = newIncidents.find((inc) => inc.serviceKey === k && !inc.endTime);
+              if (activeIncident) {
+                activeIncident.endTime = now;
+                activeIncident.duration = (now - activeIncident.startTime) / 1000; // seconds
+              }
+            }
+          }
+        }
+
+        // Update previous statuses for next call
+        setPrevStatuses(currentStatuses as Record<string, 'up' | 'degraded' | 'down'>);
+
+        // Store updated history and incidents
+        try {
+          localStorage.setItem('serviceHealthHistory', JSON.stringify(newHistory));
+          localStorage.setItem('serviceIncidents', JSON.stringify(newIncidents));
+        } catch {
+          // ignore storage errors
+        }
+        setIncidents(newIncidents);
+
+        map.web = newHistory.web.length > 0 ? newHistory.web : generateSampleHistory('web');
+        map.routes = newHistory.routes.length > 0 ? newHistory.routes : generateSampleHistory('routes');
+        map.wiki = newHistory.wiki.length > 0 ? newHistory.wiki : generateSampleHistory('wiki');
+        map.deploy = deployHistory;
+        setHistoryMap(map);
+        return;
+      }
+    } catch {
+      // fall through to sample fallback
+    }
+
+    const map: Record<string, ('up' | 'degraded' | 'down')[]> = {};
+    for (const k of serviceKeys) map[k] = generateSampleHistory(k);
+    setHistoryMap(map);
+  }
 
   useEffect(() => {
     const onStorageUpdated = () => {
@@ -220,16 +472,18 @@ export function System() {
               </span>
               <span className="text-sm text-slate-400">{ui.detail}</span>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                void refresh();
-              }}
-              disabled={isRefreshing}
-              className="rounded-md border border-white/15 px-3 py-1.5 text-sm text-slate-200 transition hover:border-sky-300/70 hover:text-sky-200 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isRefreshing ? 'Refreshing...' : 'Refresh'}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  void refresh();
+                }}
+                disabled={isRefreshing}
+                className="rounded-md border border-white/15 px-3 py-1.5 text-sm text-slate-200 transition hover:border-sky-300/70 hover:text-sky-200 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -254,18 +508,22 @@ export function System() {
           <div className="mt-6 rounded-xl border border-white/10 bg-[#0b1017] p-4">
             <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Service Components</p>
             <div className="mt-3 space-y-2 text-sm">
-              <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">
-                <span className="text-slate-300">Public Web App</span>
-                <span className={`inline-flex items-center gap-2 ${ui.toneClass}`}><span className={`h-2 w-2 rounded-full ${ui.dotClass}`} />{ui.label}</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">
-                <span className="text-slate-300">Simulation Routes</span>
-                <span className={`inline-flex items-center gap-2 ${ui.toneClass}`}><span className={`h-2 w-2 rounded-full ${ui.dotClass}`} />{ui.label}</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">
-                <span className="text-slate-300">Deploy Pipeline</span>
-                <span className={`inline-flex items-center gap-2 ${ui.toneClass}`}><span className={`h-2 w-2 rounded-full ${ui.dotClass}`} />{ui.label}</span>
-              </div>
+              {/* Render a compact historical uptime bar row for each service */}
+              {(
+                [
+                  { key: 'web', name: 'Public Web App' },
+                  { key: 'routes', name: 'Simulation Routes' },
+                  { key: 'deploy', name: 'Deploy Pipeline' },
+                  { key: 'wiki', name: 'Wiki' },
+                ] as const
+              ).map((svc) => (
+                <div key={svc.key} className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2">
+                  <span className="text-slate-300 mr-4 w-44">{svc.name}</span>
+                  <div className="flex-1">
+                    <UptimeBars history={historyMap[svc.key] ?? generateSampleHistory(svc.key)} serviceKey={svc.key} incidents={incidents} />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>

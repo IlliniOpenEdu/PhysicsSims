@@ -6,6 +6,7 @@ import { LiveReadout } from '../../components/collider/LiveReadout';
 import { ModeToggle } from '../../components/collider/ModeToggle';
 import { RingViewCanvas } from '../../components/collider/RingViewCanvas';
 import { TunnelViewCanvas } from '../../components/collider/TunnelViewCanvas';
+import { VideoExplain } from '../../components/videoExplain';
 import { COLLIDER_LABEL } from '../../lib/enm/collider/constants';
 import { useColliderSimulation } from '../../hooks/useColliderSimulation';
 
@@ -52,13 +53,21 @@ export function LHC() {
             collision detection.
           </p>
         </div>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-100"
-        >
-          <span className="text-sm">←</span>
-          Back to welcome
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <VideoExplain
+            videoSrc={`${import.meta.env.BASE_URL}media/videos/lhc/1080p60/LHCCollegeExplainer.mp4`}
+            title="LHC Explainer"
+            description="Watch a short animation covering magnetic confinement, beam acceleration, and collider detections in the LHC simulation."
+            buttonLabel="Watch Video"
+          />
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-100"
+          >
+            <span className="text-sm">←</span>
+            Back to welcome
+          </Link>
+        </div>
       </header>
 
       <section className="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_24rem]">

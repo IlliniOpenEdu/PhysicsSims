@@ -200,6 +200,10 @@ export function App() {
     links.some((link) => isActivePath(link.to));
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
+  useEffect(() => {
     if (cookieConsent === 'unknown') {
       return;
     }

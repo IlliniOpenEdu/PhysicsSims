@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node --input-type=module -e \"import { copyFileSync } from 'node:fs'; copyFileSync('dist/index.html', 'dist/404.html');\"",
+    "build": "tsc && vite build && node --input-type=module -e \"import { cpSync, copyFileSync } from 'node:fs'; cpSync('media', 'dist/media', { recursive: true }); copyFileSync('dist/index.html', 'dist/404.html');\"",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "preview": "vite preview",
@@ -15,6 +15,10 @@
   "dependencies": {
     "@react-three/drei": "^9.112.1",
     "@react-three/fiber": "^8.17.14",
+    "@types/animejs": "^3.1.13",
+    "animejs": "^4.4.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
