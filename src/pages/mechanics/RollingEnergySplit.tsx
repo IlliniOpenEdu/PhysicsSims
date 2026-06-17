@@ -318,7 +318,7 @@ export function RollingEnergySplit() {
     <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-8 text-slate-100">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-400">Rotational energy</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-400">Rotational dynamics</p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl">
             Rolling Without Slipping (Energy Split Explorer)
           </h1>

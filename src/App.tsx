@@ -97,6 +97,11 @@ const MagField = lazy(() => import('./pages/enm/MagField').then((m) => ({ defaul
 const LHC = lazy(() => import('./pages/enm/LHC').then((m) => ({ default: m.LHC })));
 const WaveEq3D = lazy(() => import('./pages/enm/wave-3d').then((m) => ({ default: m.WaveEquation3D })));
 const Optics = lazy(() => import('./pages/enm/Optics').then((m) => ({ default: m.Optics })));
+const UniversalCircuitBuilder = lazy(() =>
+  import('./pages/electromagnetism/UniversalCircuitBuilder').then((m) => ({
+    default: m.UniversalCircuitBuilder,
+  })),
+);
 
 const BeamBalance = lazy(() => import('./pages/statics/BeamBalance').then((m) => ({ default: m.BeamBalance })));
 const DistributedLoad = lazy(() => import('./pages/statics/DistributedLoad').then((m) => ({ default: m.DistributedLoad })));
@@ -112,6 +117,51 @@ const BulletDiskCollision = lazy(() => import('./pages/mechanics/BulletDiskColli
 const TorqueSeesaw = lazy(() => import('./pages/mechanics/TorqueSeesaw').then((m) => ({ default: m.TorqueSeesaw })));
 const ActiveTorqueDisk = lazy(() => import('./pages/mechanics/ActiveTorqueDisk').then((m) => ({ default: m.ActiveTorqueDisk })));
 const RollingEnergySplit = lazy(() => import('./pages/mechanics/RollingEnergySplit').then((m) => ({ default: m.RollingEnergySplit })));
+const VerticalSpringOscillator = lazy(() =>
+  import('./pages/mechanics/VerticalSpringOscillator').then((m) => ({
+    default: m.VerticalSpringOscillator,
+  })),
+);
+const PendulumExplorer = lazy(() =>
+  import('./pages/mechanics/PendulumExplorer').then((m) => ({
+    default: m.PendulumExplorer,
+  })),
+);
+const WaveGenerator = lazy(() =>
+  import('./pages/mechanics/oscillations/WaveGenerator').then((m) => ({
+    default: m.WaveGenerator,
+  })),
+);
+const StandingWaves = lazy(() =>
+  import('./pages/mechanics/oscillations/StandingWaves').then((m) => ({
+    default: m.StandingWaves,
+  })),
+);
+const PressurePointExplorer = lazy(() =>
+  import('./pages/mechanics/Pressure/PressurePointExplorer').then((m) => ({
+    default: m.PressurePointExplorer,
+  })),
+);
+const BuoyancyExplorer = lazy(() =>
+  import('./pages/mechanics/Pressure/BuoyancyExplorer').then((m) => ({
+    default: m.BuoyancyExplorer,
+  })),
+);
+const IdealGasLawExplorer = lazy(() =>
+  import('./pages/mechanics/Pressure/IdealGasLawExplorer').then((m) => ({
+    default: m.IdealGasLawExplorer,
+  })),
+);
+const FluidFlowExplorer = lazy(() =>
+  import('./pages/mechanics/Pressure/FluidFlowExplorer').then((m) => ({
+    default: m.FluidFlowExplorer,
+  })),
+);
+const BernoulliFlowExplorer = lazy(() =>
+  import('./pages/mechanics/Pressure/BernoulliFlowExplorer').then((m) => ({
+    default: m.BernoulliFlowExplorer,
+  })),
+);
 
 const Admin = lazy(() => import('./pages/Admin').then((m) => ({ default: m.Admin })));
 const Changelog = lazy(() => import('./pages/system/Changelog').then((m) => ({ default: m.Changelog })));
@@ -169,6 +219,15 @@ const APP_ROUTES = [
   { path: '/rotational-dynamics-torque-seesaw', element: <TorqueSeesaw /> },
   { path: '/rotational-dynamics-active-torque-disk', element: <ActiveTorqueDisk /> },
   { path: '/rolling-energy-split', element: <RollingEnergySplit /> },
+  { path: '/oscillations-vertical-spring', element: <VerticalSpringOscillator /> },
+  { path: '/oscillations-pendulum', element: <PendulumExplorer /> },
+  { path: '/oscillations-wave-generator', element: <WaveGenerator /> },
+  { path: '/oscillations-standing-waves', element: <StandingWaves /> },
+  { path: '/pressure-point-explorer', element: <PressurePointExplorer /> },
+  { path: '/buoyancy-explorer', element: <BuoyancyExplorer /> },
+  { path: '/ideal-gas-law-explorer', element: <IdealGasLawExplorer /> },
+  { path: '/fluid-flow-explorer', element: <FluidFlowExplorer /> },
+  { path: '/bernoulli-flow-explorer', element: <BernoulliFlowExplorer /> },
   { path: '/columbs-law', element: <ColumbsLaw /> },
   { path: '/amperes-law', element: <AmperesLaw /> },
   { path: '/maxwell', element: <Maxwell /> },
@@ -181,6 +240,7 @@ const APP_ROUTES = [
   { path: '/wave-3d', element: <WaveEq3D /> },
   { path: '/wave-equation-3d', element: <WaveEq3D /> },
   { path: '/optics', element: <Optics /> },
+  { path: '/universal-circuit-builder', element: <UniversalCircuitBuilder /> },
   { path: '/beam-balance', element: <BeamBalance /> },
   { path: '/distributed-load', element: <DistributedLoad /> },
   { path: '/admin', element: <Admin /> },

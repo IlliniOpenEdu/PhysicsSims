@@ -6,7 +6,7 @@ import { loadAdminState, type AdminControlState } from '../config/internalAdmin'
 const base = import.meta.env.BASE_URL;
 const PREVIEW_FALLBACK = `${base}thumbnails/preview.png`;
 
-type Track = 'mechanics' | 'enm' | 'statics';
+type Track = 'mechanics' | 'enm' | 'statics' | 'oscillations' | 'pressure';
 type SimItem = {
   title: string;
   path: string;
@@ -39,9 +39,19 @@ const SIMS: SimItem[] = [
   { track: 'mechanics', title: 'Bullet-Disk Collision', path: '/rotational-dynamics-bullet-disk-collision', description: 'Compare angular momentum transfer in a bullet striking a rotating disk.', preview: PREVIEW_FALLBACK },
   { track: 'mechanics', title: 'Torque Seesaw', path: '/rotational-dynamics-torque-seesaw', description: 'Balance torques on a seesaw and find equilibrium conditions.', preview: PREVIEW_FALLBACK },
   { track: 'mechanics', title: 'Active Torque Disk', path: '/rotational-dynamics-active-torque-disk', description: 'Apply torque to a disk and watch the rotational dynamics update live.', preview: PREVIEW_FALLBACK },
-  { track: 'mechanics', title: 'Rolling Energy Split', path: '/rolling-energy-split', description: 'See how rolling objects divide energy between translation and rotation.', preview: PREVIEW_FALLBACK },
+  { track: 'mechanics', title: 'Rolling Without Slipping', path: '/rolling-energy-split', description: 'Roll on a no-slip ramp: PE splits into translational and rotational KE (v = ωr).', preview: PREVIEW_FALLBACK },
+  { track: 'oscillations', title: 'Vertical Spring Oscillator', path: '/oscillations-vertical-spring', description: 'Vertical SHM: spring stretches to equilibrium, then oscillates with live forces and energy.', preview: PREVIEW_FALLBACK },
+  { track: 'oscillations', title: 'Pendulum Motion Explorer', path: '/oscillations-pendulum', description: 'Simple pendulum: release angle or height, watch period, tension, and energy exchange.', preview: PREVIEW_FALLBACK },
+  { track: 'oscillations', title: 'Wave Generator', path: '/oscillations-wave-generator', description: 'Traveling transverse wave: amplitude, frequency, speed, crests, and v = fλ.', preview: PREVIEW_FALLBACK },
+  { track: 'oscillations', title: 'Standing Waves', path: '/oscillations-standing-waves', description: 'Fixed-fixed string: harmonics, nodes, antinodes, and resonance peaks.', preview: PREVIEW_FALLBACK },
+  { track: 'pressure', title: 'Pressure Point Explorer', path: '/pressure-point-explorer', description: 'Interactive P = F/A: drag contact points on paper, live heatmap, real-world presets.', preview: PREVIEW_FALLBACK },
+  { track: 'pressure', title: 'Buoyancy Explorer', path: '/buoyancy-explorer', description: 'Archimedes principle: block in water tank, buoyant force, density, float or sink.', preview: PREVIEW_FALLBACK },
+  { track: 'pressure', title: 'Ideal Gas Law Explorer', path: '/ideal-gas-law-explorer', description: 'Particle gas in a piston cylinder: discover PV = nRT from wall collisions.', preview: PREVIEW_FALLBACK },
+  { track: 'pressure', title: 'Fluid Flow Explorer', path: '/fluid-flow-explorer', description: 'Continuity equation A₁v₁ = A₂v₂: flowing particles in a tapering pipe.', preview: PREVIEW_FALLBACK },
+  { track: 'pressure', title: 'Bernoulli Flow Explorer', path: '/bernoulli-flow-explorer', description: 'Bernoulli equation with sloping pipe, pressure-colored flow, and energy profiles.', preview: PREVIEW_FALLBACK },
   { track: 'mechanics', title: 'Rotational Dynamics', path: '/rotational-dynamics', description: 'Torque, moment of inertia, and angular acceleration with a draggable mass on a rotating arm.', preview: `${base}thumbnails/rotational.png` },
   // E&M
+  { track: 'enm', title: 'Universal Circuit Builder', path: '/universal-circuit-builder', description: 'Build any DC/AC circuit and solve it live with Modified Nodal Analysis — Ohm, Kirchhoff, RC/RL/RLC transients, and frequency sweeps.', preview: PREVIEW_FALLBACK, featured: true },
   { track: 'enm', title: 'Large Hadron Collider', path: '/lhc', description: 'Simulate particle beam collisions in the LHC — real-time ring and tunnel views.', preview: `${base}thumbnails/LCH.png`, featured: true },
   { track: 'enm', title: 'Wave Equation 3D', path: '/wave-3d', description: 'Real-time 3D wave equation visualization with camera orbit, mode switching, and live parameter control.', preview: `${base}thumbnails/wave.png`, featured: true },
   { track: 'enm', title: "Coulomb's Law Explorer", path: '/columbs-law', description: 'Map field lines and force vectors around charges in real time.', preview: `${base}thumbnails/columbs.png` },
@@ -83,6 +93,22 @@ const TRACKS = {
     borderL: 'border-l-red-500',
     chip: 'bg-red-400/10 text-red-300 ring-1 ring-red-400/25',
     glow: 'rgba(248,113,113,0.06)',
+  },
+  oscillations: {
+    label: 'Oscillations',
+    dot: 'bg-rose-400',
+    text: 'text-rose-400',
+    borderL: 'border-l-rose-500',
+    chip: 'bg-rose-400/10 text-rose-300 ring-1 ring-rose-400/25',
+    glow: 'rgba(251,113,133,0.06)',
+  },
+  pressure: {
+    label: 'Pressure',
+    dot: 'bg-amber-400',
+    text: 'text-amber-400',
+    borderL: 'border-l-amber-500',
+    chip: 'bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/25',
+    glow: 'rgba(251,191,36,0.06)',
   },
 } as const;
 
@@ -162,6 +188,8 @@ export function Dashboard() {
     mechanics: visibleSims.filter((s) => s.track === 'mechanics').length,
     enm:       visibleSims.filter((s) => s.track === 'enm').length,
     statics:   visibleSims.filter((s) => s.track === 'statics').length,
+    oscillations: visibleSims.filter((s) => s.track === 'oscillations').length,
+    pressure: visibleSims.filter((s) => s.track === 'pressure').length,
   }), [visibleSims]);
 
   const filtered = useMemo(() => {
@@ -212,6 +240,14 @@ export function Dashboard() {
               <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
               <span className="text-red-300/60">{counts.statics} Statics</span>
             </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+              <span className="text-rose-300/60">{counts.oscillations} Oscillations</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+              <span className="text-amber-300/60">{counts.pressure} Pressure</span>
+            </span>
           </div>
         </motion.div>
 
@@ -224,7 +260,7 @@ export function Dashboard() {
         >
           {/* Track tabs */}
           <div className="flex items-center gap-0.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-1">
-            {(['all', 'mechanics', 'enm', 'statics'] as FilterTrack[]).map((t) => {
+            {(['all', 'mechanics', 'pressure', 'oscillations', 'enm', 'statics'] as FilterTrack[]).map((t) => {
               const isActive = activeTrack === t;
               const label = t === 'all' ? 'All' : TRACKS[t].label;
               const dot = t === 'all' ? 'bg-slate-400' : TRACKS[t].dot;
