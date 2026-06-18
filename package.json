@@ -2,7 +2,7 @@
   "name": "physics-labs",
   "private": true,
   "homepage": "https://illiniopenedu.github.io/PhysicsSims",
-  "version": "1.2.0",
+  "version": "1.5.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

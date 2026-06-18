@@ -1,4 +1,5 @@
-import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { Component, Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import packageJson from '../package.json';
 import { loadAdminState, pushAnalyticsEvent } from './config/internalAdmin';
@@ -69,6 +70,7 @@ const Home = lazy(() => import('./Home').then((m) => ({ default: m.Home })));
 const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })));
 const System = lazy(() => import('./pages/system/status').then((m) => ({ default: m.System })));
 const TOS = lazy(() => import('./pages/system/TOS').then((m) => ({ default: m.TOS })));
+const Privacy = lazy(() => import('./pages/system/Privacy').then((m) => ({ default: m.Privacy })));
 const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About })));
 const Instructor = lazy(() => import('./pages/Instructor').then((m) => ({ default: m.Instructor })));
 const Phys211 = lazy(() => import('./pages/211').then((m) => ({ default: m.Simulations })));
@@ -98,7 +100,7 @@ const LHC = lazy(() => import('./pages/enm/LHC').then((m) => ({ default: m.LHC }
 const WaveEq3D = lazy(() => import('./pages/enm/wave-3d').then((m) => ({ default: m.WaveEquation3D })));
 const Optics = lazy(() => import('./pages/enm/Optics').then((m) => ({ default: m.Optics })));
 const UniversalCircuitBuilder = lazy(() =>
-  import('./pages/electromagnetism/UniversalCircuitBuilder').then((m) => ({
+  import('./pages/enm/UniversalCircuitBuilder').then((m) => ({
     default: m.UniversalCircuitBuilder,
   })),
 );
@@ -190,6 +192,7 @@ const APP_ROUTES = [
   { path: '/system', element: <System /> },
   { path: '/tos', element: <TOS /> },
   { path: '/TOS', element: <TOS /> },
+  { path: '/privacy', element: <Privacy /> },
   { path: '/instructor', element: <Instructor /> },
   { path: '/about', element: <About /> },
   { path: '/partnership', element: <Partnership /> },
@@ -246,6 +249,41 @@ const APP_ROUTES = [
   { path: '/admin', element: <Admin /> },
 ];
 
+class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="mx-auto max-w-lg px-4 py-16 text-center">
+          <div className="rounded-lg border border-rose-800/40 bg-rose-950/20 p-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-rose-400">
+              Error boundary caught
+            </p>
+            <h1 className="mt-3 text-xl font-semibold text-slate-100">Something went wrong</h1>
+            <p className="mt-2 font-mono text-sm text-slate-400">{this.state.error.message}</p>
+            <button
+              type="button"
+              onClick={() => this.setState({ error: null })}
+              className="mt-5 rounded-md border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-700"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function App() {
   const location = useLocation();
   const isCleanMode = useMemo(() => {
@@ -253,7 +291,6 @@ export function App() {
     return query.get('clean') === '1' || query.get('clean') === 'true';
   }, [location.search]);
   const [cookieConsent, setCookieConsent] = useState<CookieConsent>(readStoredCookieConsent);
-  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const isActivePath = (path: string) => location.pathname === path;
   const isGroupActive = (links: Array<{ to: string; label: string }>) =>
@@ -407,13 +444,15 @@ export function App() {
 
       {/* ROUTES */}
       <main className="flex-1">
-        <Suspense fallback={<div className="mx-auto min-h-[55vh] max-w-6xl px-4 py-8 text-sm text-slate-400">Loading page...</div>}>
-          <Routes>
-            {APP_ROUTES.map((route) => (
-              <Route key={route.path} path={route.path} element={route.element} />
-            ))}
-          </Routes>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div className="mx-auto min-h-[55vh] max-w-6xl px-4 py-8 text-sm text-slate-400">Loading page...</div>}>
+            <Routes>
+              {APP_ROUTES.map((route) => (
+                <Route key={route.path} path={route.path} element={route.element} />
+              ))}
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </main>
       
       {/* FOOTER BOX */}
@@ -521,13 +560,9 @@ export function App() {
                   </Link>
                 </li>
                 <li>
-                  <button
-                    type="button"
-                    onClick={() => setIsPrivacyOpen(true)}
-                    className="hover:text-white transition"
-                  >
+                  <Link to="/privacy" className="hover:text-white transition">
                     Privacy
-                  </button>
+                  </Link>
                 </li>
                 <li>
                   <button
@@ -549,39 +584,6 @@ export function App() {
           </div>
         </div>
       </footer>
-      ) : null}
-
-      {!isCleanMode && isPrivacyOpen ? (
-        <div
-          className="fixed inset-0 z-50 grid place-items-center bg-slate-950/70 p-4"
-          onClick={() => setIsPrivacyOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="privacy-modal-title"
-        >
-          <div
-            className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-xl shadow-slate-950/70"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 id="privacy-modal-title" className="text-lg font-semibold text-slate-100">
-              Privacy Notice
-            </h2>
-            <p className="mt-3 text-sm text-slate-300">
-              PhysicsSims does not collect personal data from users. Anonymous usage tracking with Google Analytics only starts after you allow cookies.
-              The tracking data includes device, browser, and interaction information, but it does not include personally identifiable information.
-              You can change your choice with the Cookies button in the footer.
-            </p>
-            <div className="mt-5 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setIsPrivacyOpen(false)}
-                className="rounded-md bg-blue-300 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
       ) : null}
 
       {!isCleanMode && cookieConsent === 'unknown' ? (
@@ -687,7 +689,7 @@ export function App() {
             ) : (
               <div className="mt-3 space-y-4">
                 <p className="text-sm text-slate-300">
-                  Formspree is not configured yet. Add VITE_FORMSPREE_ENDPOINT in your environment to enable this form.
+                  Formspree is not working, please configure the FORMSPREE_ENDPOINT to enable the contact form.
                 </p>
                 <div className="flex justify-end">
                   <button

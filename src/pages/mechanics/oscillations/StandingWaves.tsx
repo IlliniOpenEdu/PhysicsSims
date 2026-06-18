@@ -746,7 +746,7 @@ export function StandingWaves() {
             step={0.1}
             value={controls.stringLengthM}
             onChange={(v) => handleControlChange({ stringLengthM: v })}
-            syncToUrl={false}
+            queryKey="L"
           />
           <SliderWithInput
             label="Wave speed (v)"
@@ -756,7 +756,7 @@ export function StandingWaves() {
             step={1}
             value={controls.waveSpeedMps}
             onChange={(v) => handleControlChange({ waveSpeedMps: v })}
-            syncToUrl={false}
+            queryKey="v"
           />
           <SliderWithInput
             label="Driving frequency (f)"
@@ -766,7 +766,7 @@ export function StandingWaves() {
             step={0.05}
             value={controls.frequencyHz}
             onChange={(v) => handleControlChange({ frequencyHz: v })}
-            syncToUrl={false}
+            queryKey="f"
           />
           <SliderWithInput
             label="Drive amplitude"
@@ -776,7 +776,7 @@ export function StandingWaves() {
             step={0.1}
             value={controls.amplitude}
             onChange={(v) => handleControlChange({ amplitude: v })}
-            syncToUrl={false}
+            queryKey="amp"
           />
 
           <label className="inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2 text-xs text-slate-300">

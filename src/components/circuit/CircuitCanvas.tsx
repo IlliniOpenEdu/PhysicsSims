@@ -131,6 +131,10 @@ export function CircuitCanvas({
   // ── Pointer handlers ───────────────────────────────────────────────────────
   const onPointerDown = (e: React.PointerEvent) => {
     (e.target as Element).setPointerCapture?.(e.pointerId);
+    if (e.button === 1) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     const svgPt = toSvg(e.clientX, e.clientY);
     const world = svgToWorld(svgPt);
     const g = snapToGrid(world);
@@ -271,6 +275,13 @@ export function CircuitCanvas({
     dragRef.current = null;
   };
 
+  const onMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (e.button === 1) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   const deleteSelection = () => {
     if (selComps.size === 0 && selWires.size === 0) return false;
     for (const id of selComps) engine.removeComponent(id);
@@ -396,17 +407,34 @@ export function CircuitCanvas({
     return null;
   };
 
-  const onWheel = (e: React.WheelEvent) => {
-    const svgPt = toSvg(e.clientX, e.clientY);
-    const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
-    setView((v) => {
-      const newScale = Math.min(2.6, Math.max(0.4, v.scale * factor));
-      // Keep the point under the cursor stationary.
-      const wx = (svgPt.x - v.ox) / v.scale;
-      const wy = (svgPt.y - v.oy) / v.scale;
-      return { scale: newScale, ox: svgPt.x - wx * newScale, oy: svgPt.y - wy * newScale };
-    });
-  };
+  const zoomFromWheel = useCallback(
+    (clientX: number, clientY: number, deltaY: number) => {
+      const svgPt = toSvg(clientX, clientY);
+      const factor = deltaY < 0 ? 1.12 : 1 / 1.12;
+      setView((v) => {
+        const newScale = Math.min(2.6, Math.max(0.4, v.scale * factor));
+        // Keep the point under the cursor stationary.
+        const wx = (svgPt.x - v.ox) / v.scale;
+        const wy = (svgPt.y - v.oy) / v.scale;
+        return { scale: newScale, ox: svgPt.x - wx * newScale, oy: svgPt.y - wy * newScale };
+      });
+    },
+    [toSvg],
+  );
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    const onNativeWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      zoomFromWheel(e.clientX, e.clientY, e.deltaY);
+    };
+
+    svg.addEventListener('wheel', onNativeWheel, { passive: false });
+    return () => svg.removeEventListener('wheel', onNativeWheel);
+  }, [zoomFromWheel]);
 
   // Keyboard: rotate (R), delete (Del/Backspace), escape tool.
   useEffect(() => {
@@ -463,8 +491,8 @@ export function CircuitCanvas({
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerLeave={onPointerUp}
+      onMouseDown={onMouseDown}
       onContextMenu={onContextMenu}
-      onWheel={onWheel}
     >
       <defs>
         <pattern

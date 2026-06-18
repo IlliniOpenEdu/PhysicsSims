@@ -2,7 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlassButton } from './apple-tahoe-liquid-glass-button';
 
-const HalideLanding: React.FC = () => {
+type HalideLandingProps = {
+  title?: string;
+  subtitle?: string;
+  tagline?: string;
+};
+
+const HalideLanding: React.FC<HalideLandingProps> = ({
+  title = 'REAL TIME\nPHYSICS',
+  subtitle = '[ E&M · MECHANICS · STATICS ]',
+  tagline = '45+ INTERACTIVE SIMULATIONS',
+}) => {
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<HTMLDivElement[]>([]);
@@ -194,15 +204,18 @@ const HalideLanding: React.FC = () => {
           </div>
 
           <h1 className="halide-hero-title">
-            REAL TIME
-            <br />
-            PHYSICS
+            {title.split('\n').map((line, i, arr) => (
+              <React.Fragment key={i}>
+                {line}
+                {i < arr.length - 1 ? <br /> : null}
+              </React.Fragment>
+            ))}
           </h1>
 
           <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <div style={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-              <p>[ E&amp;M · MECHANICS · THERMAL ]</p>
-              <p>25+ INTERACTIVE SIMULATIONS</p>
+              <p>{subtitle}</p>
+              <p>{tagline}</p>
             </div>
             <div style={{ pointerEvents: 'auto' }}>
               <GlassButton

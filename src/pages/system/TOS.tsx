@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const LAST_UPDATED = 'May 7, 2026';
+const LAST_UPDATED = 'June 17, 2026';
 
 type Section = {
 	id: string;
@@ -10,113 +10,186 @@ type Section = {
 
 const SECTIONS: Section[] = [
 	{
-		id: 'acceptance',
-		title: '1. Acceptance of Terms',
+		id: 'agreement',
+		title: 'Agreement to Our Legal Terms',
 		body: [
-			'By accessing or using PhysicsSims, you agree to be bound by these Terms of Service and all applicable laws and regulations.',
-			'If you do not agree with any part of these terms, you must discontinue use of the service.',
+			'By accessing or using PhysicsSims, you agree to be bound by these Legal Terms and any incorporated policies.',
+			'If you do not agree with all of these Legal Terms, you are expressly prohibited from using the Services and must discontinue use immediately.',
+			'We may update these Legal Terms at any time, and your continued use after updates means you accept the revised terms.',
 		],
 	},
 	{
-		id: 'service',
-		title: '2. Description of Service',
+		id: 'services',
+		title: '1. Our Services',
 		body: [
-			'PhysicsSims provides browser-based educational simulations, visualizations, and related content for learning and teaching physics.',
-			'Features may be added, modified, suspended, or removed at any time to maintain quality, security, and academic usefulness.',
+			'PhysicsSims provides browser-based educational simulations and related services.',
+			'The Services are intended for use in jurisdictions where such access is lawful, and they are not tailored to specific industry compliance regimes.',
 		],
 	},
 	{
-		id: 'eligibility',
-		title: '3. Eligibility and Account Use',
+		id: 'ip',
+		title: '2. Intellectual Property Rights',
 		body: [
-			'PhysicsSims is intended for educational audiences including students, instructors, and self-learners.',
-			'You are responsible for compliance with local policies and institutional rules when using this service in classroom or managed environments.',
+			'We own or license the intellectual property in the Services, including source code, software, design, text, and graphics.',
+			'The Services and Content are provided for personal, non-commercial use or internal business purpose only unless we grant additional permission.',
+			'You may not copy, reproduce, distribute, sell, or otherwise exploit the Services or Content outside the permissions granted in these Terms.',
 		],
 	},
 	{
-		id: 'acceptable-use',
-		title: '4. Acceptable Use',
+		id: 'userreps',
+		title: '3. User Representations',
 		body: [
-			'You agree not to misuse the service, interfere with platform operations, or attempt unauthorized access to systems, source code, or data.',
-			'You may not use PhysicsSims for unlawful, abusive, or deceptive activity, including automated abuse, denial-of-service behavior, or malicious payload delivery.',
+			'By using the Services, you confirm that you have the legal capacity to agree to these Terms and that your use complies with applicable law.',
+			'If you are a minor in your jurisdiction, you must have parental permission to use the Services.',
+			'You agree not to access the Services through automated or non-human means, and you will not use the Services for illegal or unauthorized purposes.',
 		],
 	},
 	{
-		id: 'intellectual-property',
-		title: '5. Intellectual Property',
+		id: 'prohibited',
+		title: '4. Prohibited Activities',
 		body: [
-			'Unless otherwise stated, platform design, branding, and original educational materials are protected by applicable intellectual property laws.',
-			'Open-source components are governed by their respective licenses. You must respect third-party license terms when reusing code or assets.',
+			'You may not systematically retrieve data, circumvent security features, disparage or harm the Services, or use the Services to harass or deceive others.',
+			'You may not interfere with the Services, upload malicious material, scrape the site, impersonate others, or use the Services for revenue-generating activity without permission.',
 		],
 	},
 	{
-		id: 'educational-disclaimer',
-		title: '6. Educational Disclaimer',
+		id: 'ugc',
+		title: '5. User Generated Contributions',
 		body: [
-			'PhysicsSims is provided for educational and illustrative purposes. Simulation outputs are approximations and may not represent all real-world conditions.',
-			'You are responsible for verifying results before relying on them for grading, research, engineering, or safety-critical decisions.',
+			'If the Services allow Contributions, you are responsible for ensuring they do not infringe third-party rights or violate applicable law.',
+			'Your Contributions must be lawful, not misleading, not harmful, and not used for spam, solicitation, impersonation, or other abusive conduct.',
 		],
 	},
 	{
-		id: 'availability',
-		title: '7. Availability and Maintenance',
+		id: 'license',
+		title: '6. Contribution License',
 		body: [
-			'We aim for reliable service but do not guarantee uninterrupted availability, error-free operation, or compatibility with every device and browser version.',
-			'Scheduled and unscheduled maintenance may temporarily impact access.',
+			'By sending suggestions or feedback, you allow us to use that feedback without compensation to you for any lawful purpose.',
+			'You retain ownership of your Contributions, but you are responsible for what you submit and for ensuring you have the rights to do so.',
 		],
 	},
 	{
-		id: 'warranties',
-		title: '8. Warranty Disclaimer',
+		id: 'thirdparty',
+		title: '7. Third-Party Websites And Content',
 		body: [
-			'The service is provided on an "as is" and "as available" basis without warranties of any kind, express or implied, to the fullest extent permitted by law.',
-			'This includes, without limitation, implied warranties of merchantability, fitness for a particular purpose, and non-infringement.',
+			'The Services may include links to third-party websites or content.',
+			'We do not monitor or endorse third-party sites or content and are not responsible for their accuracy, policies, or practices.',
+		],
+	},
+	{
+		id: 'sitemanage',
+		title: '8. Services Management',
+		body: [
+			'We reserve the right to monitor the Services for violations of these Terms and to take appropriate action when necessary.',
+			'We may remove content, restrict access, or otherwise manage the Services to protect our rights and ensure proper operation.',
+		],
+	},
+	{
+		id: 'ppyes',
+		title: '9. Privacy Policy',
+		body: [
+			'We care about data privacy and security. Please review our Privacy Policy at /privacy.',
+			'By using the Services, you agree to the Privacy Policy, which is incorporated into these Legal Terms.',
+			'The Services are hosted in the United States, and by using them from another region you consent to transfer and processing of your data in the United States.',
+		],
+	},
+	{
+		id: 'terms',
+		title: '10. Term And Termination',
+		body: [
+			'These Terms remain in full force while you use the Services.',
+			'We may deny access, block IP addresses, suspend use, or terminate use at any time for any reason, including violations of these Terms or applicable law.',
+		],
+	},
+	{
+		id: 'modifications',
+		title: '11. Modifications And Interruptions',
+		body: [
+			'We may change, modify, suspend, or discontinue the Services at any time without notice.',
+			'We are not liable for any interruption, downtime, or service modification, and we do not guarantee the Services will always be available.',
+		],
+	},
+	{
+		id: 'law',
+		title: '12. Governing Law',
+		body: [
+			'These Legal Terms are governed by the laws of the State of Illinois, without regard to conflict-of-law principles.',
+		],
+	},
+	{
+		id: 'disputes',
+		title: '13. Dispute Resolution',
+		body: [
+			'If a dispute arises, the parties should first attempt informal negotiation for a reasonable period before pursuing formal action.',
+			'If arbitration or court proceedings become necessary, the dispute will be handled in the applicable courts and venue described by these Terms.',
+		],
+	},
+	{
+		id: 'corrections',
+		title: '14. Corrections',
+		body: [
+			'We reserve the right to correct errors, inaccuracies, or omissions in the Services at any time without prior notice.',
+		],
+	},
+	{
+		id: 'disclaimer',
+		title: '15. Disclaimer',
+		body: [
+			'The Services are provided on an as-is and as-available basis.',
+			'We disclaim warranties to the fullest extent permitted by law and do not guarantee the accuracy, completeness, or availability of the Services or linked third-party content.',
 		],
 	},
 	{
 		id: 'liability',
-		title: '9. Limitation of Liability',
+		title: '16. Limitations Of Liability',
 		body: [
-			'To the maximum extent permitted by law, PhysicsSims and its contributors shall not be liable for indirect, incidental, special, consequential, or punitive damages.',
-			'Total liability for claims related to service use is limited to the amount you paid for the service in the preceding twelve months, which may be zero for free use.',
+			'To the fullest extent permitted by law, we will not be liable for indirect, incidental, consequential, special, or punitive damages arising from your use of the Services.',
+			'Our total liability for claims related to the Services will be limited as described in these Terms and applicable law.',
 		],
 	},
 	{
 		id: 'indemnification',
-		title: '10. Indemnification',
+		title: '17. Indemnification',
 		body: [
-			'You agree to defend, indemnify, and hold harmless PhysicsSims and its contributors from claims, liabilities, damages, and expenses arising from your misuse of the service or violation of these Terms.',
+			'You agree to defend, indemnify, and hold us harmless from claims, liabilities, damages, and expenses arising from your misuse of the Services or violation of these Terms.',
 		],
 	},
 	{
-		id: 'termination',
-		title: '11. Suspension and Termination',
+		id: 'userdata',
+		title: '18. User Data',
 		body: [
-			'Access may be restricted or terminated at any time for security, policy violations, legal compliance, or operational reasons.',
-			'Provisions that by nature should survive termination will remain in effect, including intellectual property, disclaimer, and liability sections.',
+			'We may maintain certain data that you transmit to the Services for operational purposes.',
+			'Although we may perform routine backups, you are solely responsible for your transmitted data and waive claims arising from its loss or corruption.',
 		],
 	},
 	{
-		id: 'changes',
-		title: '12. Changes to These Terms',
+		id: 'electronic',
+		title: '19. Electronic Communications, Transactions, And Signatures',
 		body: [
-			'We may update these Terms periodically. Material updates will be reflected by revising the "Last updated" date on this page.',
-			'Continued use after updates constitutes acceptance of the revised Terms.',
+			'By using the Services, you consent to receive electronic communications and agree that electronic notices, records, and signatures satisfy legal writing requirements.',
 		],
 	},
 	{
-		id: 'governing-law',
-		title: '13. Governing Law',
+		id: 'california',
+		title: '20. California Users And Residents',
 		body: [
-			'These Terms are governed by applicable laws in the jurisdiction of the operating institution, without regard to conflict-of-law principles.',
-			'If any provision is unenforceable, the remaining provisions remain in full force and effect.',
+			'California residents may have specific complaint rights under applicable law.',
+			'If you need to raise a complaint, use the contact information below or the site footer contact channel.',
+		],
+	},
+	{
+		id: 'misc',
+		title: '21. Miscellaneous',
+		body: [
+			'These Terms and any posted policies form the entire agreement between you and us.',
+			'If any part of these Terms is unenforceable, the remainder stays in effect, and our failure to enforce a right does not waive that right.',
 		],
 	},
 	{
 		id: 'contact',
-		title: '14. Contact',
+		title: '22. Contact Us',
 		body: [
-			'For policy questions or legal notices related to these Terms, use the contact channel available in the site footer.',
+			'If you have questions or comments about these Legal Terms, contact us using the site footer contact channel.',
 		],
 	},
 ];
@@ -124,50 +197,43 @@ const SECTIONS: Section[] = [
 export function TOS() {
 	return (
 		<div className="min-h-screen bg-[#05080d] text-white">
-			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_45%_at_50%_-10%,rgba(56,189,248,0.12),transparent)]" />
-
-			<main className="relative mx-auto w-full max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-				<header className="rounded-2xl border border-white/10 bg-[#0d1118]/90 p-6 sm:p-8">
+			<main className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+				<header className="border-b border-white/10 pb-6">
 					<p className="text-xs uppercase tracking-[0.2em] text-sky-300/70">Legal</p>
 					<h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Terms of Service</h1>
 					<p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
-						These Terms govern your access to and use of PhysicsSims. Please read them carefully before using the platform.
+						These Legal Terms govern your access to and use of PhysicsSims. Please read them carefully before using the platform.
 					</p>
-					<div className="mt-5 flex flex-wrap items-center gap-3 text-xs text-slate-400">
-						<span className="rounded-full border border-white/15 bg-white/[0.03] px-3 py-1">Last updated: {LAST_UPDATED}</span>
-						<Link
-							to="/"
-							className="rounded-full border border-white/15 bg-white/[0.03] px-3 py-1 transition hover:border-sky-300/70 hover:text-sky-200"
-						>
+					<div className="mt-5 flex flex-wrap items-center gap-4 text-xs text-slate-400">
+						<span>Last updated: {LAST_UPDATED}</span>
+						<Link to="/" className="text-sky-300 transition hover:text-sky-200">
 							Back to Home
 						</Link>
 					</div>
 				</header>
 
-				<section className="mt-6 rounded-2xl border border-white/10 bg-[#0d1118]/90 p-6">
-					<h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-300">Table of Contents</h2>
-					<div className="mt-4 grid gap-2 sm:grid-cols-2">
-						{SECTIONS.map((section) => (
-							<a
-								key={section.id}
-								href={`#${section.id}`}
-								className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-sm text-slate-300 transition hover:border-sky-300/50 hover:text-sky-200"
-							>
-								{section.title}
-							</a>
-						))}
-					</div>
-				</section>
+				<section className="mt-8 space-y-8 text-sm leading-relaxed text-slate-300">
+					<p>
+						These Legal Terms constitute a binding agreement between you and OpenIlliniEdu concerning your access to and use of the Services. By accessing the Services, you agree to be bound by these Terms.
+					</p>
 
-				<section className="mt-6 space-y-4">
+					<div>
+						<h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-200">Table of Contents</h2>
+						<ul className="mt-3 space-y-2">
+							{SECTIONS.map((section) => (
+								<li key={section.id}>
+									<a href={`#${section.id}`} className="text-sky-300 transition hover:text-sky-200">
+										{section.title}
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+
 					{SECTIONS.map((section) => (
-						<article
-							key={section.id}
-							id={section.id}
-							className="scroll-mt-24 rounded-2xl border border-white/10 bg-[#0d1118]/90 p-6"
-						>
-							<h3 className="text-lg font-semibold text-slate-100">{section.title}</h3>
-							<div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
+						<article key={section.id} id={section.id} className="scroll-mt-24">
+							<h2 className="text-xl font-semibold text-slate-100">{section.title}</h2>
+							<div className="mt-3 space-y-3">
 								{section.body.map((paragraph) => (
 									<p key={paragraph}>{paragraph}</p>
 								))}
@@ -175,10 +241,6 @@ export function TOS() {
 						</article>
 					))}
 				</section>
-
-				<footer className="mt-8 rounded-2xl border border-white/10 bg-[#0d1118]/90 p-5 text-xs leading-relaxed text-slate-400">
-					This page is provided for general platform policy communication and does not constitute legal advice.
-				</footer>
 			</main>
 		</div>
 	);

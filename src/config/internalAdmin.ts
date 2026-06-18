@@ -120,9 +120,9 @@ export const createDefaultAdminState = (): AdminControlState => ({
   },
   simulationVisibility: getDefaultSimulationVisibility(),
   contentOverrides: {
-    homeHeroTitle: 'Interactive physics, built for understanding.',
-    homeHeroSubtitle: 'Interactive labs across Mechanics, E&M, and Statics that make concepts click faster.',
-    homeHeroTagline: 'Start with a track or jump into the full collection of simulations.',
+    homeHeroTitle: 'REAL TIME\nPHYSICS',
+    homeHeroSubtitle: '[ E&M · MECHANICS · STATICS ]',
+    homeHeroTagline: '45+ INTERACTIVE SIMULATIONS',
     featuredSimPath: DEFAULT_FEATURED_SIM_PATH,
   },
   bugTestControls: {

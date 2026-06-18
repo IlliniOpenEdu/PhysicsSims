@@ -6,7 +6,7 @@ import { loadAdminState, type AdminControlState } from '../config/internalAdmin'
 const base = import.meta.env.BASE_URL;
 const PREVIEW_FALLBACK = `${base}thumbnails/preview.png`;
 
-type Track = 'mechanics' | 'enm' | 'statics' | 'oscillations' | 'pressure';
+type Track = 'mechanics' | 'enm' | 'statics' | 'oscillations' | 'fluids';
 type SimItem = {
   title: string;
   path: string;
@@ -44,11 +44,11 @@ const SIMS: SimItem[] = [
   { track: 'oscillations', title: 'Pendulum Motion Explorer', path: '/oscillations-pendulum', description: 'Simple pendulum: release angle or height, watch period, tension, and energy exchange.', preview: PREVIEW_FALLBACK },
   { track: 'oscillations', title: 'Wave Generator', path: '/oscillations-wave-generator', description: 'Traveling transverse wave: amplitude, frequency, speed, crests, and v = fλ.', preview: PREVIEW_FALLBACK },
   { track: 'oscillations', title: 'Standing Waves', path: '/oscillations-standing-waves', description: 'Fixed-fixed string: harmonics, nodes, antinodes, and resonance peaks.', preview: PREVIEW_FALLBACK },
-  { track: 'pressure', title: 'Pressure Point Explorer', path: '/pressure-point-explorer', description: 'Interactive P = F/A: drag contact points on paper, live heatmap, real-world presets.', preview: PREVIEW_FALLBACK },
-  { track: 'pressure', title: 'Buoyancy Explorer', path: '/buoyancy-explorer', description: 'Archimedes principle: block in water tank, buoyant force, density, float or sink.', preview: PREVIEW_FALLBACK },
-  { track: 'pressure', title: 'Ideal Gas Law Explorer', path: '/ideal-gas-law-explorer', description: 'Particle gas in a piston cylinder: discover PV = nRT from wall collisions.', preview: PREVIEW_FALLBACK },
-  { track: 'pressure', title: 'Fluid Flow Explorer', path: '/fluid-flow-explorer', description: 'Continuity equation A₁v₁ = A₂v₂: flowing particles in a tapering pipe.', preview: PREVIEW_FALLBACK },
-  { track: 'pressure', title: 'Bernoulli Flow Explorer', path: '/bernoulli-flow-explorer', description: 'Bernoulli equation with sloping pipe, pressure-colored flow, and energy profiles.', preview: PREVIEW_FALLBACK },
+  { track: 'fluids', title: 'Pressure Point Explorer', path: '/pressure-point-explorer', description: 'Interactive P = F/A: drag contact points on paper, live heatmap, real-world presets.', preview: PREVIEW_FALLBACK },
+  { track: 'fluids', title: 'Buoyancy Explorer', path: '/buoyancy-explorer', description: 'Archimedes principle: block in water tank, buoyant force, density, float or sink.', preview: PREVIEW_FALLBACK },
+  { track: 'fluids', title: 'Ideal Gas Law Explorer', path: '/ideal-gas-law-explorer', description: 'Particle gas in a piston cylinder: discover PV = nRT from wall collisions.', preview: PREVIEW_FALLBACK },
+  { track: 'fluids', title: 'Fluid Flow Explorer', path: '/fluid-flow-explorer', description: 'Continuity equation A₁v₁ = A₂v₂: flowing particles in a tapering pipe.', preview: PREVIEW_FALLBACK },
+  { track: 'fluids', title: 'Bernoulli Flow Explorer', path: '/bernoulli-flow-explorer', description: 'Bernoulli equation with sloping pipe, pressure-colored flow, and energy profiles.', preview: PREVIEW_FALLBACK },
   { track: 'mechanics', title: 'Rotational Dynamics', path: '/rotational-dynamics', description: 'Torque, moment of inertia, and angular acceleration with a draggable mass on a rotating arm.', preview: `${base}thumbnails/rotational.png` },
   // E&M
   { track: 'enm', title: 'Universal Circuit Builder', path: '/universal-circuit-builder', description: 'Build any DC/AC circuit and solve it live with Modified Nodal Analysis — Ohm, Kirchhoff, RC/RL/RLC transients, and frequency sweeps.', preview: PREVIEW_FALLBACK, featured: true },
@@ -102,14 +102,15 @@ const TRACKS = {
     chip: 'bg-rose-400/10 text-rose-300 ring-1 ring-rose-400/25',
     glow: 'rgba(251,113,133,0.06)',
   },
-  pressure: {
-    label: 'Pressure',
+  fluids: {
+    label: 'Fluids',
     dot: 'bg-amber-400',
     text: 'text-amber-400',
     borderL: 'border-l-amber-500',
     chip: 'bg-amber-400/10 text-amber-300 ring-1 ring-amber-400/25',
     glow: 'rgba(251,191,36,0.06)',
   },
+
 } as const;
 
 type FilterTrack = Track | 'all';
@@ -189,7 +190,7 @@ export function Dashboard() {
     enm:       visibleSims.filter((s) => s.track === 'enm').length,
     statics:   visibleSims.filter((s) => s.track === 'statics').length,
     oscillations: visibleSims.filter((s) => s.track === 'oscillations').length,
-    pressure: visibleSims.filter((s) => s.track === 'pressure').length,
+    fluids: visibleSims.filter((s) => s.track === 'fluids').length,
   }), [visibleSims]);
 
   const filtered = useMemo(() => {
@@ -246,7 +247,7 @@ export function Dashboard() {
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-              <span className="text-amber-300/60">{counts.pressure} Pressure</span>
+              <span className="text-amber-300/60">{counts.fluids} Fluids</span>
             </span>
           </div>
         </motion.div>
@@ -260,7 +261,7 @@ export function Dashboard() {
         >
           {/* Track tabs */}
           <div className="flex items-center gap-0.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-1">
-            {(['all', 'mechanics', 'pressure', 'oscillations', 'enm', 'statics'] as FilterTrack[]).map((t) => {
+            {(['all', 'mechanics', 'fluids', 'oscillations', 'enm', 'statics'] as FilterTrack[]).map((t) => {
               const isActive = activeTrack === t;
               const label = t === 'all' ? 'All' : TRACKS[t].label;
               const dot = t === 'all' ? 'bg-slate-400' : TRACKS[t].dot;

@@ -206,8 +206,9 @@ function Slider({ label, value, min, max, step = 1, unit = '', onChange }: {
       value={value}
       onChange={onChange}
       units={unit.trim() || undefined}
-      syncToUrl={false}
+      syncToUrl={true}
       accentClass="accent-sky-400"
+      queryKey={label.toLowerCase().replace(/\s+/g, '-')}
     />
   );
 }

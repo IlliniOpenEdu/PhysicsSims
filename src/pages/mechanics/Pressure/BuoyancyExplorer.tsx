@@ -48,7 +48,7 @@ const DEFAULT_CONTROLS: ControlsState = {
 const MIN_MASS = 0.1;
 const MAX_MASS = 1000;
 const MIN_SIDE = 0.1;
-const MAX_SIDE = 5;
+const MAX_SIDE = 3;
 const MIN_G = 0.1;
 const MAX_G = 25;
 const MIN_WATER_RHO = 100;
@@ -721,7 +721,7 @@ export function BuoyancyExplorer() {
             step={0.1}
             value={controls.massKg}
             onChange={(v) => handleControlChange({ massKg: v })}
-            syncToUrl={false}
+            queryKey="m"
           />
           <SliderWithInput
             label="Square side length"
@@ -731,7 +731,8 @@ export function BuoyancyExplorer() {
             step={0.05}
             value={controls.sideM}
             onChange={(v) => handleControlChange({ sideM: v })}
-            syncToUrl={false}
+            syncToUrl={true}
+            queryKey="l"
           />
           <SliderWithInput
             label="Gravity (g)"
@@ -741,7 +742,8 @@ export function BuoyancyExplorer() {
             step={0.1}
             value={controls.gravityMps2}
             onChange={(v) => handleControlChange({ gravityMps2: v })}
-            syncToUrl={false}
+            syncToUrl={true}
+            queryKey="g"
           />
           <SliderWithInput
             label="Water density"
@@ -752,6 +754,7 @@ export function BuoyancyExplorer() {
             value={controls.waterDensityKgM3}
             onChange={(v) => handleControlChange({ waterDensityKgM3: v })}
             syncToUrl={false}
+            queryKey="wrho"
           />
           <div className="rounded-lg border border-slate-800 bg-slate-900/70 p-3">
             <p className="text-xs font-medium text-slate-200">Initial position</p>

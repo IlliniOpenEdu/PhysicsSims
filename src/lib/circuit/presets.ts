@@ -235,6 +235,34 @@ export const PRESETS: PresetDef[] = [
         { kind: 'capacitor', params: { capacitance: 1e-5 } },
       ]),
   },
+  {
+    id: 'capacitive-divider',
+    name: 'Capacitive Voltage Divider',
+    description: 'Two capacitors split AC voltage based on capacitive reactance.',
+    mode: 'ac',
+    build: () =>
+      buildSeriesLoop(comp('acsource', 0, 0, 90, 6, {
+        voltage: 10,
+        frequency: 1000,
+      }), [
+        { kind: 'capacitor', params: { capacitance: 1e-6 } },
+        { kind: 'capacitor', params: { capacitance: 2e-6 } },
+      ]),
+  },
+  {
+    id: 'inductive-divider',
+    name: 'Inductive Voltage Divider',
+    description: 'Two inductors split AC voltage based on inductive reactance.',
+    mode: 'ac',
+    build: () =>
+      buildSeriesLoop(comp('acsource', 0, 0, 90, 6, {
+        voltage: 10,
+        frequency: 1000,
+      }), [
+        { kind: 'inductor', params: { inductance: 0.05 } },
+        { kind: 'inductor', params: { inductance: 0.1 } },
+      ]),
+  },
 ];
 
 export function emptySchematic(): Schematic {

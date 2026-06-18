@@ -722,7 +722,7 @@ export function VerticalSpringOscillator() {
             step={1}
             value={controls.springKNm}
             onChange={(v) => handleControlChange({ springKNm: v })}
-            syncToUrl={false}
+            queryKey="k"
           />
           <SliderWithInput
             label="Mass"
@@ -732,7 +732,7 @@ export function VerticalSpringOscillator() {
             step={0.1}
             value={controls.massKg}
             onChange={(v) => handleControlChange({ massKg: v })}
-            syncToUrl={false}
+            queryKey="m"
           />
           <SliderWithInput
             label="Gravity (g)"
@@ -742,7 +742,7 @@ export function VerticalSpringOscillator() {
             step={0.1}
             value={controls.gravityMps2}
             onChange={(v) => handleControlChange({ gravityMps2: v })}
-            syncToUrl={false}
+            queryKey="g"
           />
           <SliderWithInput
             label="Initial displacement (y₀)"
@@ -753,7 +753,7 @@ export function VerticalSpringOscillator() {
             value={controls.initialDisplacementM}
             description="Relative to equilibrium; released from rest on Start."
             onChange={(v) => handleControlChange({ initialDisplacementM: v })}
-            syncToUrl={false}
+            queryKey="y0"
           />
 
           <div className="rounded-lg border border-slate-800 bg-slate-900/70 p-3 text-xs">

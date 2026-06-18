@@ -508,7 +508,7 @@ export function WaveGenerator() {
             step={0.1}
             value={controls.amplitude}
             onChange={(v) => handleControlChange({ amplitude: v })}
-            syncToUrl={false}
+            queryKey='amp'
           />
           <SliderWithInput
             label="Frequency (f)"
@@ -518,7 +518,8 @@ export function WaveGenerator() {
             step={0.1}
             value={controls.frequencyHz}
             onChange={(v) => handleControlChange({ frequencyHz: v })}
-            syncToUrl={false}
+            syncToUrl={true}
+            queryKey='freq'
           />
           <SliderWithInput
             label="Wave speed (v)"
@@ -528,7 +529,8 @@ export function WaveGenerator() {
             step={0.5}
             value={controls.waveSpeedMps}
             onChange={(v) => handleControlChange({ waveSpeedMps: v })}
-            syncToUrl={false}
+            syncToUrl={true}
+            queryKey='speed'
           />
           <SliderWithInput
             label="Probe position (time graph)"
@@ -539,7 +541,8 @@ export function WaveGenerator() {
             value={controls.probeXM}
             description="Highlighted bead — displacement vs time is recorded here"
             onChange={(v) => handleControlChange({ probeXM: v })}
-            syncToUrl={false}
+            syncToUrl={true}
+            queryKey='probe'
           />
         </section>
       </main>

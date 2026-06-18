@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SliderWithInput } from '../../components/SliderWithInput';
 import { ConceptBox } from '../../components/ConceptBox';
+import { useUrlStateSync } from '../../hooks/useUrlStateSync';
 
 type ReleaseMode = 'angle' | 'height';
 
@@ -11,6 +12,7 @@ type ControlsState = {
   gravityMps2: number;
   lengthM: number;
   releaseMode: ReleaseMode;
+  releaseSide: 'left' | 'right';
   releaseAngleDeg: number;
   releaseHeightM: number;
 };
@@ -43,6 +45,7 @@ const DEFAULT_CONTROLS: ControlsState = {
   gravityMps2: 9.81,
   lengthM: 2.5,
   releaseMode: 'angle',
+  releaseSide: 'right',
   releaseAngleDeg: 35,
   releaseHeightM: 0.45,
 };
@@ -105,7 +108,7 @@ function releaseAngleRadFromControls(c: ControlsState): number {
   if (c.releaseMode === 'angle') {
     return degToRad(clamp(c.releaseAngleDeg, -MAX_ANGLE_DEG, MAX_ANGLE_DEG));
   }
-  const sign = c.releaseAngleDeg >= 0 ? 1 : -1;
+  const sign = c.releaseSide === 'left' ? -1 : 1;
   const hMax = maxReleaseHeightM(c.lengthM);
   const h = clamp(c.releaseHeightM, 0, hMax);
   return heightToAngleRad(h, c.lengthM, sign);
@@ -231,6 +234,101 @@ function windowedSeries(series: HistoryPoint[], windowS: number): HistoryPoint[]
   return series.filter((p) => p.t >= tStart);
 }
 
+function parseNumberParam(params: URLSearchParams, key: string): number | null {
+  const raw = params.get(key);
+  if (raw == null) return null;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function formatNumberParam(value: number): string {
+  return Number(value.toFixed(2)).toString();
+}
+
+function readControlsFromUrl(params: URLSearchParams): Partial<ControlsState> {
+  const patch: Partial<ControlsState> = {};
+
+  const massKg = parseNumberParam(params, 'm');
+  if (massKg != null) patch.massKg = clamp(massKg, MIN_MASS, MAX_MASS);
+
+  const gravityMps2 = parseNumberParam(params, 'g');
+  if (gravityMps2 != null) patch.gravityMps2 = clamp(gravityMps2, MIN_G, MAX_G);
+
+  const lengthM = parseNumberParam(params, 'L');
+  if (lengthM != null) patch.lengthM = clamp(lengthM, MIN_L, MAX_L);
+
+  const modeRaw = params.get('mode');
+  if (modeRaw === 'angle' || modeRaw === 'height') {
+    patch.releaseMode = modeRaw;
+  }
+
+  const releaseMode = patch.releaseMode ?? DEFAULT_CONTROLS.releaseMode;
+  if (releaseMode === 'angle') {
+    const releaseAngleDeg = parseNumberParam(params, 'a');
+    if (releaseAngleDeg != null) {
+      patch.releaseAngleDeg = clamp(releaseAngleDeg, -MAX_ANGLE_DEG, MAX_ANGLE_DEG);
+    }
+  } else {
+    const releaseHeightM = parseNumberParam(params, 'h');
+    if (releaseHeightM != null) {
+      const maxHeight = maxReleaseHeightM(patch.lengthM ?? DEFAULT_CONTROLS.lengthM);
+      patch.releaseHeightM = clamp(releaseHeightM, 0, maxHeight);
+    }
+
+    const sideRaw = params.get('side');
+    if (sideRaw === 'left' || sideRaw === 'right') {
+      patch.releaseSide = sideRaw;
+    }
+  }
+
+  return patch;
+}
+
+function writeControlsToUrl(state: ControlsState, params: URLSearchParams) {
+  const massKg = clamp(state.massKg, MIN_MASS, MAX_MASS);
+  const gravityMps2 = clamp(state.gravityMps2, MIN_G, MAX_G);
+  const lengthM = clamp(state.lengthM, MIN_L, MAX_L);
+
+  if (!Object.is(massKg, DEFAULT_CONTROLS.massKg)) params.set('m', formatNumberParam(massKg));
+  else params.delete('m');
+
+  if (!Object.is(gravityMps2, DEFAULT_CONTROLS.gravityMps2)) params.set('g', formatNumberParam(gravityMps2));
+  else params.delete('g');
+
+  if (!Object.is(lengthM, DEFAULT_CONTROLS.lengthM)) params.set('L', formatNumberParam(lengthM));
+  else params.delete('L');
+
+  params.set('mode', state.releaseMode);
+
+  if (state.releaseMode === 'angle') {
+    const releaseAngleDeg = clamp(state.releaseAngleDeg, -MAX_ANGLE_DEG, MAX_ANGLE_DEG);
+    if (!Object.is(releaseAngleDeg, DEFAULT_CONTROLS.releaseAngleDeg)) {
+      params.set('a', formatNumberParam(releaseAngleDeg));
+    } else {
+      params.delete('a');
+    }
+    params.delete('h');
+    params.delete('side');
+    return;
+  }
+
+  const maxHeight = maxReleaseHeightM(lengthM);
+  const releaseHeightM = clamp(state.releaseHeightM, 0, maxHeight);
+  if (!Object.is(releaseHeightM, DEFAULT_CONTROLS.releaseHeightM)) {
+    params.set('h', formatNumberParam(releaseHeightM));
+  } else {
+    params.delete('h');
+  }
+
+  params.set('side', state.releaseSide);
+  params.delete('a');
+}
+
+const pendulumUrlOptions = {
+  read: readControlsFromUrl,
+  write: writeControlsToUrl,
+};
+
 export function PendulumExplorer() {
   const [controls, setControls] = useState<ControlsState>(DEFAULT_CONTROLS);
   const [isRunning, setIsRunning] = useState(false);
@@ -291,6 +389,8 @@ export function PendulumExplorer() {
       totalEnergyJ: initialSnap.totalEnergyJ,
     },
   ]);
+
+  useUrlStateSync(controls, setControls, pendulumUrlOptions);
 
   useEffect(() => {
     controlsRef.current = controls;
@@ -550,6 +650,9 @@ export function PendulumExplorer() {
 
   const handleControlChange = (patch: Partial<ControlsState>) => {
     const next = { ...controlsRef.current, ...patch };
+    if (patch.releaseAngleDeg != null) {
+      next.releaseSide = patch.releaseAngleDeg < 0 ? 'left' : 'right';
+    }
     if (next.releaseMode === 'height') {
       const hMax = maxReleaseHeightM(next.lengthM);
       next.releaseHeightM = clamp(next.releaseHeightM, 0, hMax);
@@ -756,9 +859,9 @@ export function PendulumExplorer() {
                   <span className="text-[0.68rem] text-slate-400">Swing side</span>
                   <button
                     type="button"
-                    onClick={() => handleControlChange({ releaseAngleDeg: -Math.abs(controls.releaseAngleDeg) || -35 })}
+                    onClick={() => handleControlChange({ releaseSide: 'left' })}
                     className={`rounded-full px-2.5 py-1 text-[0.65rem] font-semibold ${
-                      controls.releaseAngleDeg < 0
+                      controls.releaseSide === 'left'
                         ? 'bg-rose-500 text-slate-950'
                         : 'border border-slate-700 bg-slate-900 text-slate-300'
                     }`}
@@ -767,9 +870,9 @@ export function PendulumExplorer() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleControlChange({ releaseAngleDeg: Math.abs(controls.releaseAngleDeg) || 35 })}
+                    onClick={() => handleControlChange({ releaseSide: 'right' })}
                     className={`rounded-full px-2.5 py-1 text-[0.65rem] font-semibold ${
-                      controls.releaseAngleDeg >= 0
+                      controls.releaseSide === 'right'
                         ? 'bg-rose-500 text-slate-950'
                         : 'border border-slate-700 bg-slate-900 text-slate-300'
                     }`}
@@ -918,3 +1021,4 @@ function StatChip({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+

@@ -29,8 +29,30 @@ type Release = {
 
 const RELEASES: Release[] = [
   {
+    version: '1.5.0',
+    date: 'June 2026',
+    title: 'Big batch of simulations and a completed PHYS211 course page!',
+    summary: 'A full set of mechanics, electromagnetism and waves simulations.',
+    highlight: true,
+    entries: [
+      { tag: 'New', text: 'Full universal circuit builder' },
+      { tag: 'New', text: 'Vertical spring oscillator' },
+      { tag: 'New', text: 'Pendulum simulator' },
+      { tag: 'New', text: 'Standing waves simulator' },
+      { tag: 'New', text: 'Pressure point simulator' },
+      { tag: 'New', text: 'Buoyancy simulator' },
+      { tag: 'New', text: 'Ideal gas law simulator' },
+      { tag: 'New', text: 'Fluid flow simulator' },
+      { tag: 'New', text: 'Bernoulli flow simulator' },
+      { tag: 'Improved', text: 'Added 2 new tracks in the simulations section' },
+      { tag: 'Fixed', text: 'New Landing Page' },
+
+
+    ],
+  },
+  {
     version: '1.2.0',
-    date: 'May 2025',
+    date: 'May 2026',
     title: 'Rotational Dynamics Suite',
     summary: 'A full set of rotational physics simulations and a redesigned landing page.',
     highlight: true,
@@ -49,7 +71,7 @@ const RELEASES: Release[] = [
   },
   {
     version: '1.1.0',
-    date: 'Spring 2025',
+    date: 'Spring 2026',
     title: 'E&M Expansion + 3D Visualizations',
     summary: 'Added advanced electromagnetism simulations and a full 3D wave equation renderer.',
     entries: [

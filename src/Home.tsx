@@ -260,6 +260,10 @@ export function Home() {
 
   const featuredSimPath = adminControls.contentOverrides.featuredSimPath || '/dashboard';
 
+  if (adminControls.bugTestControls.forceHomeError) {
+    throw new Error('[Admin] Forced home error — triggered from admin panel bug/test controls.');
+  }
+
   return (
     <div className="bg-[#030507] text-white min-h-screen">
       {adminControls.announcement.enabled ? (
@@ -294,7 +298,11 @@ export function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <HalideLanding />
+      <HalideLanding
+        title={adminControls.contentOverrides.homeHeroTitle}
+        subtitle={adminControls.contentOverrides.homeHeroSubtitle}
+        tagline={adminControls.contentOverrides.homeHeroTagline}
+      />
 
       {/* Stats Section */}
       <motion.section
@@ -307,8 +315,8 @@ export function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-16">
             {[
-              { label: '25+', desc: 'Simulations' },
-              { label: '3', desc: 'Physics Tracks' },
+              { label: '45+', desc: 'Simulations' },
+              { label: '5', desc: 'Physics Tracks' },
               { label: 'FREE', desc: 'Forever' },
             ].map((stat, i) => (
               <motion.div

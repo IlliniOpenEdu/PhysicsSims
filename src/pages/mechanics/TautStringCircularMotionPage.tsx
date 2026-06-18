@@ -409,7 +409,8 @@ export function TautStringCircularMotionPage() {
             step={0.1}
             value={controls.massKg}
             onChange={(massKg) => setControls((prev) => ({ ...prev, massKg }))}
-            syncToUrl={false}
+            syncToUrl={true}
+            queryKey="m"
           />
 
           <SliderWithInput
@@ -420,7 +421,8 @@ export function TautStringCircularMotionPage() {
             step={0.1}
             value={controls.radiusM}
             onChange={(radiusM) => setControls((prev) => ({ ...prev, radiusM }))}
-            syncToUrl={false}
+            syncToUrl={true}
+            queryKey="r"
           />
 
           <div className="rounded-lg border border-slate-800 bg-slate-900/70 p-3">
@@ -476,7 +478,8 @@ export function TautStringCircularMotionPage() {
                 setControls((prev) => ({ ...prev, omega }));
                 setInitialLinearSpeed(omega * controls.radiusM);
               }}
-              syncToUrl={false}
+              syncToUrl={true}
+              queryKey="omega0"
             />
           ) : (
             <SliderWithInput
@@ -492,7 +495,8 @@ export function TautStringCircularMotionPage() {
                 const omega = clamp(clampedV0 / Math.max(0.1, controls.radiusM), 0, MAX_OMEGA);
                 setControls((prev) => ({ ...prev, omega }));
               }}
-              syncToUrl={false}
+              syncToUrl={true}
+              queryKey="v0"
             />
           )}
 
@@ -545,7 +549,8 @@ export function TautStringCircularMotionPage() {
               step={0.1}
               value={controls.gravity}
               onChange={(gravity) => setControls((prev) => ({ ...prev, gravity }))}
-              syncToUrl={false}
+              syncToUrl={true}
+              queryKey="g"
             />
           ) : null}
         </section>
