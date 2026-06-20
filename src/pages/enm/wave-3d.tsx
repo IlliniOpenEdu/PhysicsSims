@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { WaveControls, WaveScene } from '../../components/wave3d';
-import { useWaveClock } from '../../hooks/useWaveTime';
+import { useWaveClock } from '../../hooks/wave/useWaveTime';
 import type { EMDisplayMode, NavigationMode, WaveMode, WaveParams } from '../../lib/enm/waveEq/types';
 
 const DEFAULT_EM_PARAMS: WaveParams = {

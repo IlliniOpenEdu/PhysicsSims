@@ -8,7 +8,7 @@ import { RingViewCanvas } from '../../components/collider/RingViewCanvas';
 import { TunnelViewCanvas } from '../../components/collider/TunnelViewCanvas';
 import { VideoExplain } from '../../components/videoExplain';
 import { COLLIDER_LABEL } from '../../lib/enm/collider/constants';
-import { useColliderSimulation } from '../../hooks/useColliderSimulation';
+import { useColliderSimulation } from '../../hooks/lhc/useColliderSimulation';
 
 type EducationTab = 'how' | 'magnets' | 'acceleration' | 'collisions' | 'detectors';
 

@@ -45,6 +45,11 @@ const magnetismSims: SimLink[] = [
     description: 'Visualize magnetic field patterns around sources and inspect direction and magnitude.',
   },
   {
+    to: '/mag-field-3d',
+    title: '3D Magnetic Fields',
+    description: 'Explore the 3D field shape around a wire, solenoid, current loop, and two parallel wires in real time.',
+  },
+  {
     to: '/faradays-law',
     title: "Faraday's Law Simulator",
     description: 'See induced EMF emerge from changing magnetic flux through a loop.',

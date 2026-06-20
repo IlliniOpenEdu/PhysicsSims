@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SliderWithInput } from '../../components/SliderWithInput';
+import { formatSI, formatAuto } from '@/utils/formatters'
 
 type Vec2 = { x: number; y: number };
 
@@ -153,7 +154,7 @@ export function OrbitalMotionPage() {
     const path = points
       .map((p, idx) => {
         const s = worldToSvg(p);
-        return `${idx === 0 ? 'M' : 'L'} ${s.x.toFixed(2)} ${s.y.toFixed(2)}`;
+        return `${idx === 0 ? 'M' : 'L'} ${formatSI(s.x, 'm', 2)} ${formatSI(s.y, 'm', 2)}`;
       })
       .join(' ');
     setTrailSvg(path);
@@ -360,7 +361,7 @@ export function OrbitalMotionPage() {
             <DataRow label="|a|" value={`${formatSci(snapshot.acceleration)} m/s²`} />
             <DataRow label="Orbit type" value={snapshot.orbitType} />
             <DataRow label="Specific energy" value={`${formatSci(snapshot.energy)} J/kg`} />
-            <DataRow label="Sim time" value={`${(snapshot.simTime / 86400).toFixed(2)} days`} />
+            <DataRow label="Sim time" value={formatAuto(snapshot.simTime / 86400, 'days')} />
             <DataRow label="Status" value={snapshot.crashed ? 'Crashed into central body' : 'In flight'} />
           </div>
         </section>

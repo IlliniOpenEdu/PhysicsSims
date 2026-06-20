@@ -3,7 +3,7 @@ import type { RefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3 } from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
-import { useKeyboardCamera } from '../../hooks/useKeyboardCamera';
+import { useKeyboardCamera } from '../../hooks/wave/useKeyboardCamera';
 import type { NavigationMode } from '../../lib/enm/waveEq/types';
 
 type WaveCameraControllerProps = {

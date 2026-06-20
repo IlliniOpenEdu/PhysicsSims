@@ -6,7 +6,7 @@ import { loadAdminState, type AdminControlState } from '../config/internalAdmin'
 const base = import.meta.env.BASE_URL;
 const PREVIEW_FALLBACK = `${base}thumbnails/preview.png`;
 
-type Track = 'mechanics' | 'enm' | 'statics' | 'oscillations' | 'fluids';
+type Track = 'mechanics' | 'enm' | 'statics' | 'oscillations' | 'fluids' | 'thermodynamics';
 type SimItem = {
   title: string;
   path: string;
@@ -33,40 +33,50 @@ const SIMS: SimItem[] = [
   { track: 'mechanics', title: '1D Collision', path: '/momentum-collision-1d', description: 'Elastic and inelastic 1D collisions with live momentum tracking.', preview: `${base}thumbnails/1d.png` },
   { track: 'mechanics', title: '2D Collisions', path: '/momentum-collision-2d', description: 'Elastic disks in a square arena with per-ball Σpₓ, Σpᵧ readouts.', preview: `${base}thumbnails/2d.png` },
   { track: 'mechanics', title: 'Taut String Circular Motion', path: '/rotational-taut-string', description: 'Explore circular motion with tension, speed, radius, and centripetal force.', preview: `${base}thumbnails/rotational.png` },
-  { track: 'mechanics', title: 'Angular Motion Builder', path: '/rotational-angular-motion-builder', description: 'Build rotating systems and inspect angular velocity, acceleration, and torque.', preview: PREVIEW_FALLBACK },
-  { track: 'mechanics', title: 'Orbital Motion', path: '/orbital-motion', description: 'Model orbiting bodies and see how gravity shapes trajectories.', preview: `${base}/thumbnails/orbital.png` },
+  { track: 'mechanics', title: 'Angular Motion Builder', path: '/rotational-angular-motion-builder', description: 'Build rotating systems and inspect angular velocity, acceleration, and torque.', preview: `${base}thumbnails/rotational.png` },
+  { track: 'mechanics', title: 'Orbital Motion', path: '/orbital-motion', description: 'Model orbiting bodies and see how gravity shapes trajectories.', preview: `${base}thumbnails/orbit.png` },
   { track: 'mechanics', title: 'Rotating Object Builder', path: '/rotational-dynamics-rotating-object-builder', description: 'Adjust mass placement and watch the moment of inertia and angular response change.', preview: `${base}thumbnails/rotational.png` },
-  { track: 'mechanics', title: 'Bullet-Disk Collision', path: '/rotational-dynamics-bullet-disk-collision', description: 'Compare angular momentum transfer in a bullet striking a rotating disk.', preview: PREVIEW_FALLBACK },
-  { track: 'mechanics', title: 'Torque Seesaw', path: '/rotational-dynamics-torque-seesaw', description: 'Balance torques on a seesaw and find equilibrium conditions.', preview: PREVIEW_FALLBACK },
-  { track: 'mechanics', title: 'Active Torque Disk', path: '/rotational-dynamics-active-torque-disk', description: 'Apply torque to a disk and watch the rotational dynamics update live.', preview: PREVIEW_FALLBACK },
-  { track: 'mechanics', title: 'Rolling Without Slipping', path: '/rolling-energy-split', description: 'Roll on a no-slip ramp: PE splits into translational and rotational KE (v = ωr).', preview: PREVIEW_FALLBACK },
-  { track: 'oscillations', title: 'Vertical Spring Oscillator', path: '/oscillations-vertical-spring', description: 'Vertical SHM: spring stretches to equilibrium, then oscillates with live forces and energy.', preview: PREVIEW_FALLBACK },
-  { track: 'oscillations', title: 'Pendulum Motion Explorer', path: '/oscillations-pendulum', description: 'Simple pendulum: release angle or height, watch period, tension, and energy exchange.', preview: PREVIEW_FALLBACK },
-  { track: 'oscillations', title: 'Wave Generator', path: '/oscillations-wave-generator', description: 'Traveling transverse wave: amplitude, frequency, speed, crests, and v = fλ.', preview: PREVIEW_FALLBACK },
-  { track: 'oscillations', title: 'Standing Waves', path: '/oscillations-standing-waves', description: 'Fixed-fixed string: harmonics, nodes, antinodes, and resonance peaks.', preview: PREVIEW_FALLBACK },
-  { track: 'fluids', title: 'Pressure Point Explorer', path: '/pressure-point-explorer', description: 'Interactive P = F/A: drag contact points on paper, live heatmap, real-world presets.', preview: PREVIEW_FALLBACK },
-  { track: 'fluids', title: 'Buoyancy Explorer', path: '/buoyancy-explorer', description: 'Archimedes principle: block in water tank, buoyant force, density, float or sink.', preview: PREVIEW_FALLBACK },
-  { track: 'fluids', title: 'Ideal Gas Law Explorer', path: '/ideal-gas-law-explorer', description: 'Particle gas in a piston cylinder: discover PV = nRT from wall collisions.', preview: PREVIEW_FALLBACK },
-  { track: 'fluids', title: 'Fluid Flow Explorer', path: '/fluid-flow-explorer', description: 'Continuity equation A₁v₁ = A₂v₂: flowing particles in a tapering pipe.', preview: PREVIEW_FALLBACK },
-  { track: 'fluids', title: 'Bernoulli Flow Explorer', path: '/bernoulli-flow-explorer', description: 'Bernoulli equation with sloping pipe, pressure-colored flow, and energy profiles.', preview: PREVIEW_FALLBACK },
+  { track: 'mechanics', title: 'Bullet-Disk Collision', path: '/rotational-dynamics-bullet-disk-collision', description: 'Compare angular momentum transfer in a bullet striking a rotating disk.', preview: `${base}thumbnails/bullet-disc.png` },
+  { track: 'mechanics', title: 'Torque Seesaw', path: '/rotational-dynamics-torque-seesaw', description: 'Balance torques on a seesaw and find equilibrium conditions.', preview: `${base}thumbnails/beambalance.png` },
+  { track: 'mechanics', title: 'Active Torque Disk', path: '/rotational-dynamics-active-torque-disk', description: 'Apply torque to a disk and watch the rotational dynamics update live.', preview: `${base}thumbnails/rotational.png` },
+  { track: 'mechanics', title: 'Rolling Without Slipping', path: '/rolling-energy-split', description: 'Roll on a no-slip ramp: PE splits into translational and rotational KE (v = ωr).', preview: `${base}thumbnails/ball-slope.png` },
   { track: 'mechanics', title: 'Rotational Dynamics', path: '/rotational-dynamics', description: 'Torque, moment of inertia, and angular acceleration with a draggable mass on a rotating arm.', preview: `${base}thumbnails/rotational.png` },
+
+  // Oscillations
+  { track: 'oscillations', title: 'Vertical Spring Oscillator', path: '/oscillations-vertical-spring', description: 'Vertical SHM: spring stretches to equilibrium, then oscillates with live forces and energy.', preview: `${base}thumbnails/ball-spring.png` },
+  { track: 'oscillations', title: 'Pendulum Motion Explorer', path: '/oscillations-pendulum', description: 'Simple pendulum: release angle or height, watch period, tension, and energy exchange.', preview: `${base}thumbnails/pendulum.png` },
+  { track: 'oscillations', title: 'Wave Generator', path: '/oscillations-wave-generator', description: 'Traveling transverse wave: amplitude, frequency, speed, crests, and v = fλ.', preview: `${base}thumbnails/wave.png` },
+  { track: 'oscillations', title: 'Standing Waves', path: '/oscillations-standing-waves', description: 'Fixed-fixed string: harmonics, nodes, antinodes, and resonance peaks.', preview: `${base}thumbnails/wave.png` },
+  { track: 'oscillations', title: 'Frequency Generator', path: '/frequency-generator', description: 'Generate sine tones or detect microphone pitch with FFT and a live waveform visualizer.', preview: `${base}thumbnails/wave.png` },
+  
+  // Fluids
+  { track: 'fluids', title: 'Pressure Point Explorer', path: '/pressure-point-explorer', description: 'Interactive P = F/A: drag contact points on paper, live heatmap, real-world presets.', preview: PREVIEW_FALLBACK },
+  { track: 'fluids', title: 'Buoyancy Explorer', path: '/buoyancy-explorer', description: 'Archimedes principle: block in water tank, buoyant force, density, float or sink.', preview: `${base}thumbnails/buoyancy.png` },
+  { track: 'fluids', title: 'Ideal Gas Law Explorer', path: '/ideal-gas-law-explorer', description: 'Particle gas in a piston cylinder: discover PV = nRT from wall collisions.', preview: `${base}thumbnails/ideal-gas.png` },
+  { track: 'fluids', title: 'Fluid Flow Explorer', path: '/fluid-flow-explorer', description: 'Continuity equation A₁v₁ = A₂v₂: flowing particles in a tapering pipe.', preview: `${base}thumbnails/pipe.png` },
+  { track: 'fluids', title: 'Bernoulli Flow Explorer', path: '/bernoulli-flow-explorer', description: 'Bernoulli equation with sloping pipe, pressure-colored flow, and energy profiles.', preview: `${base}thumbnails/pipe.png` },
+  
   // E&M
-  { track: 'enm', title: 'Universal Circuit Builder', path: '/universal-circuit-builder', description: 'Build any DC/AC circuit and solve it live with Modified Nodal Analysis — Ohm, Kirchhoff, RC/RL/RLC transients, and frequency sweeps.', preview: PREVIEW_FALLBACK, featured: true },
+  { track: 'enm', title: 'Universal Circuit Builder', path: '/universal-circuit-builder', description: 'Build any DC/AC circuit and solve it live with Modified Nodal Analysis — Ohm, Kirchhoff, RC/RL/RLC transients, and frequency sweeps.', preview: `${base}thumbnails/circuit.png`, featured: true },
   { track: 'enm', title: 'Large Hadron Collider', path: '/lhc', description: 'Simulate particle beam collisions in the LHC — real-time ring and tunnel views.', preview: `${base}thumbnails/LCH.png`, featured: true },
   { track: 'enm', title: 'Wave Equation 3D', path: '/wave-3d', description: 'Real-time 3D wave equation visualization with camera orbit, mode switching, and live parameter control.', preview: `${base}thumbnails/wave.png`, featured: true },
-  { track: 'enm', title: "Coulomb's Law Explorer", path: '/columbs-law', description: 'Map field lines and force vectors around charges in real time.', preview: `${base}thumbnails/columbs.png` },
+  { track: 'enm', title: "Coulomb's Law Explorer", path: '/coulombs-law', description: 'Map field lines and force vectors around charges in real time.', preview: `${base}thumbnails/coulombs.png` },
   { track: 'enm', title: "Gauss's Law Visualizer", path: '/gauss-law', description: 'Explore electric flux and field distributions for different charge configurations.', preview: `${base}thumbnails/gauss.png` },
   { track: 'enm', title: "Maxwell's Equations", path: '/maxwell', description: 'Interactively visualize the interplay of electric and magnetic fields.', preview: `${base}thumbnails/maxwell.png` },
   { track: 'enm', title: "Ampere's Law Simulator", path: '/amperes-law', description: 'Analyze current loops and their magnetic fields in cross-sectional area.', preview: `${base}thumbnails/ampere.png` },
   { track: 'enm', title: "Faraday's Law Simulator", path: '/faradays-law', description: 'Visualize changing magnetic flux and induced EMF.', preview: `${base}thumbnails/faraday.png` },
   { track: 'enm', title: 'RC Circuit Lab', path: '/rc-circuit', description: 'Explore capacitor charging and discharging with live voltage and current scopes.', preview: `${base}thumbnails/RC.png` },
   { track: 'enm', title: 'Magnetic Field Simulator', path: '/mag-field', description: 'Visualize magnetic fields around point charges and magnets.', preview: `${base}thumbnails/mag.png` },
+  { track: 'enm', title: '3D Magnetic Fields', path: '/mag-field-3d', description: 'Explore the full 3D field around a wire, solenoid, current loop, and parallel wires with live field lines and a test compass.', preview: `${base}thumbnails/mag.png` },
   { track: 'enm', title: 'Capacitor Lab', path: '/capacitor', description: 'Understand how capacitors store charge and energy.', preview: `${base}thumbnails/capacitor.png` },
   { track: 'enm', title: 'Optics Simulator', path: '/optics', description: 'Explore light properties including wavelength, polarization, and interference.', preview: `${base}thumbnails/light.png` },
 
   // Statics
   { track: 'statics', title: 'Beam Balance Simulator', path: '/beam-balance', description: 'Explore torque and equilibrium with a virtual beam balance.', preview: `${base}thumbnails/beambalance.png`, featured: true },
   { track: 'statics', title: 'Beam Load Analyzer', path: '/distributed-load', description: 'Set end supports, apply forces and moments, then inspect reactions, shear, and moment diagrams.', preview: `${base}thumbnails/beam.png` },
+  { track: 'statics', title:"Free Body Diagram Builder", path: '/free-body-diagram', description: 'Construct free body diagrams with adjustable forces, angles, and friction.', preview: `${base}thumbnails/forces.png` },
+
+  { track: 'thermodynamics', title: 'Heat Transfer Simulator', path: '/heat-transfer', description: 'Simulate heat conduction, convection, and radiation with adjustable materials and temperatures.', preview: `${base}thumbnails/heat.png` },
 ];
 
 const TRACKS = {
@@ -111,9 +121,19 @@ const TRACKS = {
     glow: 'rgba(251,191,36,0.06)',
   },
 
+  thermodynamics: {
+    label: 'Thermodynamics',
+    dot: 'bg-violet-400',
+    text: 'text-violet-400',
+    borderL: 'border-l-violet-500',
+    chip: 'bg-violet-400/10 text-violet-300 ring-1 ring-violet-400/25',
+    glow: 'rgba(139,92,246,0.06)',
+  },
+
 } as const;
 
 type FilterTrack = Track | 'all';
+const FILTER_TRACKS: FilterTrack[] = ['all', 'mechanics', 'fluids', 'oscillations', 'enm', 'statics', 'thermodynamics'];
 
 function SimCard({ sim, index }: { sim: SimItem; index: number }) {
   const t = TRACKS[sim.track];
@@ -184,13 +204,14 @@ export function Dashboard() {
     [adminControls.simulationVisibility],
   );
 
-  const counts = useMemo(() => ({
+  const counts = useMemo<Record<FilterTrack, number>>(() => ({
     all: visibleSims.length,
     mechanics: visibleSims.filter((s) => s.track === 'mechanics').length,
     enm:       visibleSims.filter((s) => s.track === 'enm').length,
     statics:   visibleSims.filter((s) => s.track === 'statics').length,
     oscillations: visibleSims.filter((s) => s.track === 'oscillations').length,
     fluids: visibleSims.filter((s) => s.track === 'fluids').length,
+    thermodynamics: visibleSims.filter((s) => s.track === 'thermodynamics').length,
   }), [visibleSims]);
 
   const filtered = useMemo(() => {
@@ -249,6 +270,10 @@ export function Dashboard() {
               <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
               <span className="text-amber-300/60">{counts.fluids} Fluids</span>
             </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
+              <span className="text-violet-300/60">{counts.thermodynamics} Thermodynamics</span>
+            </span>
           </div>
         </motion.div>
 
@@ -261,7 +286,7 @@ export function Dashboard() {
         >
           {/* Track tabs */}
           <div className="flex items-center gap-0.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-1">
-            {(['all', 'mechanics', 'fluids', 'oscillations', 'enm', 'statics'] as FilterTrack[]).map((t) => {
+            {FILTER_TRACKS.map((t) => {
               const isActive = activeTrack === t;
               const label = t === 'all' ? 'All' : TRACKS[t].label;
               const dot = t === 'all' ? 'bg-slate-400' : TRACKS[t].dot;

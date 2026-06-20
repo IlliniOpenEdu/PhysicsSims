@@ -22,7 +22,7 @@ export function Privacy() {
 
 				<section className="mt-8 space-y-8 text-sm leading-relaxed text-slate-300">
 					<p>
-						This Privacy Notice for OpenIlliniEdu ("we," "us," or "our") describes how and why we might access, collect, store, use, and/or share your personal information when you use our services, including when you visit our website, engage with the site in other related ways, or contact us.
+						This Privacy Notice for IlliniOpenEdu ("we," "us," or "our") describes how and why we might access, collect, store, use, and/or share your personal information when you use our services, including when you visit our website, engage with the site in other related ways, or contact us.
 					</p>
 
 					<div>

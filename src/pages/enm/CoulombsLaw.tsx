@@ -74,7 +74,7 @@ const conceptItems = [
   },
 ];
 
-export function ColumbsLaw() {
+export function CoulombsLaw() {
   const [controls, setControls] = useState<ControlsState>(DEFAULT_CONTROLS);
 
   const q1C = controls.q1 * 1e-6;

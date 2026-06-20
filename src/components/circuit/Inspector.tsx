@@ -3,6 +3,7 @@ import type { CircuitComponent } from '../../lib/circuit/types';
 import { COMPONENT_LABELS, LIMITS } from '../../lib/circuit/types';
 import { parseEng, withUnit } from '../../lib/circuit/format';
 import type { CircuitEngine, ProbeSignal } from '../../hooks/circuit/useCircuitEngine';
+import { formatDeg } from '@/utils/formatters';
 
 function LogField({
   label,
@@ -149,7 +150,7 @@ export function Inspector({
             <div className="space-y-1">
               <div className="flex items-baseline justify-between">
                 <span className="text-xs text-slate-300">Phase</span>
-                <span className="text-[0.7rem] text-slate-400">{(((comp.phase ?? 0) * 180) / Math.PI).toFixed(0)}°</span>
+                <span className="text-[0.7rem] text-slate-400">{formatDeg(comp.phase ?? 0, 0)}</span>
               </div>
               <input
                 type="range"

@@ -214,7 +214,7 @@ export function TOS() {
 
 				<section className="mt-8 space-y-8 text-sm leading-relaxed text-slate-300">
 					<p>
-						These Legal Terms constitute a binding agreement between you and OpenIlliniEdu concerning your access to and use of the Services. By accessing the Services, you agree to be bound by these Terms.
+						These Legal Terms constitute a binding agreement between you and IlliniOpenEdu concerning your access to and use of the Services. By accessing the Services, you agree to be bound by these Terms.
 					</p>
 
 					<div>

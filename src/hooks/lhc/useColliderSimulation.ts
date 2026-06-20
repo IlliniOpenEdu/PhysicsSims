@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { DEFAULT_CONTROLS } from '../lib/enm/collider/constants';
+import { DEFAULT_CONTROLS } from '../../lib/enm/collider/constants';
 import {
   createInitialBunches,
   createInitialRuntime,
   createLog,
   pushLog,
   updateSimulation,
-} from '../lib/enm/collider/physics';
-import type { ColliderControls, ColliderRuntime, ColliderSnapshot, ViewMode } from '../lib/enm/collider/types';
+} from '../../lib/enm/collider/physics';
+import type { ColliderControls, ColliderRuntime, ColliderSnapshot, ViewMode } from '../../lib/enm/collider/types';
 
 const SNAPSHOT_INTERVAL_MS = 120;
 

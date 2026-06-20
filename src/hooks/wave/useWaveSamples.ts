@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
-import { sampleElectromagneticWave } from '../lib/enm/waveEq/emWave.ts';
-import { sampleWavePoints } from '../lib/enm/waveEq/sampling.ts';
-import type { WaveMode, WaveParams } from '../lib/enm/waveEq/types.ts';
+import { sampleElectromagneticWave } from '../../lib/enm/waveEq/emWave.ts';
+import { sampleWavePoints } from '../../lib/enm/waveEq/sampling.ts';
+import type { WaveMode, WaveParams } from '../../lib/enm/waveEq/types.ts';
 
 export type WaveSamplesResult = {
   primaryPositions: Float32Array;

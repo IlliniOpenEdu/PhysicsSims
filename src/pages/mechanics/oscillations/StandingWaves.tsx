@@ -41,7 +41,7 @@ const DEFAULT_CONTROLS: ControlsState = {
 };
 
 const MIN_LENGTH = 1;
-const MAX_LENGTH = 20;
+const MAX_LENGTH = 250;
 const MIN_SPEED = 1;
 const MAX_SPEED = 100;
 const MIN_FREQUENCY = 0.1;

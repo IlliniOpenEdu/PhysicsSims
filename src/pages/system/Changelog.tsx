@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 
-type TagType = 'New' | 'Improved' | 'Fixed' | 'Removed';
+type TagType = 'New' | 'Improved' | 'Fixed' | 'Removed' | 'Featured';
 
 const TAG_STYLES: Record<TagType, string> = {
   New: 'border-blue-400/40 bg-blue-400/10 text-blue-200',
   Improved: 'border-emerald-400/40 bg-emerald-400/10 text-emerald-200',
   Fixed: 'border-amber-400/40 bg-amber-400/10 text-amber-200',
   Removed: 'border-rose-400/40 bg-rose-400/10 text-rose-200',
+  Featured: 'border-violet-400/40 bg-violet-400/10 text-violet-200',
 };
 
 function Tag({ type }: { type: TagType }) {
@@ -35,7 +36,8 @@ const RELEASES: Release[] = [
     summary: 'A full set of mechanics, electromagnetism and waves simulations.',
     highlight: true,
     entries: [
-      { tag: 'New', text: 'Full universal circuit builder' },
+      { tag: 'Featured', text: 'Full universal circuit builder' },
+      { tag: 'Featured', text: 'Free Body Diagram builder' },
       { tag: 'New', text: 'Vertical spring oscillator' },
       { tag: 'New', text: 'Pendulum simulator' },
       { tag: 'New', text: 'Standing waves simulator' },
@@ -46,6 +48,7 @@ const RELEASES: Release[] = [
       { tag: 'New', text: 'Bernoulli flow simulator' },
       { tag: 'Improved', text: 'Added 2 new tracks in the simulations section' },
       { tag: 'Fixed', text: 'New Landing Page' },
+      { tag: 'Removed', text: 'TAM211 page - not yet ready' },
 
 
     ],
@@ -55,7 +58,6 @@ const RELEASES: Release[] = [
     date: 'May 2026',
     title: 'Rotational Dynamics Suite',
     summary: 'A full set of rotational physics simulations and a redesigned landing page.',
-    highlight: true,
     entries: [
       { tag: 'New', text: 'Taut-string circular motion simulator' },
       { tag: 'New', text: 'Angular motion builder with live graphs' },
@@ -73,7 +75,7 @@ const RELEASES: Release[] = [
     version: '1.1.0',
     date: 'Spring 2026',
     title: 'E&M Expansion + 3D Visualizations',
-    summary: 'Added advanced electromagnetism simulations and a full 3D wave equation renderer.',
+    summary: 'Added advanced electromagnetism simulations and a full 3D wave equation renderer. Launched to the public for full release.',
     entries: [
       { tag: 'New', text: 'LHC particle collider simulation (ring + tunnel views)' },
       { tag: 'New', text: '3D wave equation visualizer (Three.js / R3F)' },
@@ -86,10 +88,10 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    version: '1.0.0',
+    version: '0.9.5',
     date: 'Early 2025',
     title: 'Initial Release',
-    summary: 'PhysicsSims launches publicly — 20+ mechanics and E&M simulations, all free.',
+    summary: 'PhysicsSims launches to only professors for testing',
     entries: [
       { tag: 'New', text: '1D and 2D kinematics simulators' },
       { tag: 'New', text: 'Force, friction, incline, and pulley simulators' },
@@ -102,7 +104,6 @@ const RELEASES: Release[] = [
       { tag: 'New', text: 'RC circuit and capacitor labs' },
       { tag: 'New', text: 'Beam balance and distributed load analyzers' },
       { tag: 'New', text: 'PHYS211 and TAM211 course pages' },
-      { tag: 'New', text: 'Admin panel with feature flags and visibility toggles' },
       { tag: 'New', text: 'Google Analytics integration with cookie consent' },
     ],
   },

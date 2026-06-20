@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { Link } from 'react-router-dom';
 import { SliderWithInput } from '../../components/SliderWithInput';
+import { formatSI } from '@/utils/formatters'
 
 type ComponentType = 'point' | 'sphere' | 'rod' | 'ring';
 
@@ -567,7 +568,7 @@ export function RotatingObjectBuilder() {
                 />
               )}
               <p className="mt-2 text-[0.68rem] text-slate-400">
-                Effective ω: {effectiveOmegaRadPerS.toFixed(3)} rad/s
+                Effective ω: {formatSI(effectiveOmegaRadPerS, 'rad/s', 3)}
               </p>
             </div>
             <div className="mt-2 flex items-center gap-2">

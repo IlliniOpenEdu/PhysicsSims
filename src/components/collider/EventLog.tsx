@@ -1,3 +1,4 @@
+import { formatTime } from '@/utils/formatters';
 import type { ColliderLog } from '../../lib/enm/collider/types';
 
 type EventLogProps = {
@@ -12,7 +13,7 @@ export function EventLog({ logs }: EventLogProps) {
         {logs.map((log) => (
           <div key={log.id} className="rounded-lg border border-slate-800 bg-slate-950/80 px-3 py-2">
             <p className="text-[0.62rem] uppercase tracking-[0.08em] text-slate-500">
-              {log.kind} · t+{log.time.toFixed(1)}s
+              {log.kind} · t+{formatTime(log.time)}s
             </p>
             <p className="mt-1 text-[0.74rem] text-slate-200">{log.text}</p>
           </div>

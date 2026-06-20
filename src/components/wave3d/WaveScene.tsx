@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
-import { useWaveSamples } from '../../hooks/useWaveSamples';
+import { useWaveSamples } from '../../hooks/wave/useWaveSamples';
 import type { EMDisplayMode, NavigationMode, WaveMode, WaveParams } from '../../lib/enm/waveEq/types';
 import { EMFieldVolume } from './EMFieldVolume';
 import { EMWaveGroup } from './EMWaveGroup';

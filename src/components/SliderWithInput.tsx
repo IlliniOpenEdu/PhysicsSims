@@ -1,3 +1,4 @@
+import { formatAuto } from '@/utils/formatters';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -143,7 +144,7 @@ export function SliderWithInput({
         <p className="text-slate-200 text-xs">{label}</p>
         {units && (
           <span className="text-[0.7rem] text-slate-400">
-            {value.toFixed(2)} {units}
+            {formatAuto(value, units)}
           </span>
         )}
       </div>

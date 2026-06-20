@@ -6,13 +6,28 @@ const konami = [
   "b", "a",
 ];
 
-export function initEasterEgg() {
-  console.log(
-    "%c⚛ PhysicsSims by IlliniOpenEdu\n%cBuilt during academic suffering.",
-    "color:#23E3EE;font-size:16px;font-weight:bold;",
-    "color:#94a3b8;font-size:12px;"
+
+console.log(
+    "%c⚛ PhysicsSims",
+    `
+    color:#38bdf8;
+    font-size:42px;
+    font-weight:900;
+    text-shadow:0 0 10px #38bdf8;
+  `
   );
 
+  console.log(
+    "%cSTOPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "color:#ef4444;font-size:28px;font-weight:bold;"
+  );
+
+  console.log(
+    "%cThis is a browser feature intended for developers.\nIf someone told you to paste something here, don't. \nCuz we will know and then we will come for you and we will find you and we will hurt you.",
+    "font-size:14px;color:#fbbf24;"
+  );
+
+export function initEasterEgg() {
   let index = 0;
   let enabled = false;
 

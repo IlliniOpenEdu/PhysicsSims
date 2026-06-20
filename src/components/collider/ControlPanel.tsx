@@ -1,5 +1,6 @@
 import { SliderWithInput } from '../SliderWithInput';
 import type { ColliderControls, ParticleType } from '../../lib/enm/collider/types';
+import { formatSI } from '@/utils/formatters';
 
 type ControlPanelProps = {
   controls: ColliderControls;
@@ -16,10 +17,10 @@ export function ControlPanel({ controls, onChange, isPlaying, onTogglePlay, onRe
 
       <div className="grid grid-cols-2 gap-2 rounded-xl border border-slate-700/70 bg-slate-950/70 p-2 text-[0.68rem] uppercase tracking-[0.1em] text-slate-300">
         <div className="rounded-lg border border-cyan-400/30 bg-cyan-500/10 px-2 py-1.5 text-cyan-100">
-          Energy {Math.round(controls.beamEnergy)}
+          Energy {formatSI(controls.beamEnergy, 'GeV', 3)}
         </div>
         <div className="rounded-lg border border-blue-400/30 bg-blue-500/10 px-2 py-1.5 text-blue-100">
-          Field {controls.magneticField.toFixed(1)}T
+          Field {formatSI(controls.magneticField, 'T', 3)}
         </div>
       </div>
 
