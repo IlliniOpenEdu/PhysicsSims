@@ -218,10 +218,21 @@ const HalideLanding: React.FC<HalideLandingProps> = ({
               <p>{tagline}</p>
             </div>
             <div style={{ pointerEvents: 'auto' }}>
+              {/* Mobile: icon-only arrow */}
+              <GlassButton
+                size="icon"
+                onClick={() => navigate('/dashboard')}
+                glassColor="rgba(147,197,253,0.08)"
+                className="sm:hidden text-xl"
+              >
+                →
+              </GlassButton>
+              {/* Desktop: full text */}
               <GlassButton
                 size="lg"
                 onClick={() => navigate('/dashboard')}
                 glassColor="rgba(147,197,253,0.08)"
+                className="hidden sm:inline-flex"
                 style={{ fontFamily: "'Syncopate', sans-serif", letterSpacing: '0.05em' }}
               >
                 OPEN A LAB

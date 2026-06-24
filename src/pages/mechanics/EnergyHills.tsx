@@ -685,6 +685,7 @@ export function EnergyHills() {
               controlsRef.current = { ...controlsRef.current, massKg: value };
               pushUiSnapshot();
             }}
+            queryKey="m"
           />
 
           <SliderWithInput
@@ -703,6 +704,7 @@ export function EnergyHills() {
               }
               pushUiSnapshot();
             }}
+            queryKey="Vo"
           />
 
           <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-900/60 p-3">

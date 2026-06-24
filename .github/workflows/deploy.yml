@@ -17,11 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      VITE_FORMSPREE_ENDPOINT: ${{ secrets.VITE_FORMSPREE_ENDPOINT }}
-      VITE_INTERNAL_ADMIN_ENABLED: ${{ secrets.VITE_INTERNAL_ADMIN_ENABLED }}
-      VITE_ADMIN_UN: ${{ secrets.VITE_ADMIN_UN }}
-      VITE_ADMIN_PW: ${{ secrets.VITE_ADMIN_PW }}
     steps:
       - uses: actions/checkout@v4
 
@@ -31,10 +26,15 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Build
         run: npm run build
+        env:
+          VITE_FORMSPREE_ENDPOINT: ${{ secrets.VITE_FORMSPREE_ENDPOINT }}
+          VITE_INTERNAL_ADMIN_ENABLED: ${{ secrets.VITE_INTERNAL_ADMIN_ENABLED }}
+          VITE_ADMIN_UN: ${{ secrets.VITE_ADMIN_UN }}
+          VITE_ADMIN_PW: ${{ secrets.VITE_ADMIN_PW }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

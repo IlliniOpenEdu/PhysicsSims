@@ -92,6 +92,8 @@ const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(
             .btn-liquid-${filterId}:not(:disabled):hover { transform: scale(1.03); }
           }
           .btn-liquid-${filterId}:not(:disabled):active { transform: scale(0.96); }
+
+          
         `}</style>
 
         <button

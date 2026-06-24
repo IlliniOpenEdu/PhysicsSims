@@ -110,6 +110,113 @@ function makeSyntheticWave(frequencyHz: number, phase: number) {
   return data;
 }
 
+function GainKnob({
+  value,
+  onChange,
+  min = 0,
+  max = 4,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  min?: number;
+  max?: number;
+}) {
+  const SIZE = 80;
+  const CX = SIZE / 2;
+  const CY = SIZE / 2;
+  const TRACK_R = 34;
+  const START_ANG = -135;
+  const END_ANG = 135;
+
+  const normalized = clamp((value - min) / (max - min), 0, 1);
+  const angle = START_ANG + normalized * (END_ANG - START_ANG);
+
+  const toXY = (deg: number, r: number) => {
+    const rad = (deg * Math.PI) / 180;
+    return { x: CX + r * Math.sin(rad), y: CY - r * Math.cos(rad) };
+  };
+
+  const arcD = (startDeg: number, endDeg: number, r: number) => {
+    const s = toXY(startDeg, r);
+    const e = toXY(endDeg, r);
+    const large = endDeg - startDeg > 180 ? 1 : 0;
+    return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+  };
+
+  const indicator = toXY(angle, 18);
+  const isDragging = useRef(false);
+  const lastY = useRef(0);
+  const norm = useRef(normalized);
+
+  useEffect(() => {
+    norm.current = normalized;
+  }, [normalized]);
+
+  const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    isDragging.current = true;
+    lastY.current = e.clientY;
+    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!isDragging.current) return;
+    const dy = lastY.current - e.clientY;
+    lastY.current = e.clientY;
+    const newNorm = clamp(norm.current + dy / 150, 0, 1);
+    norm.current = newNorm;
+    onChange(parseFloat((min + newNorm * (max - min)).toFixed(2)));
+  };
+
+  const onPointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+    isDragging.current = false;
+    (e.currentTarget as Element).releasePointerCapture(e.pointerId);
+  };
+
+  return (
+    <div className="flex select-none flex-col items-center gap-1">
+      <svg
+        width={SIZE}
+        height={SIZE}
+        className="touch-none cursor-grab active:cursor-grabbing"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+      >
+        <path
+          d={arcD(START_ANG, END_ANG, TRACK_R)}
+          fill="none"
+          stroke="rgba(71,85,105,0.6)"
+          strokeWidth={4}
+          strokeLinecap="round"
+        />
+        {normalized > 0.005 && (
+          <path
+            d={arcD(START_ANG, angle, TRACK_R)}
+            fill="none"
+            stroke="#22d3ee"
+            strokeWidth={4}
+            strokeLinecap="round"
+          />
+        )}
+        <circle cx={CX} cy={CY} r={26} fill="#1e293b" stroke="rgba(71,85,105,0.5)" strokeWidth={1.5} />
+        <line
+          x1={CX}
+          y1={CY}
+          x2={indicator.x.toFixed(2)}
+          y2={indicator.y.toFixed(2)}
+          stroke="#22d3ee"
+          strokeWidth={2.5}
+          strokeLinecap="round"
+        />
+        <circle cx={CX} cy={CY} r={2.5} fill="#22d3ee" />
+      </svg>
+      <span className="font-mono text-xs text-slate-400">{value.toFixed(1)}×</span>
+      <span className="text-[0.65rem] uppercase tracking-widest text-slate-500">Gain</span>
+    </div>
+  );
+}
+
 export function FrequencyGenerator() {
   const [mode, setMode] = useState<Mode>('tone');
   const [toneHz, setToneHz] = useState(440);
@@ -118,6 +225,9 @@ export function FrequencyGenerator() {
   const [micError, setMicError] = useState('');
   const [detectedHz, setDetectedHz] = useState(0);
   const [signalStrength, setSignalStrength] = useState(0);
+  const [micGain, setMicGain] = useState(1.0);
+  const [isHeld, setIsHeld] = useState(false);
+  const [heldHz, setHeldHz] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -127,6 +237,9 @@ export function FrequencyGenerator() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
   const micSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const micGainNodeRef = useRef<GainNode | null>(null);
+  const micGainRef = useRef(micGain);
+  const isHeldRef = useRef(isHeld);
   const toneHzRef = useRef(toneHz);
   const modeRef = useRef(mode);
   const isTonePlayingRef = useRef(isTonePlaying);
@@ -148,6 +261,21 @@ export function FrequencyGenerator() {
     isTonePlayingRef.current = isTonePlaying;
   }, [isTonePlaying]);
 
+  useEffect(() => {
+    micGainRef.current = micGain;
+    if (micGainNodeRef.current) {
+      micGainNodeRef.current.gain.setTargetAtTime(
+        micGain,
+        micGainNodeRef.current.context.currentTime,
+        0.015,
+      );
+    }
+  }, [micGain]);
+
+  useEffect(() => {
+    isHeldRef.current = isHeld;
+  }, [isHeld]);
+
   const getAudioContext = useCallback(() => {
     if (!audioContextRef.current) {
       audioContextRef.current = new AudioContext();
@@ -166,14 +294,17 @@ export function FrequencyGenerator() {
 
   const stopMic = useCallback(() => {
     micSourceRef.current?.disconnect();
+    micGainNodeRef.current?.disconnect();
     analyserRef.current?.disconnect();
     micStreamRef.current?.getTracks().forEach((track) => track.stop());
     micSourceRef.current = null;
+    micGainNodeRef.current = null;
     micStreamRef.current = null;
     analyserRef.current = null;
     setDetectedHz(0);
     setSignalStrength(0);
     setMicStatus('idle');
+    setIsHeld(false);
   }, []);
 
   const startTone = useCallback(async () => {
@@ -212,13 +343,17 @@ export function FrequencyGenerator() {
         },
       });
       const source = ctx.createMediaStreamSource(stream);
+      const micGainNode = ctx.createGain();
+      micGainNode.gain.value = micGainRef.current;
       const analyser = ctx.createAnalyser();
       analyser.fftSize = FFT_SIZE;
       analyser.smoothingTimeConstant = 0.72;
-      source.connect(analyser);
+      source.connect(micGainNode);
+      micGainNode.connect(analyser);
 
       micStreamRef.current = stream;
       micSourceRef.current = source;
+      micGainNodeRef.current = micGainNode;
       analyserRef.current = analyser;
       setMicStatus('listening');
     } catch (error) {
@@ -247,14 +382,18 @@ export function FrequencyGenerator() {
 
     const tick = (timestamp: number) => {
       if (modeRef.current === 'mic' && analyserRef.current) {
-        analyserRef.current.getByteTimeDomainData(timeData);
-        drawWaveform(ctx, timeData, '#22d3ee');
+        if (!isHeldRef.current) {
+          analyserRef.current.getByteTimeDomainData(timeData);
+          drawWaveform(ctx, timeData, '#22d3ee');
+        }
 
         if (timestamp - lastUiUpdate > 90) {
           lastUiUpdate = timestamp;
           const detected = detectDominantFrequency(analyserRef.current);
-          setDetectedHz(detected.frequency);
-          setSignalStrength(detected.strength);
+          if (!isHeldRef.current) {
+            setDetectedHz(detected.frequency);
+            setSignalStrength(detected.strength);
+          }
         }
       } else {
         const phase = timestamp / 180;
@@ -281,7 +420,7 @@ export function FrequencyGenerator() {
     };
   }, [stopMic, stopTone]);
 
-  const displayedFrequency = mode === 'tone' ? toneHz : detectedHz;
+  const displayedFrequency = mode === 'tone' ? toneHz : isHeld ? heldHz : detectedHz;
   const periodMs = displayedFrequency > 0 ? 1000 / displayedFrequency : 0;
 
   return (
@@ -438,6 +577,35 @@ export function FrequencyGenerator() {
               band has the largest magnitude, then a tiny parabolic correction refines the peak.
             </p>
           </div>
+
+          {mode === 'mic' && (
+            <div className="flex items-center justify-around rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-5">
+              <GainKnob value={micGain} onChange={setMicGain} />
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isHeld) {
+                      setIsHeld(false);
+                    } else {
+                      setHeldHz(detectedHz);
+                      setIsHeld(true);
+                    }
+                  }}
+                  className={`h-16 w-16 rounded-xl text-xs font-bold uppercase tracking-widest transition ${
+                    isHeld
+                      ? 'bg-cyan-400 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,0.4)]'
+                      : 'border border-slate-600 bg-slate-800 text-slate-400 hover:border-cyan-500 hover:text-cyan-300'
+                  }`}
+                >
+                  HOLD
+                </button>
+                <span className="text-[0.65rem] uppercase tracking-widest text-slate-500">
+                  {isHeld ? 'Frozen' : 'Live'}
+                </span>
+              </div>
+            </div>
+          )}
         </section>
       </main>
 

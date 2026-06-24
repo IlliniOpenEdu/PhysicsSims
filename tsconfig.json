@@ -26,6 +26,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "scripts/genModuleParams.mjs"],
   "exclude": ["src/**/__tests__/**"]
 }

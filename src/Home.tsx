@@ -142,6 +142,12 @@ function Navbar() {
             >
               GitHub
             </a>
+            <Link
+              to="/instructor"
+              className="px-4 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
+            >
+              Instructors
+            </Link>
           </div>
 
           {/* CTA Button */}
@@ -200,6 +206,12 @@ function Navbar() {
                 GitHub
               </a>
               <Link
+              to="/instructor"
+              className="block px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/[0.05] transition-all"
+            >
+              Instructors
+            </Link>
+              <Link
                 to="/dashboard"
                 className="block mt-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm font-semibold text-center"
               >
@@ -212,6 +224,8 @@ function Navbar() {
     </nav>
   );
 }
+
+const showReviews = false; // set to true to show reviews section
 
 export function Home() {
   useEffect(() => initEasterEgg(), []);
@@ -316,7 +330,7 @@ export function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-16">
             {[
               { label: '45+', desc: 'Simulations' },
-              { label: '5', desc: 'Physics Tracks' },
+              { label: '6', desc: 'Physics Tracks' },
               { label: 'FREE', desc: 'Forever' },
             ].map((stat, i) => (
               <motion.div
@@ -517,6 +531,115 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      {showReviews && (
+      <section className="relative py-32 px-4 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 select-none overflow-hidden">
+          <div className="absolute top-0 left-1/3 w-96 h-96 rounded-full bg-cyan-600/4 blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full bg-blue-600/4 blur-3xl" />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease }}
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-400/5 text-cyan-300 text-[0.7rem] font-semibold uppercase tracking-[0.25em] mb-6">
+              Reviews
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
+              What students{' '}
+              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                are saying
+              </span>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                quote: "The LHC simulation finally made particle physics click for me. I could see the beam paths and understand why the ring has to be so large.",
+                name: "Jake N.",
+                role: "Student",
+                school: "University of Illinois",
+                accent: "cyan",
+              },
+              {
+                quote: "This helped me teach the concept of magnetic flux to my students in a way that no textbook or static diagram could.",
+                name: "Prof. B. Hooberman",
+                role: "Instructor, Physics Dept.",
+                school: "UIUC",
+                accent: "blue",
+                featured: true,
+              },
+              {
+                quote: "Spent 20 minutes adjusting the solenoid turns and just watching the field lines reshape. Best study break I've ever had.",
+                name: "Marcus T.",
+                role: "Engineering freshman",
+                school: "University of Illinois",
+                accent: "purple",
+              },
+            ].map((t, i) => (
+              <motion.div
+                key={i}
+                className={`relative rounded-2xl border bg-white/[0.02] overflow-hidden group cursor-default p-6 flex flex-col gap-5 ${
+                  t.featured
+                    ? 'border-cyan-400/30 bg-cyan-400/[0.04] md:row-span-1'
+                    : 'border-white/[0.08]'
+                }`}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.55, delay: (i % 3) * 0.1, ease }}
+                whileHover={{ y: -3 }}
+              >
+                {t.featured ? (
+                  <div className="absolute inset-0 opacity-40 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(34,211,238,0.1), transparent 70%)' }}
+                  />
+                ) : null}
+
+                {/* Stars */}
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, si) => (
+                    <svg key={si} className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Quote */}
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">
+                  "{t.quote}"
+                </p>
+
+                {/* Attribution */}
+                <div className="flex items-center gap-3 pt-2 border-t border-white/[0.06]">
+                  <div
+                    className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold ${
+                      t.accent === 'cyan' ? 'bg-cyan-500/20 text-cyan-300' :
+                      t.accent === 'blue' ? 'bg-blue-500/20 text-blue-300' :
+                      t.accent === 'purple' ? 'bg-purple-500/20 text-purple-300' :
+                      'bg-emerald-500/20 text-emerald-300'
+                    }`}
+                  >
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{t.name}</p>
+                    <p className="text-[0.7rem] text-slate-500">{t.role} · {t.school}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
 
       {/* CTA Section */}
       <motion.section

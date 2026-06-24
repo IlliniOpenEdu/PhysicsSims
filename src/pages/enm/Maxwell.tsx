@@ -181,6 +181,7 @@ export function Maxwell() {
 						onChange={setEPeak}
 						units="V/m"
 						accentClass="accent-violet-400"
+						queryKey="ePeak"
 					/>
 
 					<SliderWithInput
@@ -192,6 +193,7 @@ export function Maxwell() {
 						onChange={setFrequencyMHz}
 						units="MHz"
 						accentClass="accent-violet-400"
+						queryKey="freq"
 					/>
 
 					<SliderWithInput
@@ -203,6 +205,7 @@ export function Maxwell() {
 						onChange={setPhaseDeg}
 						units="deg"
 						accentClass="accent-violet-400"
+						queryKey="phase"
 					/>
 
 					<SliderWithInput
@@ -214,6 +217,7 @@ export function Maxwell() {
 						onChange={setEpsilonR}
 						units=""
 						accentClass="accent-violet-400"
+						queryKey="epsR"
 					/>
 
 					<SliderWithInput
@@ -225,6 +229,7 @@ export function Maxwell() {
 						onChange={setMuR}
 						units=""
 						accentClass="accent-violet-400"
+						queryKey="muR"
 					/>
 
 					<div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3 text-[0.72rem] text-slate-300">

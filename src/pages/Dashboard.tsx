@@ -285,7 +285,7 @@ export function Dashboard() {
           transition={{ duration: 0.4, delay: 0.07, ease: [0.22, 1, 0.36, 1] }}
         >
           {/* Track tabs */}
-          <div className="flex items-center gap-0.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-1">
+          <div className="flex flex-wrap items-center gap-0.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-1 w-full sm:w-auto">
             {FILTER_TRACKS.map((t) => {
               const isActive = activeTrack === t;
               const label = t === 'all' ? 'All' : TRACKS[t].label;

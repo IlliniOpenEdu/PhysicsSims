@@ -195,7 +195,7 @@ function useTweenedNumber(target: number, durationMs = 300) {
 }
 
 export function Capacitor() {
-	const location = useLocation();
+	const { search } = useLocation();
 	const [driveMode, setDriveMode] = useState<DriveMode>('voltage');
 	const [areaCm2, setAreaCm2] = useState(DEFAULT_AREA);
 	const [distanceMm, setDistanceMm] = useState(DEFAULT_DISTANCE);
@@ -235,7 +235,7 @@ export function Capacitor() {
 	const energyDensityJm3 = 0.5 * permittivity * electricFieldVm * electricFieldVm;
 
 	useEffect(() => {
-		const query = new URLSearchParams(location.search);
+		const query = new URLSearchParams(search);
 		const demoTs = query.get('__demoTs');
 		if (!demoTs || demoTs === lastDemoTsRef.current) {
 			prevValuesRef.current = { areaCm2, distanceMm, dielectric, voltage };
@@ -300,7 +300,7 @@ export function Capacitor() {
 		}, 420);
 
 		prevValuesRef.current = { areaCm2, distanceMm, dielectric, voltage };
-	}, [areaCm2, dielectric, distanceMm, displayVoltage, location.search, voltage]);
+	}, [areaCm2, dielectric, distanceMm, displayVoltage, search, voltage]);
 
 	useEffect(() => {
 		const delta = displayVoltage - prevVoltageRef.current;

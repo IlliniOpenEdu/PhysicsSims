@@ -1,993 +1,727 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SliderWithInput } from '../components/SliderWithInput';
+import {
+	MODULE_PARAMS,
+	defaultParamValues,
+	resolveParamKey,
+	type ModuleParam,
+} from '../config/moduleParams';
 
-type StepInstruction = {
-	text: string;
-	params: Record<string, number>;
-	changedParams: string[];
-	prompt: string;
-};
+// Reuse the same Formspree endpoint as the footer contact form.
+const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
 
-type LessonPreset = {
-	id: string;
-	title: string;
-	simName: string;
-	simPath: string;
-	teachingGoal: string;
-	focusParams: string[];
-	defaultParams: Record<string, number>;
-	presetParams: Record<string, number>;
-	steps: StepInstruction[];
-	assignmentIdeas: string[];
-};
-
-type LauncherItem = {
-	title: string;
-	path: string;
-	note: string;
-};
-
-const launcherItems: LauncherItem[] = [
-	{ title: 'Capacitor Lab', path: '/capacitor', note: 'Electrostatics and energy storage' },
-	{ title: 'Coulomb\'s Law', path: '/columbs-law', note: 'Point-charge force behavior' },
-	{ title: 'RC Circuit Lab', path: '/rc-circuit', note: 'Time constant`s and exponential behavior' },
+type ComingSoonEntry = { label: string; track: string; eta?: string };
+const COMING_SOON: ComingSoonEntry[] = [
+	{ label: 'Charged particle in E/B fields', track: 'E&M', eta: 'Summer 2026' },
+	{ label: 'PV Diagram Explorer', track: 'Thermodynamics', eta: 'Fall 2026' },
+	{ label: 'Carnot cycle visuali1zer', track: 'Thermodynamics' },
+	{ label: 'Entropy / microstate', track: 'Thermodynamics' },
 ];
 
-const lessonPresets: LessonPreset[] = [
+// Courses mirror the PHYS nav dropdown (PHYS_LINKS in App.tsx), plus a free-text "Other".
+const COURSE_OPTIONS = ['PHYS211', 'PHYS212', 'PHYS213', 'Other'] as const;
+
+type EmbedPreset = {
+	label: string;
+	width: string;
+	height: string;
+};
+
+const EMBED_PRESETS: EmbedPreset[] = [
+	{ label: '800 × 600', width: '800', height: '600' },
+	{ label: '960 × 540', width: '960', height: '540' },
+	{ label: 'Full-width responsive', width: '100%', height: '600' },
+];
+
+type ModuleRoute = { path: string; label: string };
+type ModuleGroup = { group: string; modules: ModuleRoute[] };
+
+// Module routes pulled from ROUTE_CONFIG in App.tsx (system/index pages omitted).
+const MODULE_GROUPS: ModuleGroup[] = [
 	{
-		id: 'cap-spacing',
-		title: 'Increase spacing → lower capacitance',
-		simName: 'Capacitor Lab',
-		simPath: '/capacitor',
-		teachingGoal: 'Show that increasing plate separation d reduces C and the electric field for fixed voltage.',
-		focusParams: ['plate-spacing', 'voltage', 'plate-area'],
-		defaultParams: {
-			'plate-area': 180,
-			'plate-spacing': 5,
-			'dielectric-constant': 1,
-			voltage: 24,
-		},
-		presetParams: {
-			'plate-area': 180,
-			'plate-spacing': 10,
-			'dielectric-constant': 1,
-			voltage: 24,
-		},
-		steps: [
-			{
-				text: 'Set spacing to 5 mm and establish the baseline.',
-				params: { 'plate-area': 180, 'plate-spacing': 5, 'dielectric-constant': 1, voltage: 24 },
-				changedParams: ['plate-spacing'],
-				prompt: 'What happens to capacitance if spacing doubles?',
-			},
-			{
-				text: 'Increase spacing to 10 mm while keeping voltage fixed.',
-				params: { 'plate-area': 180, 'plate-spacing': 10, 'dielectric-constant': 1, voltage: 24 },
-				changedParams: ['plate-spacing'],
-				prompt: 'How should electric field and C respond?',
-			},
-			{
-				text: 'Raise spacing further to 12 mm to reinforce trend.',
-				params: { 'plate-area': 180, 'plate-spacing': 12, 'dielectric-constant': 1, voltage: 24 },
-				changedParams: ['plate-spacing'],
-				prompt: 'Is the relationship linear or inverse?',
-			},
-			{
-				text: 'Return to 5 mm to verify reversibility.',
-				params: { 'plate-area': 180, 'plate-spacing': 5, 'dielectric-constant': 1, voltage: 24 },
-				changedParams: ['plate-spacing'],
-				prompt: 'Does the original value restore the baseline?',
-			},
-		],
-		assignmentIdeas: [
-			'Explain what happens to C when spacing doubles and justify using the equation.',
-			'Predict the energy change if voltage is held constant and d increases.',
+		group: 'Mechanics',
+		modules: [
+			{ path: '/kinematics', label: 'Kinematics (1D)' },
+			{ path: '/kinematics-2d', label: 'Kinematics (2D)' },
+			{ path: '/forces', label: 'Force Simulator' },
+			{ path: '/gravity-friction', label: 'Gravity & Friction' },
+			{ path: '/box-incline', label: 'Box on Incline' },
+			{ path: '/spring-force', label: 'Spring Force' },
+			{ path: '/pulley-system', label: 'Pulley System' },
+			{ path: '/energy-hills', label: 'Energy Hills' },
+			{ path: '/spring-energy', label: 'Spring Energy' },
+			{ path: '/work-in-dynamics', label: 'Work in Dynamics' },
+			{ path: '/center-of-mass', label: 'Center of Mass' },
+			{ path: '/impulse-builder', label: 'Impulse Builder' },
+			{ path: '/momentum-collision-1d', label: 'Momentum Collision (1D)' },
+			{ path: '/momentum-collision-2d', label: 'Momentum Collision (2D)' },
+			{ path: '/orbital-motion', label: 'Orbital Motion' },
+			{ path: '/rotational-taut-string', label: 'Taut String Circular Motion' },
+			{ path: '/rotational-angular-motion-builder', label: 'Angular Motion Builder' },
+			{ path: '/rotational-dynamics-rotating-object-builder', label: 'Rotating Object Builder' },
+			{ path: '/rotational-dynamics-bullet-disk-collision', label: 'Bullet–Disk Collision' },
+			{ path: '/rotational-dynamics-torque-seesaw', label: 'Torque Seesaw' },
+			{ path: '/rotational-dynamics-active-torque-disk', label: 'Active Torque Disk' },
+			{ path: '/rolling-energy-split', label: 'Rolling Energy Split' },
+			{ path: '/oscillations-vertical-spring', label: 'Vertical Spring Oscillator' },
+			{ path: '/oscillations-pendulum', label: 'Pendulum Explorer' },
+			{ path: '/oscillations-wave-generator', label: 'Wave Generator' },
+			{ path: '/oscillations-standing-waves', label: 'Standing Waves' },
+			{ path: '/frequency-generator', label: 'Frequency Generator' },
+			{ path: '/free-body-diagram', label: 'Free Body Diagram' },
 		],
 	},
 	{
-		id: 'cap-dielectric',
-		title: 'Add dielectric → higher capacitance',
-		simName: 'Capacitor Lab',
-		simPath: '/capacitor',
-		teachingGoal: 'Show that larger dielectric constant k increases capacitance and charge storage at fixed voltage.',
-		focusParams: ['dielectric-constant', 'voltage', 'plate-area'],
-		defaultParams: {
-			'plate-area': 180,
-			'plate-spacing': 5,
-			'dielectric-constant': 1,
-			voltage: 24,
-		},
-		presetParams: {
-			'plate-area': 180,
-			'plate-spacing': 5,
-			'dielectric-constant': 6,
-			voltage: 24,
-		},
-		steps: [
-			{
-				text: 'Start with k = 1 and read baseline C.',
-				params: { 'plate-area': 180, 'plate-spacing': 5, 'dielectric-constant': 1, voltage: 24 },
-				changedParams: ['dielectric-constant'],
-				prompt: 'What does dielectric physically do?',
-			},
-			{
-				text: 'Raise dielectric constant to k = 3.',
-				params: { 'plate-area': 180, 'plate-spacing': 5, 'dielectric-constant': 3, voltage: 24 },
-				changedParams: ['dielectric-constant'],
-				prompt: 'How much should C increase relative to k?',
-			},
-			{
-				text: 'Increase dielectric constant to k = 6.',
-				params: { 'plate-area': 180, 'plate-spacing': 5, 'dielectric-constant': 6, voltage: 24 },
-				changedParams: ['dielectric-constant'],
-				prompt: 'How do charge dots compare to step 1?',
-			},
-			{
-				text: 'Drop back to k = 1 for contrast.',
-				params: { 'plate-area': 180, 'plate-spacing': 5, 'dielectric-constant': 1, voltage: 24 },
-				changedParams: ['dielectric-constant'],
-				prompt: 'Why is this effect reversible?',
-			},
-		],
-		assignmentIdeas: [
-			'Compare charge storage for k = 1 vs k = 6 at fixed V.',
-			'Describe one real-world device where dielectric choice matters.',
+		group: 'Pressure & Fluids',
+		modules: [
+			{ path: '/pressure-point-explorer', label: 'Pressure Point Explorer' },
+			{ path: '/buoyancy-explorer', label: 'Buoyancy Explorer' },
+			{ path: '/ideal-gas-law-explorer', label: 'Ideal Gas Law Explorer' },
+			{ path: '/fluid-flow-explorer', label: 'Fluid Flow Explorer' },
+			{ path: '/bernoulli-flow-explorer', label: 'Bernoulli Flow Explorer' },
 		],
 	},
 	{
-		id: 'cap-area',
-		title: 'Increase plate area → higher capacitance',
-		simName: 'Capacitor Lab',
-		simPath: '/capacitor',
-		teachingGoal: 'Connect geometric area A to larger charge capacity and energy storage.',
-		focusParams: ['plate-area', 'voltage'],
-		defaultParams: {
-			'plate-area': 120,
-			'plate-spacing': 5,
-			'dielectric-constant': 2,
-			voltage: 20,
-		},
-		presetParams: {
-			'plate-area': 360,
-			'plate-spacing': 5,
-			'dielectric-constant': 2,
-			voltage: 20,
-		},
-		steps: [
-			{
-				text: 'Start at area A = 120 cm^2.',
-				params: { 'plate-area': 120, 'plate-spacing': 5, 'dielectric-constant': 2, voltage: 20 },
-				changedParams: ['plate-area'],
-				prompt: 'Predict what tripling area will do to C.',
-			},
-			{
-				text: 'Increase area to A = 240 cm^2.',
-				params: { 'plate-area': 240, 'plate-spacing': 5, 'dielectric-constant': 2, voltage: 20 },
-				changedParams: ['plate-area'],
-				prompt: 'Do charge and energy also rise?',
-			},
-			{
-				text: 'Increase area to A = 360 cm^2.',
-				params: { 'plate-area': 360, 'plate-spacing': 5, 'dielectric-constant': 2, voltage: 20 },
-				changedParams: ['plate-area'],
-				prompt: 'Is the scaling close to proportional?',
-			},
-			{
-				text: 'Reset to A = 120 cm^2 to close the loop.',
-				params: { 'plate-area': 120, 'plate-spacing': 5, 'dielectric-constant': 2, voltage: 20 },
-				changedParams: ['plate-area'],
-				prompt: 'What stayed constant through all steps?',
-			},
-		],
-		assignmentIdeas: [
-			'Estimate the ratio C_large/C_small from the area ratio.',
-			'Explain why area changes charge capacity even when d is fixed.',
+		group: 'Electricity & Magnetism',
+		modules: [
+			{ path: '/coulombs-law', label: "Coulomb's Law" },
+			{ path: '/amperes-law', label: "Ampère's Law" },
+			{ path: '/maxwell', label: "Maxwell's Equations" },
+			{ path: '/faradays-law', label: "Faraday's Law" },
+			{ path: '/capacitor', label: 'Capacitor' },
+			{ path: '/rc-circuit', label: 'RC Circuit' },
+			{ path: '/gauss-law', label: "Gauss's Law" },
+			{ path: '/mag-field', label: 'Magnetic Field' },
+			{ path: '/mag-field-3d', label: 'Magnetic Field (3D)' },
+			{ path: '/lhc', label: 'LHC Collider' },
+			{ path: '/wave-3d', label: 'EM Wave (3D)' },
+			{ path: '/optics', label: 'Optics' },
+			{ path: '/universal-circuit-builder', label: 'Universal Circuit Builder' },
 		],
 	},
 	{
-		id: 'coulomb-attract',
-		title: 'Opposite charges → attraction',
-		simName: 'Coulomb\'s Law',
-		simPath: '/columbs-law',
-		teachingGoal: 'Compare attraction behavior and force magnitude for unlike charges.',
-		focusParams: ['charge-q1', 'charge-q2', 'separation-r'],
-		defaultParams: {
-			'charge-q1': 3,
-			'charge-q2': -3,
-			'separation-r': 1.2,
-		},
-		presetParams: {
-			'charge-q1': 4,
-			'charge-q2': -6,
-			'separation-r': 1.1,
-		},
-		steps: [
-			{
-				text: 'Set q1 = +4 uC and q2 = -6 uC at r = 1.1 m.',
-				params: { 'charge-q1': 4, 'charge-q2': -6, 'separation-r': 1.1 },
-				changedParams: ['charge-q1', 'charge-q2'],
-				prompt: 'What direction should each force arrow point?',
-			},
-			{
-				text: 'Decrease separation to r = 0.8 m.',
-				params: { 'charge-q1': 4, 'charge-q2': -6, 'separation-r': 0.8 },
-				changedParams: ['separation-r'],
-				prompt: 'How quickly does force magnitude grow?',
-			},
-			{
-				text: 'Increase separation to r = 1.6 m.',
-				params: { 'charge-q1': 4, 'charge-q2': -6, 'separation-r': 1.6 },
-				changedParams: ['separation-r'],
-				prompt: 'Compare this value with the previous step.',
-			},
-			{
-				text: 'Return to r = 1.1 m for summary.',
-				params: { 'charge-q1': 4, 'charge-q2': -6, 'separation-r': 1.1 },
-				changedParams: ['separation-r'],
-				prompt: 'Why are signs important but distance still dominant?',
-			},
-		],
-		assignmentIdeas: [
-			'Explain why opposite charges attract using the sign of q1*q2.',
-			'Estimate force change if separation is reduced by 20%.',
+		group: 'Statics',
+		modules: [
+			{ path: '/beam-balance', label: 'Beam Balance' },
+			{ path: '/distributed-load', label: 'Distributed Load' },
 		],
 	},
 	{
-		id: 'coulomb-repel',
-		title: 'Like charges → repulsion',
-		simName: 'Coulomb\'s Law',
-		simPath: '/columbs-law',
-		teachingGoal: 'Demonstrate repulsion with same-sign charges and compare with attraction case.',
-		focusParams: ['charge-q1', 'charge-q2', 'separation-r'],
-		defaultParams: {
-			'charge-q1': 3,
-			'charge-q2': 3,
-			'separation-r': 1.2,
-		},
-		presetParams: {
-			'charge-q1': 6,
-			'charge-q2': 5,
-			'separation-r': 1.2,
-		},
-		steps: [
-			{
-				text: 'Set q1 = +6 uC, q2 = +5 uC at r = 1.2 m.',
-				params: { 'charge-q1': 6, 'charge-q2': 5, 'separation-r': 1.2 },
-				changedParams: ['charge-q1', 'charge-q2'],
-				prompt: 'What differs from the attraction case?',
-			},
-			{
-				text: 'Increase q1 to +8 uC.',
-				params: { 'charge-q1': 8, 'charge-q2': 5, 'separation-r': 1.2 },
-				changedParams: ['charge-q1'],
-				prompt: 'Should force scale proportionally with q1?',
-			},
-			{
-				text: 'Increase q2 to +8 uC.',
-				params: { 'charge-q1': 8, 'charge-q2': 8, 'separation-r': 1.2 },
-				changedParams: ['charge-q2'],
-				prompt: 'How does matching charge strength affect force?',
-			},
-			{
-				text: 'Restore q1 = +6 uC and q2 = +5 uC.',
-				params: { 'charge-q1': 6, 'charge-q2': 5, 'separation-r': 1.2 },
-				changedParams: ['charge-q1', 'charge-q2'],
-				prompt: 'Why are magnitudes symmetric across charges?',
-			},
-		],
-		assignmentIdeas: [
-			'Contrast attraction and repulsion using one sentence and one equation.',
-			'Predict force if one charge is halved while distance is fixed.',
-		],
-	},
-	{
-		id: 'coulomb-distance-law',
-		title: 'Distance doubling → force quartering',
-		simName: 'Coulomb\'s Law',
-		simPath: '/columbs-law',
-		teachingGoal: 'Illustrate the inverse-square dependency F proportional to 1/r^2.',
-		focusParams: ['separation-r'],
-		defaultParams: {
-			'charge-q1': 4,
-			'charge-q2': -4,
-			'separation-r': 1,
-		},
-		presetParams: {
-			'charge-q1': 4,
-			'charge-q2': -4,
-			'separation-r': 2,
-		},
-		steps: [
-			{
-				text: 'Start at r = 1.0 m and note force.',
-				params: { 'charge-q1': 4, 'charge-q2': -4, 'separation-r': 1 },
-				changedParams: ['separation-r'],
-				prompt: 'Use this as F0 baseline.',
-			},
-			{
-				text: 'Increase to r = 2.0 m.',
-				params: { 'charge-q1': 4, 'charge-q2': -4, 'separation-r': 2 },
-				changedParams: ['separation-r'],
-				prompt: 'Should force be near F0/4?',
-			},
-			{
-				text: 'Increase to r = 3.0 m.',
-				params: { 'charge-q1': 4, 'charge-q2': -4, 'separation-r': 3 },
-				changedParams: ['separation-r'],
-				prompt: 'Estimate expected ratio before reading.',
-			},
-			{
-				text: 'Return to r = 1.0 m for wrap-up.',
-				params: { 'charge-q1': 4, 'charge-q2': -4, 'separation-r': 1 },
-				changedParams: ['separation-r'],
-				prompt: 'Why does small distance change dominate so strongly?',
-			},
-		],
-		assignmentIdeas: [
-			'Use inverse-square law to compute expected force ratio at r = 3r0.',
-			'Explain why distance dominates force sensitivity.',
-		],
-	},
-	{
-		id: 'rc-fast-charge',
-		title: 'Smaller RC → faster charging',
-		simName: 'RC Circuit Lab',
-		simPath: '/rc-circuit',
-		teachingGoal: 'Show that a smaller time constant tau = RC gives faster capacitor voltage rise.',
-		focusParams: ['resistance-r', 'capacitance-c', 'source-voltage'],
-		defaultParams: {
-			'resistance-r': 6800,
-			'capacitance-c': 900,
-			'source-voltage': 6,
-			'initial-capacitor-charge': 0,
-		},
-		presetParams: {
-			'resistance-r': 1000,
-			'capacitance-c': 220,
-			'source-voltage': 6,
-			'initial-capacitor-charge': 0,
-		},
-		steps: [
-			{
-				text: 'Set R = 1k and C = 220 uF.',
-				params: { 'resistance-r': 1000, 'capacitance-c': 220, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['resistance-r', 'capacitance-c'],
-				prompt: 'Predict the charging speed from tau = RC.',
-			},
-			{
-				text: 'Raise source voltage to 9 V.',
-				params: { 'resistance-r': 1000, 'capacitance-c': 220, 'source-voltage': 9, 'initial-capacitor-charge': 0 },
-				changedParams: ['source-voltage'],
-				prompt: 'Does tau change when source voltage changes?',
-			},
-			{
-				text: 'Return source voltage to 6 V.',
-				params: { 'resistance-r': 1000, 'capacitance-c': 220, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['source-voltage'],
-				prompt: 'What changed: speed, final value, or both?',
-			},
-			{
-				text: 'Increase C to 470 uF for direct contrast.',
-				params: { 'resistance-r': 1000, 'capacitance-c': 470, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['capacitance-c'],
-				prompt: 'How does larger C alter the transient?',
-			},
-		],
-		assignmentIdeas: [
-			'Compute tau for both settings and compare with the scope curves.',
-			'Explain why fast charging can be useful in switching circuits.',
-		],
-	},
-	{
-		id: 'rc-slow-charge',
-		title: 'Larger RC → slower response',
-		simName: 'RC Circuit Lab',
-		simPath: '/rc-circuit',
-		teachingGoal: 'Demonstrate how larger resistance and capacitance slow transient response.',
-		focusParams: ['resistance-r', 'capacitance-c'],
-		defaultParams: {
-			'resistance-r': 1500,
-			'capacitance-c': 220,
-			'source-voltage': 6,
-			'initial-capacitor-charge': 0,
-		},
-		presetParams: {
-			'resistance-r': 12000,
-			'capacitance-c': 1200,
-			'source-voltage': 6,
-			'initial-capacitor-charge': 0,
-		},
-		steps: [
-			{
-				text: 'Set R = 12k and C = 1200 uF.',
-				params: { 'resistance-r': 12000, 'capacitance-c': 1200, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['resistance-r', 'capacitance-c'],
-				prompt: 'How large is tau now compared with a fast case?',
-			},
-			{
-				text: 'Drop R to 6k while keeping C fixed.',
-				params: { 'resistance-r': 6000, 'capacitance-c': 1200, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['resistance-r'],
-				prompt: 'Which way does current peak move?',
-			},
-			{
-				text: 'Restore R to 12k and halve C to 600 uF.',
-				params: { 'resistance-r': 12000, 'capacitance-c': 600, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['capacitance-c'],
-				prompt: 'Can different R/C pairs create similar tau?',
-			},
-			{
-				text: 'Return to R = 12k, C = 1200 uF.',
-				params: { 'resistance-r': 12000, 'capacitance-c': 1200, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['resistance-r', 'capacitance-c'],
-				prompt: 'Summarize how R and C jointly shape dynamics.',
-			},
-		],
-		assignmentIdeas: [
-			'Estimate settling time using approximately 5*tau.',
-			'Describe a situation where slow response is desirable.',
-		],
-	},
-	{
-		id: 'rc-initial-charge',
-		title: 'Initial charge changes transient',
-		simName: 'RC Circuit Lab',
-		simPath: '/rc-circuit',
-		teachingGoal: 'Show how nonzero initial capacitor charge changes early-time behavior.',
-		focusParams: ['initial-capacitor-charge', 'source-voltage'],
-		defaultParams: {
-			'resistance-r': 4700,
-			'capacitance-c': 680,
-			'source-voltage': 6,
-			'initial-capacitor-charge': 0,
-		},
-		presetParams: {
-			'resistance-r': 4700,
-			'capacitance-c': 680,
-			'source-voltage': 6,
-			'initial-capacitor-charge': 2200,
-		},
-		steps: [
-			{
-				text: 'Start with zero initial capacitor charge.',
-				params: { 'resistance-r': 4700, 'capacitance-c': 680, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['initial-capacitor-charge'],
-				prompt: 'What is the initial capacitor voltage?',
-			},
-			{
-				text: 'Set initial charge to 2200 uC.',
-				params: { 'resistance-r': 4700, 'capacitance-c': 680, 'source-voltage': 6, 'initial-capacitor-charge': 2200 },
-				changedParams: ['initial-capacitor-charge'],
-				prompt: 'How does the curve start differently?',
-			},
-			{
-				text: 'Increase initial charge to 3200 uC.',
-				params: { 'resistance-r': 4700, 'capacitance-c': 680, 'source-voltage': 6, 'initial-capacitor-charge': 3200 },
-				changedParams: ['initial-capacitor-charge'],
-				prompt: 'Does tau change or only initial condition?',
-			},
-			{
-				text: 'Return initial charge to zero for comparison.',
-				params: { 'resistance-r': 4700, 'capacitance-c': 680, 'source-voltage': 6, 'initial-capacitor-charge': 0 },
-				changedParams: ['initial-capacitor-charge'],
-				prompt: 'Why can same circuit show different trajectories?',
-			},
-		],
-		assignmentIdeas: [
-			'Explain the role of initial conditions in first-order systems.',
-			'Predict curve change if initial charge is above final steady-state.',
-		],
+		group: 'Thermodynamics',
+		modules: [{ path: '/heat-transfer', label: 'Heat Transfer' }],
 	},
 ];
 
-function paramsToSearch(params: Record<string, number>): string {
-	const query = new URLSearchParams();
-	Object.entries(params).forEach(([key, value]) => {
-		query.set(key, String(value));
-	});
-	return query.toString();
+function getOrigin(): string {
+	return typeof window === 'undefined' ? '' : window.location.origin;
 }
 
-function withBase(path: string): string {
-	const base = import.meta.env.BASE_URL;
-	const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
-	return `${cleanBase}${path}`;
+function getCleanBase(): string {
+	const base = import.meta.env.BASE_URL ?? '/';
+	return base.endsWith('/') ? base.slice(0, -1) : base;
 }
+
+// Build the absolute site URL for a module route (no state params).
+function moduleToAbsoluteUrl(path: string): string {
+	return `${getOrigin()}${getCleanBase()}${path}`;
+}
+
+type ParamValues = Record<string, number | string | boolean>;
+
+// Build a module URL with the current inline-control values encoded as query params.
+function buildModuleUrl(path: string, params: ModuleParam[], values: ParamValues): string {
+	const url = new URL(moduleToAbsoluteUrl(path));
+	for (const param of params) {
+		const key = resolveParamKey(param);
+		const value = values[key];
+		if (value === undefined) continue;
+		if (param.kind === 'boolean') {
+			url.searchParams.set(key, value ? param.trueValue ?? '1' : param.falseValue ?? '0');
+		} else {
+			url.searchParams.set(key, String(value));
+		}
+	}
+	return url.toString();
+}
+
+// Resolve whatever the instructor typed/selected into a URL object, or null if it's unusable.
+// Accepts a full http(s) URL (with state params), or a site-relative path.
+function resolveSourceUrl(input: string): URL | null {
+	const trimmed = input.trim();
+	if (!trimmed) return null;
+	try {
+		if (/^https?:\/\//i.test(trimmed)) {
+			return new URL(trimmed);
+		}
+		const cleanBase = getCleanBase();
+		let path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+		if (cleanBase && !path.startsWith(cleanBase)) {
+			path = `${cleanBase}${path}`;
+		}
+		return new URL(`${getOrigin()}${path}`);
+	} catch {
+		return null;
+	}
+}
+
+// Add the existing ?clean=1 chrome-hiding param so the embedded iframe shows no site nav/footer.
+function buildEmbedUrl(input: string): string | null {
+	const url = resolveSourceUrl(input);
+	if (!url) return null;
+	url.searchParams.set('clean', '1');
+	return url.toString();
+}
+
+function buildIframeSnippet(src: string, width: string, height: string): string {
+	const widthAttr = width === '100%' ? '100%' : width;
+	return [
+		'<iframe',
+		`  src="${src}"`,
+		`  width="${widthAttr}"`,
+		`  height="${height}"`,
+		'  style="border:0; border-radius:12px; max-width:100%;"',
+		'  loading="lazy"',
+		'  allow="fullscreen"',
+		'  allowfullscreen',
+		'  referrerpolicy="strict-origin-when-cross-origin"',
+		'  name="physicssims-embed"',
+		'  title="PhysicsSims simulation"',
+		'></iframe>',
+	].join('\n');
+}
+
+type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
+type RequestType = 'new' | 'fix' | 'feedback';
 
 export function Instructor() {
-	const [guidedMode, setGuidedMode] = useState(false);
-	const [selectedSimPath, setSelectedSimPath] = useState(launcherItems[0]?.path ?? '/capacitor');
-	const [activeLessonId, setActiveLessonId] = useState('');
-	const [activeStepIndex, setActiveStepIndex] = useState(0);
-	const [copiedId, setCopiedId] = useState<string | null>(null);
-	const [highlightedParams, setHighlightedParams] = useState<string[]>([]);
-	const [isPlayingDemo, setIsPlayingDemo] = useState(false);
-	const [isApplyingStep, setIsApplyingStep] = useState(false);
-	const [stepFlashTick, setStepFlashTick] = useState(0);
-	const [guidedPreviewUrl, setGuidedPreviewUrl] = useState<string | null>(null);
-	const playTimerRef = useRef<number | null>(null);
-	const applyStepTimerRef = useRef<number | null>(null);
+	// ---- Embed generator state ----
+	const [sourceUrl, setSourceUrl] = useState('');
+	const [width, setWidth] = useState('800');
+	const [height, setHeight] = useState('600');
+	const [embedCopied, setEmbedCopied] = useState(false);
 
-	const visibleLessons = useMemo(
-		() => lessonPresets.filter((lesson) => lesson.simPath === selectedSimPath),
-		[selectedSimPath]
-	);
+	// Inline parameter controls (driven by the "Or pick a module" dropdown).
+	const [selectedModule, setSelectedModule] = useState('');
+	const [paramValues, setParamValues] = useState<ParamValues>({});
+	const moduleParams = selectedModule ? MODULE_PARAMS[selectedModule] ?? [] : [];
 
-	useEffect(() => {
-		if (visibleLessons.length === 0) {
-			stopPlayDemo();
-			setActiveLessonId('');
-			setActiveStepIndex(0);
-			return;
-		}
-
-		const hasExistingActive = visibleLessons.some((lesson) => lesson.id === activeLessonId);
-		if (!hasExistingActive) {
-			stopPlayDemo();
-			setActiveLessonId(visibleLessons[0].id);
-			setActiveStepIndex(0);
-		}
-	}, [activeLessonId, visibleLessons]);
-
-	useEffect(() => {
-		if (!guidedMode) {
-			stopPlayDemo();
-		}
-	}, [guidedMode]);
-
-	useEffect(() => {
-		if (!activeLesson) return;
-
-		setGuidedPreviewUrl(buildRelativeUrl(activeLesson.simPath, activeLesson.presetParams, true));
-	}, [activeLessonId, selectedSimPath]);
-
-	const activeLesson = useMemo(
-		() => visibleLessons.find((lesson) => lesson.id === activeLessonId) ?? visibleLessons[0],
-		[activeLessonId, visibleLessons]
-	);
-
-	useEffect(() => {
-		return () => {
-			if (playTimerRef.current !== null) {
-				window.clearTimeout(playTimerRef.current);
-			}
-			if (applyStepTimerRef.current !== null) {
-				window.clearTimeout(applyStepTimerRef.current);
-			}
-		};
-	}, []);
-
-	const buildRelativeUrl = (simPath: string, params: Record<string, number>, clean = false) => {
-		const search = paramsToSearch(params);
-		const basePath = withBase(simPath);
-		const query = new URLSearchParams(search);
-		if (clean) {
-			query.set('clean', '1');
-		}
-		return `${basePath}?${query.toString()}`;
+	// Pick a module: reset its controls to defaults and populate the URL field.
+	const handleModuleSelect = (path: string) => {
+		if (!path) return;
+		setSelectedModule(path);
+		const params = MODULE_PARAMS[path] ?? [];
+		const defaults = defaultParamValues(params);
+		setParamValues(defaults);
+		setSourceUrl(
+			params.length > 0 ? buildModuleUrl(path, params, defaults) : moduleToAbsoluteUrl(path)
+		);
 	};
 
-	const buildAbsoluteUrl = (simPath: string, params: Record<string, number>, clean = false) => {
-		const relative = buildRelativeUrl(simPath, params, clean);
-		if (typeof window === 'undefined') return relative;
-		return `${window.location.origin}${relative}`;
+	// Adjust one control: rebuild the URL field live.
+	const handleParamChange = (key: string, value: number | string | boolean) => {
+		const nextValues = { ...paramValues, [key]: value };
+		setParamValues(nextValues);
+		if (selectedModule) {
+			setSourceUrl(buildModuleUrl(selectedModule, moduleParams, nextValues));
+		}
 	};
 
-	const copyPresetUrl = async (lesson: LessonPreset) => {
-		const url = buildAbsoluteUrl(lesson.simPath, lesson.presetParams);
+	// Typing in the manual field wins — drop any active module/param selection.
+	const handleManualUrlChange = (value: string) => {
+		if (selectedModule) {
+			setSelectedModule('');
+			setParamValues({});
+		}
+		setSourceUrl(value);
+	};
+
+	const embedUrl = useMemo(() => buildEmbedUrl(sourceUrl), [sourceUrl]);
+	const iframeSnippet = useMemo(
+		() => (embedUrl ? buildIframeSnippet(embedUrl, width, height) : ''),
+		[embedUrl, width, height]
+	);
+
+	const applyPreset = (preset: EmbedPreset) => {
+		setWidth(preset.width);
+		setHeight(preset.height);
+	};
+
+	const copySnippet = async () => {
+		if (!iframeSnippet) return;
 		try {
-			await navigator.clipboard.writeText(url);
-			setCopiedId(lesson.id);
-			window.setTimeout(() => setCopiedId(null), 1200);
+			await navigator.clipboard.writeText(iframeSnippet);
+			setEmbedCopied(true);
+			window.setTimeout(() => setEmbedCopied(false), 1400);
 		} catch {
-			setCopiedId(null);
+			setEmbedCopied(false);
 		}
 	};
 
-	const runStep = (lesson: LessonPreset, stepIndex: number, clean = false) => {
-		const step = lesson.steps[stepIndex];
-		if (!step) return;
+	// ---- Notify me state ----
+	const [notifyEmail, setNotifyEmail] = useState('');
+	const [notifyStatus, setNotifyStatus] = useState<SubmitStatus>('idle');
 
-		const query = new URLSearchParams(paramsToSearch(step.params));
-		if (clean) {
-			query.set('clean', '1');
-		}
-		query.set('__demoStep', String(stepIndex + 1));
-		query.set('__demoTs', String(Date.now()));
-		if (step.changedParams.length > 0) {
-			query.set('__demoChanged', step.changedParams.join(','));
-		}
-		const stepUrl = `${withBase(lesson.simPath)}?${query.toString()}`;
-		setGuidedPreviewUrl(stepUrl);
-		setIsApplyingStep(true);
-		setStepFlashTick((prev) => prev + 1);
-		if (applyStepTimerRef.current !== null) {
-			window.clearTimeout(applyStepTimerRef.current);
-		}
-		applyStepTimerRef.current = window.setTimeout(() => {
-			setIsApplyingStep(false);
-			applyStepTimerRef.current = null;
-		}, 700);
-		setHighlightedParams(step.changedParams);
-		window.setTimeout(() => setHighlightedParams([]), 900);
+	// ---- Feedback form state ----
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+	const [course, setCourse] = useState<string>('');
+	const [otherCourse, setOtherCourse] = useState('');
+	const [requestType, setRequestType] = useState<RequestType>('feedback');
+	const [message, setMessage] = useState('');
+	const [status, setStatus] = useState<SubmitStatus>('idle');
+
+	const requestTypeLabel: Record<RequestType, string> = {
+		new: 'New module',
+		fix: 'Fix existing module',
+		feedback: 'General feedback',
 	};
 
-	const stopPlayDemo = () => {
-		setIsPlayingDemo(false);
-		if (playTimerRef.current !== null) {
-			window.clearTimeout(playTimerRef.current);
-			playTimerRef.current = null;
-		}
-	};
-
-	const goToStep = (nextStep: number) => {
-		if (!activeLesson) return;
-		const clamped = Math.max(0, Math.min(activeLesson.steps.length - 1, nextStep));
-		setActiveStepIndex(clamped);
-		if (guidedMode) {
-			runStep(activeLesson, clamped);
+	const handleNotifySubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const trimmed = notifyEmail.trim();
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) || !FORMSPREE_ENDPOINT) return;
+		setNotifyStatus('submitting');
+		try {
+			const response = await fetch(FORMSPREE_ENDPOINT, {
+				method: 'POST',
+				headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+				body: JSON.stringify({ 
+					title: 'New module notification', 
+					email: trimmed, 
+					_subject: 'PhysicsSims new module notification' 
+				}),
+			});
+			setNotifyStatus(response.ok ? 'success' : 'error');
+		} catch {
+			setNotifyStatus('error');
 		}
 	};
 
-	const playDemo = () => {
-		if (!activeLesson) return;
-		if (isPlayingDemo) {
-			stopPlayDemo();
-			return;
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (!message.trim() || !FORMSPREE_ENDPOINT) return;
+		setStatus('submitting');
+
+		const resolvedCourse = course === 'Other' ? otherCourse.trim() : course;
+		try {
+			const response = await fetch(FORMSPREE_ENDPOINT, {
+				method: 'POST',
+				headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: name.trim(),
+					email: email.trim(),
+					course: resolvedCourse,
+					requestType: requestTypeLabel[requestType],
+					message: message.trim(),
+					_subject: 'PhysicsSims instructor request',
+				}),
+			});
+			setStatus(response.ok ? 'success' : 'error');
+		} catch {
+			setStatus('error');
 		}
-
-		setIsPlayingDemo(true);
-		const start = Math.max(0, activeStepIndex);
-
-		const schedule = (index: number) => {
-			setActiveStepIndex(index);
-			runStep(activeLesson, index);
-
-			if (index >= activeLesson.steps.length - 1) {
-				setIsPlayingDemo(false);
-				playTimerRef.current = null;
-				return;
-			}
-
-			playTimerRef.current = window.setTimeout(() => {
-				schedule(index + 1);
-			}, 1900);
-		};
-
-		schedule(start);
 	};
 
-	useEffect(() => {
-		const onKeyDown = (event: KeyboardEvent) => {
-			if (!guidedMode) return;
-			if (!activeLesson) return;
-			if (event.altKey || event.ctrlKey || event.metaKey) return;
-			const target = event.target as HTMLElement | null;
-			const tagName = target?.tagName.toLowerCase();
-			if (tagName === 'input' || tagName === 'textarea') return;
-
-			if (event.key === 'ArrowRight') {
-				event.preventDefault();
-				goToStep(activeStepIndex + 1);
-				return;
-			}
-
-			if (event.key === 'ArrowLeft') {
-				event.preventDefault();
-				goToStep(activeStepIndex - 1);
-				return;
-			}
-
-			if (event.key.toLowerCase() === 'f') {
-				event.preventDefault();
-				runStep(activeLesson, activeStepIndex, true);
-			}
-		};
-
-		window.addEventListener('keydown', onKeyDown);
-		return () => window.removeEventListener('keydown', onKeyDown);
-	}, [activeLesson, activeStepIndex, guidedMode]);
-
-	const resetPreset = (lesson: LessonPreset) => {
-		const url = buildRelativeUrl(lesson.simPath, lesson.defaultParams);
-		window.open(url, '_self');
-	};
-
-	const currentStep = activeLesson?.steps[activeStepIndex];
-	const progressPercent = activeLesson
-		? ((activeStepIndex + 1) / Math.max(activeLesson.steps.length, 1)) * 100
-		: 0;
-
-	const previewEntries = (params: Record<string, number>) => Object.entries(params).slice(0, 4);
-
-	const paramUnit = (key: string) => {
-		if (key.includes('spacing')) return 'mm';
-		if (key.includes('area')) return 'cm^2';
-		if (key.includes('voltage')) return 'V';
-		if (key.includes('charge')) return 'uC';
-		if (key.includes('capacitance')) return 'uF';
-		if (key.includes('resistance')) return 'ohm';
-		if (key.includes('dielectric')) return '';
-		if (key.includes('separation')) return 'm';
-		return '';
-	};
-
-	const prettyKey = (key: string) =>
-		key
-			.split('-')
-			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-			.join(' ');
+	const inputClass =
+		'mt-1 w-full rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400/70';
+	const labelClass = 'block text-xs font-medium uppercase tracking-[0.14em] text-slate-300';
 
 	return (
-		<div className="mx-auto min-h-screen max-w-7xl px-4 py-8 text-slate-100 sm:px-6 lg:px-8">
-			<header className="mb-6 rounded-3xl border border-cyan-400/25 bg-[linear-gradient(145deg,rgba(8,47,73,0.45),rgba(2,6,23,0.94))] p-6 shadow-[0_22px_70px_rgba(2,6,23,0.55)]">
-				<p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Instructor Console</p>
+		<div className="mx-auto min-h-screen max-w-4xl px-4 py-10 text-slate-100 sm:px-6 lg:px-8">
+			<header className="mb-8">
+				<p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">For instructors</p>
 				<h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
-					Lesson Presets and Live Demo Tools
+					Instructor Tools
 				</h1>
-				<p className="mt-3 max-w-3xl text-sm text-slate-300 sm:text-base">
-					Use shareable preset links, guided scripts, and clean fullscreen launches for lecture projection.
-					Every preset uses URL state so students can open exactly the same simulation state.
+				<p className="mt-3 text-sm text-slate-300 sm:text-base">
+					Every module already supports fullscreen mode and URL-encoded state — adjust a simulation,
+					then bookmark or share the link to reopen it in exactly that state.
 				</p>
-				<div className="mt-5 flex flex-wrap items-center gap-3">
-					<button
-						type="button"
-						onClick={() => setGuidedMode((prev) => !prev)}
-						className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition ${guidedMode ? 'border-emerald-300/70 bg-emerald-400/15 text-emerald-100 shadow-[0_0_0_2px_rgba(16,185,129,0.22)]' : 'border-white/15 bg-white/[0.03] text-slate-200 hover:border-cyan-300/50'}`}
-					>
-						{guidedMode ? 'Guided Mode Active' : 'Enable Guided Mode'}
-					</button>
-					<Link
-						to="/"
-						className="rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-200 transition hover:border-cyan-300/60 hover:text-cyan-100"
-					>
-						Back to Home
-					</Link>
-				</div>
 			</header>
 
-			<section className="mb-6 rounded-3xl border border-white/10 bg-slate-950/70 p-5">
-				<h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">Quick simulation launcher</h2>
-				<p className="mt-2 text-sm text-slate-300">Select a lab here to show its instructor guides. Use Open or Fullscreen buttons from the guide cards below.</p>
-				<div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-					{launcherItems.map((item) => (
+			{/* Embed Generator */}
+			<section className="mb-8 rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-6">
+				<h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-200">
+					Embed generator
+				</h2>
+				<p className="mt-2 text-sm text-slate-300">
+					Paste a module link (state params included) or pick one below, choose a size, then copy the{' '}
+					<code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-amber-100">&lt;iframe&gt;</code>{' '}
+					into Canvas or smartPhysics. The embed hides this site&rsquo;s navigation automatically.
+				</p>
+
+				<div className="mt-5 grid gap-4 sm:grid-cols-2">
+					<label className={labelClass}>
+						Module URL
+						<input
+							type="text"
+							value={sourceUrl}
+							onChange={(event) => handleManualUrlChange(event.target.value)}
+							placeholder="https://… or /energy-hills?m=4.5&Vo=4.5"
+							className={inputClass}
+						/>
+					</label>
+
+					<label className={labelClass}>
+						Or pick a module
+						<select
+							value={selectedModule}
+							onChange={(event) => handleModuleSelect(event.target.value)}
+							className={inputClass}
+						>
+							<option value="">Select a simulation…</option>
+							{MODULE_GROUPS.map((group) => (
+								<optgroup key={group.group} label={group.group}>
+									{group.modules.map((module) => (
+										<option key={module.path} value={module.path}>
+											{module.label}
+										</option>
+									))}
+								</optgroup>
+							))}
+						</select>
+					</label>
+				</div>
+
+				{/* Inline parameter controls for the selected module */}
+				{selectedModule && moduleParams.length > 0 ? (
+					<div className="mt-4 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.04] p-4">
+						<p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-200">
+							Simulation parameters
+						</p>
+						<p className="mt-1 text-xs text-slate-400">
+							Adjust these to bake a starting state into the embed link above.
+						</p>
+						<div className="mt-4 grid gap-x-6 gap-y-4 sm:grid-cols-2">
+							{moduleParams.map((param) => {
+								const key = resolveParamKey(param);
+								if (param.kind === 'number') {
+									return (
+										<SliderWithInput
+											key={key}
+											label={param.label}
+											min={param.min}
+											max={param.max}
+											step={param.step}
+											value={Number(paramValues[key] ?? param.default)}
+											units={param.units}
+											syncToUrl={false}
+											onChange={(value) => handleParamChange(key, value)}
+										/>
+									);
+								}
+								if (param.kind === 'boolean') {
+									const on = Boolean(paramValues[key]);
+									return (
+										<label key={key} className={labelClass}>
+											{param.label}
+											<button
+												type="button"
+												onClick={() => handleParamChange(key, !on)}
+												className={`mt-1 w-full rounded-lg border px-3 py-2 text-left text-sm transition ${
+													on
+														? 'border-emerald-300/60 bg-emerald-400/15 text-emerald-100'
+														: 'border-white/10 bg-slate-950 text-slate-300 hover:border-cyan-300/40'
+												}`}
+											>
+												{on ? 'On' : 'Off'}
+											</button>
+										</label>
+									);
+								}
+								return (
+									<label key={key} className={labelClass}>
+										{param.label}
+										<select
+											value={String(paramValues[key] ?? param.default)}
+											onChange={(event) => handleParamChange(key, event.target.value)}
+											className={inputClass}
+										>
+											{param.options.map((option) => (
+												<option key={option.value} value={option.value}>
+													{option.label}
+												</option>
+											))}
+										</select>
+									</label>
+								);
+							})}
+						</div>
+					</div>
+				) : selectedModule ? (
+					<p className="mt-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 text-xs text-slate-400">
+						Inline controls aren&rsquo;t set up for this module yet. Either paste the URLs with settings set as you like, or pick a supported module to customize. Force Simulator, Pendulum Explorer, Energy Hills, Impulse Builder, and Momentum Collision (1D) are good ones to start with!
+					</p>
+				) : null}
+
+				<div className="mt-4 grid gap-4 sm:grid-cols-2">
+					<label className={labelClass}>
+						Width
+						<input
+							type="text"
+							value={width}
+							onChange={(event) => setWidth(event.target.value)}
+							className={inputClass}
+						/>
+					</label>
+					<label className={labelClass}>
+						Height
+						<input
+							type="text"
+							value={height}
+							onChange={(event) => setHeight(event.target.value)}
+							className={inputClass}
+						/>
+					</label>
+				</div>
+
+				<div className="mt-3 flex flex-wrap gap-2">
+					{EMBED_PRESETS.map((preset) => {
+						const active = preset.width === width && preset.height === height;
+						return (
+							<button
+								key={preset.label}
+								type="button"
+								onClick={() => applyPreset(preset)}
+								className={`rounded-full border px-3 py-1.5 text-xs font-semibold tracking-[0.04em] transition ${
+									active
+										? 'border-cyan-300/70 bg-cyan-400/15 text-cyan-100'
+										: 'border-white/15 bg-white/[0.03] text-slate-200 hover:border-cyan-300/50 hover:text-cyan-100'
+								}`}
+							>
+								{preset.label}
+							</button>
+						);
+					})}
+				</div>
+
+				<div className="mt-5">
+					<div className="mb-2 flex items-center justify-between gap-3">
+						<p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+							Embed code
+						</p>
 						<button
 							type="button"
-							key={item.path}
-							onClick={() => setSelectedSimPath(item.path)}
-							className={`w-full rounded-2xl border p-4 text-left transition ${selectedSimPath === item.path ? 'border-cyan-300/65 bg-cyan-400/12 ring-1 ring-cyan-300/35' : 'border-white/10 bg-white/[0.03] hover:border-cyan-300/40'}`}
+							onClick={copySnippet}
+							disabled={!iframeSnippet}
+							className="rounded-full border border-emerald-300/50 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-100 transition hover:bg-emerald-300/20 disabled:cursor-not-allowed disabled:opacity-40"
 						>
-							<p className="text-sm font-semibold text-slate-100">{item.title}</p>
-							<p className="mt-1 text-xs text-slate-400">{item.note}</p>
-							<p className="mt-3 text-[0.68rem] uppercase tracking-[0.12em] text-cyan-200">
-								{selectedSimPath === item.path ? 'Selected for guide panel' : 'Click to view guide presets'}
-							</p>
+							{embedCopied ? 'Copied' : 'Copy'}
 						</button>
+					</div>
+					<pre className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-950 p-4 text-xs leading-relaxed text-slate-200">
+						<code>
+							{iframeSnippet || 'Enter or select a module URL above to generate the embed code.'}
+						</code>
+					</pre>
+				</div>
+			</section>
+
+			{/* Coming Soon */}
+			<section className="mb-8 rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-6">
+				<h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-200">
+					Coming soon
+				</h2>
+				<p className="mt-2 text-sm text-slate-400">Modules currently in progress.</p>
+				<div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+					{COMING_SOON.map((item) => (
+						<div
+							key={item.label}
+							className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3"
+						>
+							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
+								{item.track}
+							</p>
+							<p className="mt-1 text-sm font-medium text-slate-200">{item.label}</p>
+							{item.eta && (
+								<span className="mt-2 inline-block rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.08em] text-amber-300">
+									{item.eta}
+								</span>
+							)}
+						</div>
 					))}
 				</div>
 			</section>
 
-			<main className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
-				<section className="space-y-4">
-					{visibleLessons.map((lesson) => {
-						const presetHref = buildRelativeUrl(lesson.simPath, lesson.presetParams);
-						const fullscreenHref = buildRelativeUrl(lesson.simPath, lesson.presetParams, true);
+			{/* Feedback / Request a Module */}
+			<section className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 sm:p-6">
+				<h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-violet-200">
+					Feedback &amp; module requests
+				</h2>
 
-						return (
-							<article key={lesson.id} className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-lg shadow-slate-950/30">
-								<div className="flex flex-wrap items-start justify-between gap-3">
-									<div>
-										<p className="text-[0.68rem] uppercase tracking-[0.18em] text-cyan-300">{lesson.simName}</p>
-										<h3 className="mt-1 text-xl font-semibold text-slate-50">{lesson.title}</h3>
-										<p className="mt-2 text-sm text-slate-300">{lesson.teachingGoal}</p>
-									</div>
-									<button
-										type="button"
-										onClick={() => {
-											setActiveLessonId(lesson.id);
-											setActiveStepIndex(0);
-										}}
-										className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] transition ${activeLesson?.id === lesson.id ? 'border-emerald-300/60 bg-emerald-400/10 text-emerald-100' : 'border-white/15 text-slate-200 hover:border-cyan-300/50'}`}
-									>
-										Select script
-									</button>
-								</div>
-
-								<div className="mt-4 flex flex-wrap gap-2">
-									{lesson.focusParams.map((param) => {
-										const isFocusedLesson = activeLesson?.id === lesson.id;
-										const isHighlighted = guidedMode && isFocusedLesson;
-										const isChangedNow = isFocusedLesson && highlightedParams.includes(param);
-										return (
-											<span
-												key={param}
-												className={`rounded-full border px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.12em] ${isChangedNow ? 'border-fuchsia-300/80 bg-fuchsia-300/18 text-fuchsia-100 shadow-[0_0_14px_rgba(232,121,249,0.35)]' : isHighlighted ? 'border-amber-300/70 bg-amber-300/15 text-amber-100' : 'border-white/10 bg-white/[0.03] text-slate-300'}`}
-											>
-												Focus: {param}
-											</span>
-										);
-									})}
-								</div>
-
-								<div className="mt-3 rounded-xl border border-white/10 bg-white/[0.02] p-3">
-									<p className="text-[0.68rem] uppercase tracking-[0.16em] text-slate-400">Preset preview values</p>
-									<div className="mt-2 flex flex-wrap gap-2">
-										{previewEntries(lesson.presetParams).map(([key, value]) => {
-											const unit = paramUnit(key);
-											return (
-												<span key={`${lesson.id}-${key}`} className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs text-slate-200">
-													{prettyKey(key)} = {value}{unit ? ` ${unit}` : ''}
-												</span>
-											);
-										})}
-									</div>
-								</div>
-
-								<div className="mt-4 flex flex-wrap gap-2">
-									<a
-										href={presetHref}
-										className="rounded-full border border-cyan-300/50 bg-cyan-400/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-cyan-100 transition hover:bg-cyan-300/20"
-									>
-										Open preset
-									</a>
-									<button
-										type="button"
-										onClick={() => copyPresetUrl(lesson)}
-										className="rounded-full border border-white/15 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-200 transition hover:border-cyan-300/50"
-									>
-										{copiedId === lesson.id ? 'Copied' : 'Copy link'}
-									</button>
-									<a
-										href={fullscreenHref}
-										target="_blank"
-										rel="noreferrer"
-										className="rounded-full border border-emerald-300/40 bg-emerald-400/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-100 transition hover:bg-emerald-300/20"
-									>
-										Open in fullscreen
-									</a>
-									<button
-										type="button"
-										onClick={() => copyPresetUrl({ ...lesson, presetParams: lesson.steps[activeStepIndex]?.params ?? lesson.presetParams })}
-										className="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-cyan-100 transition hover:bg-cyan-300/20"
-									>
-										Student view link
-									</button>
-									<button
-										type="button"
-										onClick={() => resetPreset(lesson)}
-										className="rounded-full border border-rose-300/40 bg-rose-400/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-rose-100 transition hover:bg-rose-300/20"
-									>
-										Reset to default
-									</button>
-								</div>
-
-								<div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-									<p className="text-[0.72rem] uppercase tracking-[0.2em] text-slate-400">Demo script</p>
-									<ol className="mt-2 space-y-1.5 text-sm text-slate-200">
-										{lesson.steps.map((step, index) => {
-											const isActive = guidedMode && activeLesson?.id === lesson.id && activeStepIndex === index;
-											return (
-												<li key={`${lesson.id}-step-${index}`} className={`rounded-lg px-2 py-1 ${isActive ? 'bg-amber-300/20 text-amber-100 ring-2 ring-amber-300/60 shadow-[0_0_14px_rgba(251,191,36,0.25)]' : ''}`}>
-													{index + 1}. {step.text}
-													<p className="mt-1 text-xs text-slate-400">Prompt: {step.prompt}</p>
-												</li>
-											);
-										})}
-									</ol>
-								</div>
-
-								<div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-									<p className="text-[0.72rem] uppercase tracking-[0.2em] text-slate-400">Example assignment ideas</p>
-									<ul className="mt-2 space-y-1 text-sm text-slate-300">
-										{lesson.assignmentIdeas.map((idea) => (
-											<li key={idea}>- {idea}</li>
-										))}
-									</ul>
-								</div>
-							</article>
-						);
-					})}
-					{visibleLessons.length === 0 ? (
-						<div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-300">
-							No presets are configured for this lab yet.
-						</div>
-					) : null}
-				</section>
-
-				<aside className="space-y-4">
-					<section className="rounded-3xl border border-white/10 bg-slate-950/70 p-5">
-						<h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-200">Guided mode</h2>
-						<p className="mt-2 text-sm text-slate-300">
-							Walk through one lesson script step-by-step during class. Next/Prev auto-apply step values to the embedded live preview.
-						</p>
-						{activeLesson ? (
-							<div className="mt-4 space-y-3">
-								<div className="rounded-2xl border border-cyan-300/20 bg-slate-900/80 p-3">
-									<div className="mb-2 flex items-center justify-between gap-3">
-										<div>
-											<p className="text-[0.72rem] uppercase tracking-[0.2em] text-slate-400">Live preview</p>
-											<p className="text-xs text-slate-400">This stays on the same page and updates as you step through the lesson.</p>
-										</div>
-										<span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cyan-100">
-											Clean mode
-										</span>
-									</div>
-									{(guidedPreviewUrl || activeLesson) ? (
-										<iframe
-											title={`${activeLesson.title} guided preview`}
-											src={guidedPreviewUrl ?? buildRelativeUrl(activeLesson.simPath, activeLesson.presetParams, true)}
-											className="h-72 w-full rounded-xl border border-white/10 bg-slate-950"
-											sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-											loading="lazy"
-										/>
-									) : null}
-								</div>
-								
-								<p className="text-xs uppercase tracking-[0.16em] text-slate-400">Active lesson</p>
-								<p className="text-sm font-semibold text-slate-100">{activeLesson.title}</p>
-								<div className="h-2 overflow-hidden rounded-full bg-slate-800">
-									<div className={`h-full rounded-full bg-gradient-to-r from-cyan-300 to-emerald-300 transition-all ${isApplyingStep ? 'animate-pulse' : ''}`} style={{ width: `${progressPercent}%` }} />
-								</div>
-								<p className="text-xs text-slate-400">Step {activeStepIndex + 1} / {activeLesson.steps.length}</p>
-								<div className={`rounded-xl border border-amber-300/35 bg-amber-300/10 p-3 text-sm text-amber-100 transition-all ${isApplyingStep ? 'ring-2 ring-cyan-300/60 shadow-[0_0_18px_rgba(34,211,238,0.35)]' : ''}`}>
-									Step {activeStepIndex + 1} of {activeLesson.steps.length}: {currentStep?.text}
-									<p className="mt-2 text-xs text-amber-100/90">Ask question: {currentStep?.prompt}</p>
-								</div>
-								{isApplyingStep ? (
-									<div className="rounded-lg border border-cyan-300/50 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-cyan-100 animate-pulse">
-										Applying step {activeStepIndex + 1} to demo window...
-									</div>
-								) : null}
-								<div key={stepFlashTick} className={`h-1 overflow-hidden rounded-full bg-slate-800 ${isApplyingStep ? '' : 'opacity-0'}`}>
-									<div className="h-full w-full origin-left animate-[ping_700ms_ease-out_1] bg-cyan-300/80" />
-								</div>
-								<div className="flex gap-2">
-									<button
-										type="button"
-										disabled={activeStepIndex === 0}
-										onClick={() => goToStep(activeStepIndex - 1)}
-										className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-200 disabled:opacity-40"
-									>
-										Prev
-									</button>
-									<button
-										type="button"
-										disabled={activeStepIndex >= activeLesson.steps.length - 1}
-										onClick={() => goToStep(activeStepIndex + 1)}
-										className="rounded-full border border-cyan-300/50 bg-cyan-300/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-cyan-100 disabled:opacity-40"
-									>
-										Next
-									</button>
-									<button
-										type="button"
-										onClick={playDemo}
-										className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] ${isPlayingDemo ? 'border-rose-300/60 bg-rose-400/15 text-rose-100' : 'border-emerald-300/60 bg-emerald-400/15 text-emerald-100'}`}
-									>
-										{isPlayingDemo ? 'Stop demo' : 'Play demo'}
-									</button>
-									<button
-										type="button"
-										onClick={() => runStep(activeLesson, activeStepIndex, true)}
-										className="rounded-full border border-emerald-300/50 bg-emerald-300/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-100"
-									>
-										Fullscreen current
-									</button>
-								</div>
-								<p className="text-xs text-slate-400">Shortcuts: Right arrow = next, Left arrow = prev, F = fullscreen current step.</p>
+				{/* Notify me signup */}
+				<div className="mt-4">
+					<p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">
+						New module notifications
+					</p>
+					{notifyStatus === 'success' ? (
+						<p className="mt-3 text-sm text-emerald-300">You're on the list. Prepare for frequent updates!</p>
+					) : (
+						<form onSubmit={handleNotifySubmit} className="mt-2">
+							<div className="flex gap-2">
+								<input
+									type="email"
+									required
+									value={notifyEmail}
+									onChange={(e) => setNotifyEmail(e.target.value)}
+									placeholder="your@email.edu"
+									className="flex-1 rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400/70"
+								/>
+								<button
+									type="submit"
+									disabled={notifyStatus === 'submitting' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notifyEmail.trim())}
+									className="whitespace-nowrap rounded-full border border-emerald-300/50 bg-emerald-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-emerald-100 transition hover:bg-emerald-300/20 disabled:cursor-not-allowed disabled:opacity-40"
+								>
+									{notifyStatus === 'submitting' ? 'Sending…' : 'Notify me'}
+								</button>
 							</div>
-						) : null}
-					</section>
+							{notifyStatus === 'error' && (
+								<p className="mt-2 text-xs text-rose-300">
+									Something went wrong. Please try again.
+								</p>
+							)}
+						</form>
+					)}
+				</div>
 
-					<section className="rounded-3xl border border-white/10 bg-slate-950/70 p-5">
-						<h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">Slide and projection tips</h2>
-						<ul className="mt-3 space-y-2 text-sm text-slate-300">
-							<li>- Use Open in fullscreen for clean lecture projection.</li>
-							<li>- Copy link directly into slides, Canvas, or email.</li>
-							<li>- Take a screenshot after setting a key state for static notes.</li>
-						</ul>
-					</section>
-				</aside>
-			</main>
+				<div className="my-6 border-t border-white/[0.08]" />
+
+				{status === 'success' ? (
+					<div className="mt-4 rounded-2xl border border-emerald-300/40 bg-emerald-400/10 p-5 text-sm text-emerald-100">
+						<p className="font-semibold">Thanks you, your message is on its way.</p>
+						<p className="mt-1 text-emerald-100/80">
+							We read every request. This will send an email, we&rsquo;ll follow up there.
+						</p>
+					</div>
+				) : (
+					<form onSubmit={handleSubmit} className="mt-4 space-y-4">
+						<p className="text-sm text-slate-300">
+							Request a new simulation, flag an issue with an existing one, or share general feedback.
+						</p>
+
+						<div className="grid gap-4 sm:grid-cols-2">
+							<label className={labelClass}>
+								Name <span className="text-slate-500">(optional)</span>
+								<input
+									type="text"
+									value={name}
+									onChange={(event) => setName(event.target.value)}
+									className={inputClass}
+								/>
+							</label>
+							<label className={labelClass}>
+								Email <span className="text-slate-500">(optional)</span>
+								<input
+									type="email"
+									value={email}
+									onChange={(event) => setEmail(event.target.value)}
+									className={inputClass}
+								/>
+							</label>
+						</div>
+
+						<div className="grid gap-4 sm:grid-cols-2">
+							<label className={labelClass}>
+								Course
+								<select
+									value={course}
+									onChange={(event) => setCourse(event.target.value)}
+									className={inputClass}
+								>
+									<option value="">Select a course…</option>
+									{COURSE_OPTIONS.map((option) => (
+										<option key={option} value={option}>
+											{option}
+										</option>
+									))}
+								</select>
+							</label>
+							{course === 'Other' ? (
+								<label className={labelClass}>
+									Course name
+									<input
+										type="text"
+										value={otherCourse}
+										onChange={(event) => setOtherCourse(event.target.value)}
+										placeholder="e.g. PHYS 325"
+										className={inputClass}
+									/>
+								</label>
+							) : null}
+						</div>
+
+						<fieldset>
+							<legend className={labelClass}>Request type</legend>
+							<div className="mt-2 flex flex-wrap gap-2">
+								{(Object.keys(requestTypeLabel) as RequestType[]).map((type) => {
+									const active = requestType === type;
+									return (
+										<label
+											key={type}
+											className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+												active
+													? 'border-violet-300/70 bg-violet-400/15 text-violet-100'
+													: 'border-white/15 bg-white/[0.03] text-slate-200 hover:border-violet-300/50 hover:text-violet-100'
+											}`}
+										>
+											<input
+												type="radio"
+												name="requestType"
+												value={type}
+												checked={active}
+												onChange={() => setRequestType(type)}
+												className="sr-only"
+											/>
+											{requestTypeLabel[type]}
+										</label>
+									);
+								})}
+							</div>
+						</fieldset>
+
+						<label className={labelClass}>
+							Message
+							<textarea
+								value={message}
+								onChange={(event) => setMessage(event.target.value)}
+								rows={5}
+								required
+								className={inputClass}
+							/>
+						</label>
+
+						{status === 'error' ? (
+							<p className="rounded-lg border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
+								Something went wrong sending your message. Please try again in a moment.
+							</p>
+						) : null}
+
+						<div className="flex items-center justify-end gap-3">
+							<button
+								type="submit"
+								disabled={status === 'submitting' || !message.trim() || !FORMSPREE_ENDPOINT}
+								className="rounded-full border border-cyan-300/50 bg-cyan-400/15 px-5 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-cyan-100 transition hover:bg-cyan-300/25 disabled:cursor-not-allowed disabled:opacity-40"
+							>
+								{status === 'submitting' ? 'Sending…' : 'Send'}
+							</button>
+						</div>
+					</form>
+				)}
+			</section>
+			<footer>
+					<p className="mt-12 text-center text-xs text-slate-500">
+						Questions? Reach the lead devs at <a href="mailto:bchen74@illinois.edu" className="text-cyan-400 hover:underline">bchen74@illinois.edu</a> or <a href="mailto:edoub@illinois.edu" className="text-cyan-400 hover:underline">edoub@illinois.edu</a>
+					</p>
+			</footer>
+			<div className="mt-8">
+				<Link
+					to="/"
+					className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400 transition hover:text-cyan-200"
+				>
+					← Back to home
+				</Link>
+			</div>
 		</div>
 	);
 }

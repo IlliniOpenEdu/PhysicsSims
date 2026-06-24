@@ -10,7 +10,8 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "preview": "vite preview",
-    "lint": "eslint src --ext ts,tsx"
+    "lint": "eslint src --ext ts,tsx",
+    "gen:module-params": "node scripts/genModuleParams.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.112.1",

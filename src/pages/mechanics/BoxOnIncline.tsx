@@ -121,54 +121,6 @@ function Arrow({ from, to, color, strokeWidth = 2.5, headSize = 8, opacity = 1 }
   );
 }
 
-type ControlRowProps = {
-  label: React.ReactNode;
-  queryKey?: string;
-  units?: string;
-  min: number;
-  max: number;
-  step: number;
-  value: number;
-  onChange: (value: number) => void;
-  disabled?: boolean;
-};
-
-function ControlRow({
-  label,
-  queryKey,
-  units,
-  min,
-  max,
-  step,
-  value,
-  onChange,
-  disabled = false,
-}: ControlRowProps) {
-  return (
-    <div className={`space-y-1.5 ${disabled ? 'pointer-events-none opacity-60' : ''}`}>
-      <SliderWithInput
-        label={label}
-        queryKey={queryKey}
-        units={units}
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-      />
-      <div className="flex justify-between text-[0.6rem] text-slate-500">
-        <span>
-          Min: {min} {units ?? ''}
-        </span>
-        <span>
-          Max: {max} {units ?? ''}
-        </span>
-      </div>
-    </div>
-  );
-}
-
 type MetricRowProps = {
   label: React.ReactNode;
   value: number;
@@ -1023,13 +975,13 @@ export function BoxOnIncline() {
 
           <div className="mt-3 space-y-4 text-xs">
             <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3">
-              <ControlRow
+              <SliderWithInput
                 label={
                   <span>
                     Incline Angle <span>(θ)</span>
                   </span>
                 }
-                queryKey="incline-angle"
+                queryKey="θ"
                 units="°"
                 min={0}
                 max={MAX_INCLINE_ANGLE_DEG}
@@ -1041,9 +993,9 @@ export function BoxOnIncline() {
             </div>
 
             <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3">
-              <ControlRow
+              <SliderWithInput
                 label={<span>Coefficient of Static Friction (μ<sub>s</sub>)</span>}
-                queryKey="incline-mu-s"
+                queryKey="μs"
                 units=""
                 min={0}
                 max={1}
@@ -1055,9 +1007,9 @@ export function BoxOnIncline() {
             </div>
 
             <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3">
-              <ControlRow
+              <SliderWithInput
                 label={<span>Coefficient of Kinetic Friction (μ<sub>k</sub>)</span>}
-                queryKey="incline-mu-k"
+                queryKey="μk"
                 units=""
                 min={0}
                 max={1}
