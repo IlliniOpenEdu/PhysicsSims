@@ -71,7 +71,6 @@ export const KNOWN_SIM_PATHS = [
   '/rotational-taut-string',
   '/rotational-angular-motion-builder',
   '/orbital-motion',
-  '/rotational-dynamics',
   '/rotational-dynamics-rotating-object-builder',
   '/rotational-dynamics-bullet-disk-collision',
   '/rotational-dynamics-torque-seesaw',
@@ -102,6 +101,9 @@ export const KNOWN_SIM_PATHS = [
   '/free-body-diagram',
   '/beam-balance',
   '/distributed-load',
+  '/heat-transfer',
+  '/internal-energy',
+  '/entropy',
 ] as const;
 
 const getDefaultSimulationVisibility = (): Record<string, boolean> => {

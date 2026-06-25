@@ -148,11 +148,10 @@ export function CoulombsLaw() {
             buttonLabel="Watch Video"
           />
           <Link
-            to="/"
+            to="/dashboard"
             className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-200 transition hover:border-emerald-500 hover:text-emerald-100"
           >
-            <span className="text-sm">←</span>
-            Back to welcome
+            ← Dashboard
           </Link>
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-700/60 bg-emerald-900/50 px-3 py-1 text-[0.7rem] font-medium text-emerald-100">
             Point charges · Vacuum model

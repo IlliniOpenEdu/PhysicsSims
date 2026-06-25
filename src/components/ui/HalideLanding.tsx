@@ -8,6 +8,25 @@ type HalideLandingProps = {
   tagline?: string;
 };
 
+const SIM_PATHS = [
+  '/kinematics', '/kinematics-2d', '/forces', '/gravity-friction', '/box-incline',
+  '/spring-force', '/pulley-system', '/energy-hills', '/spring-energy', '/work-in-dynamics',
+  '/center-of-mass', '/impulse-builder', '/momentum-collision-1d', '/momentum-collision-2d',
+  '/orbital-motion', '/rotational-taut-string', '/rotational-angular-motion-builder',
+  '/rotational-dynamics-rotating-object-builder', '/rotational-dynamics-bullet-disk-collision',
+  '/rotational-dynamics-torque-seesaw', '/rotational-dynamics-active-torque-disk',
+  '/rolling-energy-split', '/oscillations-vertical-spring', '/oscillations-pendulum',
+  '/oscillations-wave-generator', '/oscillations-standing-waves', '/frequency-generator',
+  '/pressure-point-explorer', '/buoyancy-explorer', '/ideal-gas-law-explorer',
+  '/fluid-flow-explorer', '/bernoulli-flow-explorer', '/coulombs-law', '/amperes-law',
+  '/maxwell', '/faradays-law', '/capacitor', '/rc-circuit', '/gauss-law',
+  '/mag-field', '/mag-field-3d', '/lhc', '/wave-3d', '/optics',
+  '/universal-circuit-builder', '/free-body-diagram', '/beam-balance',
+  '/distributed-load', '/heat-transfer', '/internal-energy',
+];
+
+const randomSim = () => SIM_PATHS[Math.floor(Math.random() * SIM_PATHS.length)];
+
 const HalideLanding: React.FC<HalideLandingProps> = ({
   title = 'REAL TIME\nPHYSICS',
   subtitle = '[ E&M · MECHANICS · STATICS ]',
@@ -197,7 +216,7 @@ const HalideLanding: React.FC<HalideLandingProps> = ({
         <div className="halide-grain" style={{ filter: 'url(#halide-grain-filter)' }} />
 
         <div className="halide-interface-grid">
-          <div style={{ fontWeight: 700 }}>ILLINI OPEN EDU</div>
+          <div style={{ fontWeight: 700 }}>UNIVERSITY OF ILLINOIS URBANA-CHAMPAIGN</div>
           <div style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--accent)', fontSize: '0.7rem' }}>
             <div>E: 13.6 TeV</div>
             <div>c: 2.998 × 10⁸ m/s</div>
@@ -219,9 +238,10 @@ const HalideLanding: React.FC<HalideLandingProps> = ({
             </div>
             <div style={{ pointerEvents: 'auto' }}>
               {/* Mobile: icon-only arrow */}
+              
               <GlassButton
                 size="icon"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate(randomSim())}
                 glassColor="rgba(147,197,253,0.08)"
                 className="sm:hidden text-xl"
               >
@@ -230,12 +250,12 @@ const HalideLanding: React.FC<HalideLandingProps> = ({
               {/* Desktop: full text */}
               <GlassButton
                 size="lg"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate(randomSim())}
                 glassColor="rgba(147,197,253,0.08)"
                 className="hidden sm:inline-flex"
                 style={{ fontFamily: "'Syncopate', sans-serif", letterSpacing: '0.05em' }}
               >
-                OPEN A LAB
+                OPEN A RANDOM LAB
               </GlassButton>
             </div>
           </div>

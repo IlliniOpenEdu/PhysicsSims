@@ -60,7 +60,7 @@ const MODULE_GROUPS: ModuleGroup[] = [
 			{ path: '/rotational-taut-string', label: 'Taut String Circular Motion' },
 			{ path: '/rotational-angular-motion-builder', label: 'Angular Motion Builder' },
 			{ path: '/rotational-dynamics-rotating-object-builder', label: 'Rotating Object Builder' },
-			{ path: '/rotational-dynamics-bullet-disk-collision', label: 'Bullet–Disk Collision' },
+			{ path: '/rotational-dynamics-bullet-disk-collision', label: 'Bullet-Disk Collision' },
 			{ path: '/rotational-dynamics-torque-seesaw', label: 'Torque Seesaw' },
 			{ path: '/rotational-dynamics-active-torque-disk', label: 'Active Torque Disk' },
 			{ path: '/rolling-energy-split', label: 'Rolling Energy Split' },
@@ -92,24 +92,21 @@ const MODULE_GROUPS: ModuleGroup[] = [
 			{ path: '/capacitor', label: 'Capacitor' },
 			{ path: '/rc-circuit', label: 'RC Circuit' },
 			{ path: '/gauss-law', label: "Gauss's Law" },
-			{ path: '/mag-field', label: 'Magnetic Field' },
-			{ path: '/mag-field-3d', label: 'Magnetic Field (3D)' },
-			{ path: '/lhc', label: 'LHC Collider' },
-			{ path: '/wave-3d', label: 'EM Wave (3D)' },
 			{ path: '/optics', label: 'Optics' },
-			{ path: '/universal-circuit-builder', label: 'Universal Circuit Builder' },
 		],
 	},
 	{
 		group: 'Statics',
 		modules: [
 			{ path: '/beam-balance', label: 'Beam Balance' },
-			{ path: '/distributed-load', label: 'Distributed Load' },
 		],
 	},
 	{
 		group: 'Thermodynamics',
-		modules: [{ path: '/heat-transfer', label: 'Heat Transfer' }],
+		modules: [
+			{ path: '/heat-transfer', label: 'Heat Transfer' },
+			{ path: '/internal-energy', label: 'Internal Energy of an Ideal Gas' }
+		],
 	},
 ];
 

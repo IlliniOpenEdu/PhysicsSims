@@ -33,11 +33,14 @@ dist-ssr
 # claude + ruflo files
 .claude
 .ruflo
+.agents
 .claude-flow
 .ruflow
 *.flow
 .mcp.json
 roots.sst
+.swarm
+ruvector.db
 
 # manim
 manim/scenes/__pycache__/

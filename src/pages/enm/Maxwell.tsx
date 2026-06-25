@@ -108,11 +108,10 @@ export function Maxwell() {
 
 				<div className="flex flex-wrap items-center gap-3">
 					<Link
-						to="/"
+						to="/dashboard"
 						className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-200 transition hover:border-violet-500 hover:text-violet-100"
 					>
-						<span className="text-sm">←</span>
-						Back to welcome
+						← Dashboard
 					</Link>
 					<button
 						type="button"

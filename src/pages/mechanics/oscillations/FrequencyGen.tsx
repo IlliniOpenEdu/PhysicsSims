@@ -442,7 +442,7 @@ export function FrequencyGenerator() {
           to="/dashboard"
           className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-200 transition hover:border-rose-400 hover:text-rose-100"
         >
-          Back to dashboard
+          ← Dashboard
         </Link>
       </header>
 

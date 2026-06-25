@@ -119,11 +119,10 @@ export function SpringForce() {
 
         <div className="flex flex-wrap items-center gap-3">
           <Link
-            to="/"
+            to="/dashboard"
             className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-100"
           >
-            <span className="text-sm">←</span>
-            Back to welcome
+            ← Dashboard
           </Link>
           <span className="inline-flex items-center gap-2 rounded-full border border-sky-700/60 bg-sky-900/60 px-3 py-1 text-[0.7rem] font-medium text-sky-100">
             Linear spring model

@@ -443,10 +443,10 @@ export function FluidFlowExplorer() {
           <span className="text-sky-300">A₁v₁ = A₂v₂</span> keeps flow rate constant.
         </p>
         <Link
-          to="/211"
+          to="/dashboard"
           className="mt-3 inline-block text-sm text-cyan-400/90 hover:text-cyan-300"
         >
-          ← Back to simulations
+          ← Dashboard
         </Link>
       </header>
 

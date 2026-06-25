@@ -40,7 +40,7 @@ const SIMS: SimItem[] = [
   { track: 'mechanics', title: 'Torque Seesaw', path: '/rotational-dynamics-torque-seesaw', description: 'Balance torques on a seesaw and find equilibrium conditions.', preview: `${base}thumbnails/beambalance.png` },
   { track: 'mechanics', title: 'Active Torque Disk', path: '/rotational-dynamics-active-torque-disk', description: 'Apply torque to a disk and watch the rotational dynamics update live.', preview: `${base}thumbnails/rotational.png` },
   { track: 'mechanics', title: 'Rolling Without Slipping', path: '/rolling-energy-split', description: 'Roll on a no-slip ramp: PE splits into translational and rotational KE (v = ωr).', preview: `${base}thumbnails/ball-slope.png` },
-  { track: 'mechanics', title: 'Rotational Dynamics', path: '/rotational-dynamics', description: 'Torque, moment of inertia, and angular acceleration with a draggable mass on a rotating arm.', preview: `${base}thumbnails/rotational.png` },
+
 
   // Oscillations
   { track: 'oscillations', title: 'Vertical Spring Oscillator', path: '/oscillations-vertical-spring', description: 'Vertical SHM: spring stretches to equilibrium, then oscillates with live forces and energy.', preview: `${base}thumbnails/ball-spring.png` },
@@ -76,7 +76,11 @@ const SIMS: SimItem[] = [
   { track: 'statics', title: 'Beam Load Analyzer', path: '/distributed-load', description: 'Set end supports, apply forces and moments, then inspect reactions, shear, and moment diagrams.', preview: `${base}thumbnails/beam.png` },
   { track: 'statics', title:"Free Body Diagram Builder", path: '/free-body-diagram', description: 'Construct free body diagrams with adjustable forces, angles, and friction.', preview: `${base}thumbnails/forces.png` },
 
+  // Thermodynamics
   { track: 'thermodynamics', title: 'Heat Transfer Simulator', path: '/heat-transfer', description: 'Simulate heat conduction, convection, and radiation with adjustable materials and temperatures.', preview: `${base}thumbnails/heat.png` },
+  { track: 'thermodynamics', title: 'Internal Energy of an Ideal Gas', path: '/internal-energy', description: 'Watch 80 ideal-gas particles bounce elastically. Adjust temperature and see U = N·(3/2)k_BT update live.', preview: `${base}thumbnails/thermo.png` },
+  { track: 'thermodynamics', title: 'Entropy Simulator', path: '/entropy', description: 'Visualize entropy changes in a system of particles with adjustable temperature and volume.', preview: `${base}thumbnails/entropy.png` },
+
 ];
 
 const TRACKS = {

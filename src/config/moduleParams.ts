@@ -102,6 +102,20 @@ const MODULE_PARAM_OVERRIDES: Record<string, ModuleParam[]> = {
   '/optics': [
     { kind: 'number', label: 'Wavelength', key: 'wavelength', min: 380, max: 700, step: 1, default: 550, units: 'nm' },
   ],
+  "/internal-energy": [
+    {"kind":"number","label":"Temperature","key":"temperature","min":50,"max":1500,"step":10,"default":300,"units":"K"},
+  ],
+  "/box-incline": [
+    {"kind": "number", "label": "Incline Angle", "key": "θ", "min": 0, "max": 30, "step": 1, "default": 30, "units": "°"},
+    {"kind": "number", "label": "Coefficient of Friction", "key": "μs", "min": 0, "max": 1, "step": 0.05, "default": 0.3},
+      {"kind": "number", "label": "Coefficient of Kinetic Friction", "key": "μk", "min": 0, "max": 1, "step": 0.05, "default": 0.2},
+  ],
+  "/work-in-dynamics": [
+    {"kind": "number", "label": "Mass", "key": "incline-mass", "min": 0, "max": 20, "step": 0.1, "default": 1, "units": "kg"},
+    {"kind": "number", "label": "Angle", "key": "incline-angle", "min": 0, "max": 30, "step": 0.5, "default": 5, "units": "°"},
+    {"kind": "number", "label": "μs", "key": "incline-mus", "min": 0, "max": 1, "step": 0.05, "default": 0.3},
+    {"kind": "number", "label": "μk", "key": "incline-muk", "min": 0, "max": 1, "step": 0.05, "default": 0.2},
+  ]
 };
 
 // Generated keys to drop: control exists but is inactive in the module's default view.

@@ -150,9 +150,5 @@ export const GENERATED_MODULE_PARAMS: Record<string, ModuleParam[]> = {
     {"kind":"number","label":"Spring constant (k)","key":"spring-constant-k","min":1,"max":50,"step":1,"default":10,"units":"N/m"},
     {"kind":"number","label":"Displacement (x)","key":"displacement-x","min":-6,"max":6,"step":0.1,"default":0,"units":"m"},
   ],
-  "/box-incline": [
-    {"kind":"number","label":"Incline Angle (θ)","key":"θ","min":0,"max":30,"step":0.5,"default":25,"units":"°"},
-    {"kind":"number","label":"Coefficient of Static Friction (μs)","key":"μs","min":0,"max":1,"step":0.01,"default":0.5,"units":""},
-    {"kind":"number","label":"Coefficient of Kinetic Friction (μk)","key":"μk","min":0,"max":1,"step":0.01,"default":0.3,"units":""},
-  ],
+  
 };
