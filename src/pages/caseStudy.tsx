@@ -10,14 +10,6 @@ const CASE_STUDIES = [
     description:
       'In Summer 2026, a UIUC physics education graduate researcher reviewed the platform and provided written feedback on UI, content coverage, and differentiation — alongside our own gap analysis against the PhET simulation catalog.',
   },
-  {
-    slug: 'cstdy02',
-    title: 'Test 2',
-    subtitle: 'reeeeee',
-    date: 'June 2026',
-    author: 'Dev Team - PhysicsSims',
-    description: "test 2 description",
-  },
 ];
 
 export function CaseStudyIndex() {

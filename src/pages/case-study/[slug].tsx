@@ -15,6 +15,7 @@ type Study = {
   modules: StudyModule[];
   sections: StudySection[];
   testimonials: StudyTestimonial[];
+  sources: Record<string, string>;
 };
 
 const STUDIES: Record<string, Study> = {
@@ -31,7 +32,7 @@ const STUDIES: Record<string, Study> = {
     modules: [
       { path: '/lhc', label: 'Large Hadron Collider' },
       { path: '/faradays-law', label: "Faraday's Law" },
-      { path: '/maxwell', label: "Maxwell's Equations" },
+      { path: '/mag-field-3d', label: "3D Magnetic Field Simulator" },
     ],
     sections: [
       {
@@ -40,7 +41,7 @@ const STUDIES: Record<string, Study> = {
         accent: 'text-cyan-200',
         body: [
           'PhysicsSims is a free, open simulation platform built by UIUC students for UIUC students. The platform is designed around the PHYS 211/212/213 curriculum and aims to give students access to interactive, modern tools for building physics intuition without a paywall or institutional license.',
-          'In Summer 2026, we shared an early version of the platform with a graduate researcher in physics education at UIUC. Her feedback helped clarify the platform’s strengths, its risks, and the questions we need to answer before pursuing broader department-level adoption.',
+          'In Summer 2026, we shared an early version of the platform with a graduate researcher in physics education at UIUC. Their feedback helped clarify the platform’s strengths, its risks, and the questions we need to answer before pursuing broader department-level adoption.',
         ],
       },
       {
@@ -74,6 +75,7 @@ const STUDIES: Record<string, Study> = {
       },
     ],
     testimonials: [{ quote: 'This is incredible. I\'ll be sure to pass this along to colleagues and students during future semesters.', author: 'Graduate Researcher, UIUC Department of Physics' },],
+    sources: {},
   },
 };
 
@@ -119,7 +121,7 @@ export function CaseStudyDetail() {
 
       <header className="mb-12 border-b border-white/[0.07] pb-8">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">
-          Research - Case Study
+          Research • Case Study
         </p>
         <p className="mt-1 font-mono text-xs text-slate-500">{slug!.toUpperCase()}</p>
         <h1 className="mt-2 text-4xl font-bold leading-tight tracking-tight text-slate-50 sm:text-5xl">
@@ -168,7 +170,7 @@ export function CaseStudyDetail() {
             Modules Used
           </h2>
           <p className="mb-5 text-sm text-slate-400">
-            The following PhysicsSims modules were integrated into the study curriculum.
+            The following PhysicsSims modules were integrated into this study.
           </p>
           <div className="grid gap-3 sm:grid-cols-3">
             {study.modules.map((mod) => (
@@ -204,6 +206,30 @@ export function CaseStudyDetail() {
                 <p className="text-sm italic leading-relaxed text-slate-300">"{t.quote}"</p>
                 <p className="mt-3 text-xs font-semibold text-slate-500">{t.author}</p>
               </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="sources">
+          <h2 className="mb-1 text-xs font-semibold uppercase tracking-[0.22em] text-violet-200">
+            Sources
+          </h2>
+          <p className="mb-5 text-sm text-slate-400">
+            References and source material for this case study. None at this time.
+          </p>
+          <div className="space-y-3">
+            {Object.entries(study.sources).map(([label, url], i) => (
+              <p key={i} className="text-sm text-slate-300">
+                <span className="font-semibold">{label}:</span>{' '}
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cyan-300 transition hover:text-cyan-100"
+                >
+                  {url}
+                </a>
+              </p>
             ))}
           </div>
         </section>

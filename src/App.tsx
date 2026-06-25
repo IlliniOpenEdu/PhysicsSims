@@ -150,9 +150,7 @@ const APP_ROUTES = ROUTE_CONFIG.map(({ path, load }) => ({
 const NAV_LINKS = [
   { to: '/dashboard', label: 'Dashboard' },
   // { to: '/instructor', label: 'Instructor' },
-  // { to: '/#mechanics', label: 'Mechanics' },
-  // { to: '/#enm', label: 'E&M' },
-  // { to: '/#statics', label: 'Statics' },
+
 ];
 
 const PHYS_LINKS = [
@@ -328,8 +326,8 @@ function AppFooter({
                 </Link>
               </li>
               <li>
-                <Link to="/changelog" className="hover:text-white transition">
-                  Changelog
+                <Link to="/partnership" className="hover:text-emerald-400 transition">
+                  Partnership
                 </Link>
               </li>
             </ul>
@@ -362,7 +360,7 @@ function AppFooter({
                   rel="noreferrer"
                   className="hover:text-white transition"
                 >
-                  Documentations
+                  Documentation
                 </a>
               </li>
               <li>
@@ -373,11 +371,6 @@ function AppFooter({
                 >
                   Contact
                 </button>
-              </li>
-              <li>
-                <Link to="/partnership" className="hover:text-emerald-400 transition">
-                  Partnership
-                </Link>
               </li>
               <li>
                 <Link to="/case-study" className="hover:text-slate-400 transition">

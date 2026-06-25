@@ -216,7 +216,7 @@ const HalideLanding: React.FC<HalideLandingProps> = ({
         <div className="halide-grain" style={{ filter: 'url(#halide-grain-filter)' }} />
 
         <div className="halide-interface-grid">
-          <div style={{ fontWeight: 700 }}>UNIVERSITY OF ILLINOIS URBANA-CHAMPAIGN</div>
+          <div style={{ fontWeight: 700 }}>ILLINI OPEN EDU</div>
           <div style={{ textAlign: 'right', fontFamily: 'monospace', color: 'var(--accent)', fontSize: '0.7rem' }}>
             <div>E: 13.6 TeV</div>
             <div>c: 2.998 × 10⁸ m/s</div>
