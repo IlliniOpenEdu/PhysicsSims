@@ -115,6 +115,19 @@ const MODULE_PARAM_OVERRIDES: Record<string, ModuleParam[]> = {
     {"kind": "number", "label": "Angle", "key": "incline-angle", "min": 0, "max": 30, "step": 0.5, "default": 5, "units": "°"},
     {"kind": "number", "label": "μs", "key": "incline-mus", "min": 0, "max": 1, "step": 0.05, "default": 0.3},
     {"kind": "number", "label": "μk", "key": "incline-muk", "min": 0, "max": 1, "step": 0.05, "default": 0.2},
+  ],
+  "/entropy": [
+    {"kind": "number", "label": "Particles", "key": "n", "min": 2, "max": 60, "step": 1, "default": 20},
+  ],
+  "/carnot-cycle": [
+    {"kind": "number", "label": "T hot", "key": "th", "min": 350, "max": 1200, "step": 10, "default": 600, "units": "K"},
+    {"kind": "number", "label": "T cold", "key": "tc", "min": 100, "max": 1000, "step": 10, "default": 300, "units": "K"},
+    {"kind": "number", "label": "Compression ratio V₂/V₁", "key": "r", "min": 1.5, "max": 10, "step": 0.1, "default": 3},
+  ],
+  "/kinetic-theory": [
+    {"kind": "number", "label": "Temperature", "key": "t", "min": 50, "max": 1500, "step": 10, "default": 300, "units": "K"},
+    {"kind": "number", "label": "Particles (N)", "key": "n", "min": 20, "max": 400, "step": 5, "default": 200},
+    {"kind": "number", "label": "Particle mass", "key": "m", "min": 1, "max": 40, "step": 1, "default": 4, "units": "u"},
   ]
 };
 

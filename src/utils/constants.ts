@@ -15,6 +15,7 @@ export const BIG_G   = 6.674e-11;     // N·m²/kg²  gravitational constant
 export const K_BOLTZMANN  = 1.380649e-23;  // J/K   Boltzmann constant
 export const R_GAS        = 8.314462;      // J/(mol·K)  ideal gas constant
 export const N_AVOGADRO   = 6.02214076e23; // mol⁻¹  Avogadro's number
+export const AMU          = 1.66053906660e-27; // kg  atomic mass unit
 export const STEFAN_BOLTZMANN = 5.670374e-8; // W/(m²·K⁴)  Stefan-Boltzmann
 
 // Common specific heats (J/kg·K)
@@ -29,6 +30,15 @@ export const K_STEEL  = 50;
 export const K_WOOD   = 0.12;
 export const K_AIR    = 0.026;
 export const K_GLASS  = 1.0;
+
+// ── Structural materials ─────────────────────
+// Young's modulus (Pa)
+export const E_STEEL    = 200e9; // structural steel (A36)
+export const E_ALUMINUM = 69e9;  // aluminum 6061-T6
+
+// Yield strength (Pa)
+export const SIGMA_YIELD_STEEL    = 250e6; // A36 structural steel
+export const SIGMA_YIELD_ALUMINUM = 240e6; // aluminum 6061-T6
 
 // ── E&M ──────────────────────────────────────
 export const K_COULOMB   = 8.9875517923e9; // N·m²/C²  Coulomb's constant

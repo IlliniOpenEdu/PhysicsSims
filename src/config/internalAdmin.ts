@@ -101,9 +101,13 @@ export const KNOWN_SIM_PATHS = [
   '/free-body-diagram',
   '/beam-balance',
   '/distributed-load',
+  '/centroid-finder',
+  '/truss-solver',
   '/heat-transfer',
   '/internal-energy',
   '/entropy',
+  '/carnot-cycle',
+  '/kinetic-theory',
 ] as const;
 
 const getDefaultSimulationVisibility = (): Record<string, boolean> => {

@@ -133,9 +133,13 @@ const ROUTE_CONFIG = [
   { path: '/free-body-diagram', load: () => import('./pages/mechanics/FreeBodyDiagram').then((m) => ({ default: m.FreeBodyDiagram })) },
   { path: '/beam-balance', load: () => import('./pages/statics/BeamBalance').then((m) => ({ default: m.BeamBalance })) },
   { path: '/distributed-load', load: () => import('./pages/statics/DistributedLoad').then((m) => ({ default: m.DistributedLoad })) },
+  { path: '/centroid-finder', load: () => import('./pages/statics/CentroidFinder').then((m) => ({ default: m.CentroidFinder })) },
+  { path: '/truss-solver', load: () => import('./pages/statics/TrussSolver').then((m) => ({ default: m.TrussSolver })) },
   { path: '/heat-transfer', load: () => import('./pages/thermo/HeatTransfer').then((m) => ({ default: m.HeatTransfer })) },
   { path: '/internal-energy', load: () => import('./pages/thermo/InternalEnergy').then((m) => ({ default: m.InternalEnergy })) },
   { path: '/entropy', load: () => import('./pages/thermo/Entropy').then((m) => ({ default: m.Entropy })) },
+  { path: '/carnot-cycle', load: () => import('./pages/thermo/CarnotCycle').then((m) => ({ default: m.CarnotCycle })) },
+  { path: '/kinetic-theory', load: () => import('./pages/thermo/KineticTheory').then((m) => ({ default: m.KineticTheory })) },
 
   { path: '/case-study', load: () => import('./pages/caseStudy').then((m) => ({ default: m.CaseStudyIndex })) },
   { path: '/case-study/:slug', load: () => import('./pages/case-study/[slug]').then((m) => ({ default: m.CaseStudyDetail })) },
@@ -349,11 +353,6 @@ function AppFooter({
                 </a>
               </li>
               <li>
-                <Link to="/instructor" className="hover:text-amber-400 transition">
-                  Instructors
-                </Link>
-              </li>
-              <li>
                 <a
                   href="https://github.com/IlliniOpenEdu/PhysicsSims/wiki"
                   target="_blank"
@@ -421,21 +420,28 @@ function AppFooter({
   );
 }
 
-function CookieConsentBanner({ onAllow, onDeny }: { onAllow: () => void; onDeny: () => void }) {
+function CookieConsentBanner({
+  onAllow,
+  onDeny,
+}: {
+  onAllow: () => void;
+  onDeny: () => void;
+}) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 px-4 pb-4">
-      <div className="mx-auto max-w-6xl rounded-2xl border border-slate-700/80 bg-slate-950/95 p-4 shadow-2xl shadow-slate-950/70 backdrop-blur">
+    <div className="fixed inset-x-0 bottom-3 z-50 px-4">
+      <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 p-4 shadow-none">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">
               Cookies
             </p>
             <p className="text-sm text-slate-200">
-              This site uses cookies to enahance your experiences and analyze traffic. By
-              clicking "Allow", you consent to the use of analytics cookies. You can change your
-              choice at any time by clicking the "Cookies" button in the footer.
+              This site uses cookies to enhance your experience and analyze traffic. By clicking
+              &quot;Allow&quot;, you consent to the use of analytics cookies. You can change your
+              choice at any time by clicking the &quot;Cookies&quot; button in the footer.
             </p>
           </div>
+
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
               type="button"
@@ -651,6 +657,7 @@ export function App() {
         <ErrorBoundary>
           <Suspense
             fallback={
+              
               <div className="mx-auto min-h-[55vh] max-w-6xl px-4 py-8 text-sm text-slate-400">
                 {/* loading spinner animation */}
                 <div className="flex items-center justify-center gap-2">

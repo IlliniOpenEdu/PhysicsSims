@@ -16,7 +16,6 @@ const COMING_SOON: ComingSoonEntry[] = [
 	{ label: 'Charged particle in E/B fields', track: 'E&M', eta: 'Summer 2026' },
 	{ label: 'PV Diagram Explorer', track: 'Thermodynamics', eta: 'Fall 2026' },
 	{ label: 'Carnot cycle visuali1zer', track: 'Thermodynamics' },
-	{ label: 'Entropy / microstate', track: 'Thermodynamics' },
 ];
 
 // Courses mirror the PHYS nav dropdown (PHYS_LINKS in App.tsx), plus a free-text "Other".
@@ -99,13 +98,18 @@ const MODULE_GROUPS: ModuleGroup[] = [
 		group: 'Statics',
 		modules: [
 			{ path: '/beam-balance', label: 'Beam Balance' },
+			{ path: '/centroid-finder', label: 'Centroid Finder' },
+			{ path: '/truss-solver', label: 'Truss Solver' },
 		],
 	},
 	{
 		group: 'Thermodynamics',
 		modules: [
 			{ path: '/heat-transfer', label: 'Heat Transfer' },
-			{ path: '/internal-energy', label: 'Internal Energy of an Ideal Gas' }
+			{ path: '/internal-energy', label: 'Internal Energy of an Ideal Gas' },
+			{ path: '/entropy', label: 'Entropy / microstate' },
+			{ path: '/carnot-cycle', label: 'Carnot Cycle' },
+			{ path: '/kinetic-theory', label: 'Kinetic Theory of Gases' }
 		],
 	},
 ];
