@@ -22,6 +22,10 @@ export const mapRange = (
 export const approxEqual = (a: number, b: number, eps = 1e-9): boolean =>
   Math.abs(a - b) < eps;
 
+/** Snap floating-point residue to exact zero (also normalizes -0). */
+export const snapNearZero = (v: number, eps = 1e-9): number =>
+  Math.abs(v) < eps ? 0 : v;
+
 // ── Numerical Integration ─────────────────────
 
 type State = number[];

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ConceptBox } from '../../components/ConceptBox';
+import { ConceptBox } from '../../components/system/ConceptBox';
 import { TrussCanvas2D } from '../../components/truss/TrussCanvas2D';
 import { TrussDataPanel } from '../../components/truss/TrussDataPanel';
 import { TrussInspector } from '../../components/truss/TrussInspector';
@@ -39,6 +39,8 @@ export function TrussSolver() {
     const auto = (0.1 * span) / solutionView.maxDeflection;
     return auto * (deflectSlider / 50) ** 2;
   }, [solutionView, span, deflectSlider]);
+
+  const restraintWarning = solve.kind === 'empty' ? null : solve.restraintWarning;
 
   const status =
     solve.kind === 'ok'
@@ -132,6 +134,12 @@ export function TrussSolver() {
                 </span>
               </div>
             </div>
+
+            {restraintWarning && (
+              <div className="mb-3 rounded-xl border border-amber-500/30 bg-amber-500/[0.06] px-3 py-2 text-[0.7rem] leading-relaxed text-amber-200">
+                ⚠ {restraintWarning}
+              </div>
+            )}
 
             <div className="overflow-hidden rounded-xl border border-slate-800 bg-[#030507]">
               {mode === '2d' ? (

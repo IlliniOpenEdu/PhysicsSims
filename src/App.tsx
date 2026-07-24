@@ -3,6 +3,8 @@ import type { ComponentType, ReactNode } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import packageJson from '../package.json';
 import { loadAdminState, pushAnalyticsEvent } from './config/internalAdmin';
+import { CommandPalette, CommandPaletteButton } from './components/system/CommandPalette';
+import { ThemeToggle } from './components/system/ThemeToggle';
 
 const GA_MEASUREMENT_ID = 'G-5XJFVLZQ0Z';
 const GA_SCRIPT_ID = 'google-analytics-gtag';
@@ -140,6 +142,8 @@ const ROUTE_CONFIG = [
   { path: '/entropy', load: () => import('./pages/thermo/Entropy').then((m) => ({ default: m.Entropy })) },
   { path: '/carnot-cycle', load: () => import('./pages/thermo/CarnotCycle').then((m) => ({ default: m.CarnotCycle })) },
   { path: '/kinetic-theory', load: () => import('./pages/thermo/KineticTheory').then((m) => ({ default: m.KineticTheory })) },
+  { path: '/heat-engine', load: () => import('./pages/thermo/HeatEngine').then((m) => ({ default: m.HeatEngine })) },
+  { path: '/gibbs-phase', load: () => import('./pages/thermo/GibbsPhase').then((m) => ({ default: m.GibbsPhase })) },
 
   { path: '/case-study', load: () => import('./pages/caseStudy').then((m) => ({ default: m.CaseStudyIndex })) },
   { path: '/case-study/:slug', load: () => import('./pages/case-study/[slug]').then((m) => ({ default: m.CaseStudyDetail })) },
@@ -255,7 +259,7 @@ function AppNavbar() {
   const { pathname } = useLocation();
   const isActivePath = (path: string) => pathname === path;
   return (
-    <div className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/70 backdrop-blur-md">
+    <div className="sticky top-0 z-40 border-b border-white/10 bg-chrome/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-xs sm:flex-nowrap">
         <Link
           to="/"
@@ -281,6 +285,8 @@ function AppNavbar() {
           ))}
           <NavDropdown label="PHYS" links={PHYS_LINKS} />
           {/* <NavDropdown label="TAM" links={TAM_LINKS} /> */}
+          <CommandPaletteButton className="hidden sm:inline-flex" />
+          <ThemeToggle />
         </nav>
       </div>
     </div>
@@ -295,7 +301,7 @@ function AppFooter({
   onCookieReset: () => void;
 }) {
   return (
-    <footer className="border-t border-white/[0.05] py-12 px-4 bg-white/[0.015]">
+    <footer className="border-t border-white/[0.05] py-12 px-4 bg-chrome/40">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
@@ -638,8 +644,12 @@ function usePageAnalytics({
   }, [hash, pathname]);
 }
 
+// Routes that keep the original dark look even when light mode is on.
+const DARK_LOCKED_PATHS = ['/', '/dashboard'];
+
 export function App() {
   const { pathname, search, hash } = useLocation();
+  const isDarkLocked = DARK_LOCKED_PATHS.includes(pathname);
   const isCleanMode = useMemo(() => {
     const query = new URLSearchParams(search);
     return query.get('clean') === '1' || query.get('clean') === 'true';
@@ -650,7 +660,11 @@ export function App() {
   usePageAnalytics({ cookieConsent, pathname, search, hash });
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-950 text-slate-100">
+    <div
+      className={`flex min-h-screen flex-col bg-slate-950 text-slate-100 ${
+        isDarkLocked ? 'theme-dark-scope' : ''
+      }`}
+    >
       {!isCleanMode && <AppNavbar />}
 
       <main className="flex-1">
@@ -711,6 +725,8 @@ export function App() {
       {!isCleanMode && isContactOpen && (
         <ContactModal onClose={() => setIsContactOpen(false)} />
       )}
+
+      <CommandPalette />
     </div>
   );
 }

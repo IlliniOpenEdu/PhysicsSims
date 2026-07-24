@@ -10,6 +10,20 @@
   --background: #030507;
 }
 
+:root.theme-light {
+  --foreground: #12233a;
+  --background: #f0f6fc;
+}
+
+.theme-dark-scope {
+  --foreground: #f8fafc;
+  --background: #030507;
+}
+
+body {
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
 html,
 body,
 #root {

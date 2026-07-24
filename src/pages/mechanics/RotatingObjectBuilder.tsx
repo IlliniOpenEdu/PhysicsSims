@@ -6,7 +6,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 import { formatSI } from '@/utils/formatters'
 
 type ComponentType = 'point' | 'sphere' | 'rod' | 'ring';

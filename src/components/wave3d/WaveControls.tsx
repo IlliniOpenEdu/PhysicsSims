@@ -1,5 +1,5 @@
 import type { EMDisplayMode, NavigationMode, WaveMode, WaveParams } from '../../lib/enm/waveEq/types';
-import { SliderWithInput } from '../SliderWithInput';
+import { SliderWithInput } from '../system/SliderWithInput';
 
 type WavePreset = {
   label: string;

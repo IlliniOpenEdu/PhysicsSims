@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { R_GAS } from '../../utils/constants';
 import { clamp } from '../../utils/mathUtils';
-import { toSigFigs } from '../../utils/formatters';
+import {
+  drawCycleDiagram,
+  type CycleDiagramSpec,
+} from '../../lib/thermo/cycleDiagram';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -170,14 +173,9 @@ export function computeCycle(Th: number, Tc: number, ratio: number, gamma: numbe
 // Leg colors: isothermal hot, adiabatic, isothermal cold, adiabatic
 export const LEG_COLORS = ['#f87171', '#c084fc', '#38bdf8', '#c084fc'] as const;
 
-interface DiagramSpec {
+interface DiagramSpec extends CycleDiagramSpec {
   getX: (p: CyclePoint) => number;
   getY: (p: CyclePoint) => number;
-  xLabel: string;
-  yLabel: string;
-  xScale: number; // multiplies raw value for tick display (m³ → L, Pa → kPa)
-  yScale: number;
-  fill: string;
 }
 
 const PV_SPEC: DiagramSpec = {
@@ -200,159 +198,21 @@ const TS_SPEC: DiagramSpec = {
   fill: 'rgba(192,132,252,0.08)',
 };
 
-const MARGIN = { left: 54, right: 14, top: 16, bottom: 34 };
-
 function drawDiagram(
   ctx: CanvasRenderingContext2D,
   cycle: CarnotCycleData,
   u: number,
   spec: DiagramSpec,
 ): void {
-  const { width: W, height: H } = ctx.canvas;
-
-  // Bounds over the sampled loop, padded 8%
-  let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-  for (const leg of cycle.legs) {
-    for (const p of leg) {
-      const x = spec.getX(p);
-      const y = spec.getY(p);
-      if (x < xMin) xMin = x;
-      if (x > xMax) xMax = x;
-      if (y < yMin) yMin = y;
-      if (y > yMax) yMax = y;
-    }
-  }
-  const xPad = (xMax - xMin) * 0.08 || 1;
-  const yPad = (yMax - yMin) * 0.08 || 1;
-  xMin -= xPad; xMax += xPad;
-  yMin -= yPad; yMax += yPad;
-
-  const plotW = W - MARGIN.left - MARGIN.right;
-  const plotH = H - MARGIN.top - MARGIN.bottom;
-  const toX = (x: number) => MARGIN.left + ((x - xMin) / (xMax - xMin)) * plotW;
-  const toY = (y: number) => H - MARGIN.bottom - ((y - yMin) / (yMax - yMin)) * plotH;
-
-  // Background
-  ctx.fillStyle = '#030507';
-  ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = 'rgba(148,163,184,0.12)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
-
-  // Gridlines + tick labels
-  ctx.font = '10px monospace';
-  const TICKS = 4;
-  for (let i = 0; i <= TICKS; i++) {
-    const fx = xMin + ((xMax - xMin) * i) / TICKS;
-    const fy = yMin + ((yMax - yMin) * i) / TICKS;
-    const px = toX(fx);
-    const py = toY(fy);
-
-    ctx.strokeStyle = 'rgba(148,163,184,0.08)';
-    ctx.beginPath();
-    ctx.moveTo(px, MARGIN.top);
-    ctx.lineTo(px, H - MARGIN.bottom);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(MARGIN.left, py);
-    ctx.lineTo(W - MARGIN.right, py);
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(148,163,184,0.6)';
-    ctx.textAlign = 'center';
-    ctx.fillText(String(toSigFigs(fx * spec.xScale, 3)), px, H - MARGIN.bottom + 14);
-    ctx.textAlign = 'right';
-    ctx.fillText(String(toSigFigs(fy * spec.yScale, 3)), MARGIN.left - 6, py + 3);
-  }
-
-  // Axis lines
-  ctx.strokeStyle = 'rgba(148,163,184,0.35)';
-  ctx.beginPath();
-  ctx.moveTo(MARGIN.left, MARGIN.top);
-  ctx.lineTo(MARGIN.left, H - MARGIN.bottom);
-  ctx.lineTo(W - MARGIN.right, H - MARGIN.bottom);
-  ctx.stroke();
-
-  // Axis labels
-  ctx.fillStyle = 'rgba(148,163,184,0.75)';
-  ctx.textAlign = 'left';
-  ctx.fillText(spec.yLabel, 6, 12);
-  ctx.textAlign = 'right';
-  ctx.fillText(spec.xLabel, W - MARGIN.right, H - 6);
-
-  // Shaded enclosed area
-  ctx.beginPath();
-  cycle.legs.forEach((pts, li) => {
-    pts.forEach((p, pi) => {
-      const px = toX(spec.getX(p));
-      const py = toY(spec.getY(p));
-      if (li === 0 && pi === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    });
-  });
-  ctx.closePath();
-  ctx.fillStyle = spec.fill;
-  ctx.fill();
-
-  // Legs + direction arrows
-  cycle.legs.forEach((pts, li) => {
-    ctx.strokeStyle = LEG_COLORS[li];
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    pts.forEach((p, pi) => {
-      const px = toX(spec.getX(p));
-      const py = toY(spec.getY(p));
-      if (pi === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    });
-    ctx.stroke();
-
-    // Arrowhead at leg midpoint showing traversal direction
-    const mid = pts[Math.floor(pts.length / 2)];
-    const next = pts[Math.floor(pts.length / 2) + 1];
-    const mx = toX(spec.getX(mid));
-    const my = toY(spec.getY(mid));
-    const angle = Math.atan2(toY(spec.getY(next)) - my, toX(spec.getX(next)) - mx);
-    ctx.fillStyle = LEG_COLORS[li];
-    ctx.save();
-    ctx.translate(mx, my);
-    ctx.rotate(angle);
-    ctx.beginPath();
-    ctx.moveTo(5, 0);
-    ctx.lineTo(-4, 4);
-    ctx.lineTo(-4, -4);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  });
-
-  // Corner markers + state numbers
-  ctx.font = '11px monospace';
-  cycle.corners.forEach((c, i) => {
-    const px = toX(spec.getX(c));
-    const py = toY(spec.getY(c));
-    ctx.beginPath();
-    ctx.arc(px, py, 3, 0, Math.PI * 2);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fill();
-    ctx.fillStyle = 'rgba(226,232,240,0.8)';
-    ctx.textAlign = 'left';
-    ctx.fillText(String(i + 1), px + 6, py - 6);
-  });
-
+  const toPt = (p: CyclePoint) => ({ x: spec.getX(p), y: spec.getY(p) });
   // Animated dot — same loop parameter u drives both diagrams (phase-locked)
   const leg = Math.floor(u) % 4;
-  const dot = pointOnLeg(cycle, leg, u - Math.floor(u));
-  const dx = toX(spec.getX(dot));
-  const dy = toY(spec.getY(dot));
-  ctx.beginPath();
-  ctx.arc(dx, dy, 8, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255,255,255,0.15)';
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(dx, dy, 4.5, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffffff';
-  ctx.fill();
+  drawCycleDiagram(ctx, {
+    legs: cycle.legs.map((pts, li) => ({ pts: pts.map(toPt), color: LEG_COLORS[li] })),
+    corners: cycle.corners.map((c, i) => ({ ...toPt(c), label: String(i + 1) })),
+    dot: toPt(pointOnLeg(cycle, leg, u - Math.floor(u))),
+    spec,
+  });
 }
 
 // ── Hook ──────────────────────────────────────────────────────────────────────

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { initEasterEgg } from './utils/easteregg';
 import { loadAdminState } from './config/internalAdmin';
-import { AnnouncementPopup } from './components/AnnouncementPopup';
-import UnderMaintenanceBanner from './components/UnderMaintenanceBanner';
+import { AnnouncementPopup } from './components/system/AnnouncementPopup';
+import UnderMaintenanceBanner from './components/system/UnderMaintenanceBanner';
 import HalideLanding from './components/ui/HalideLanding';
 
 const ease = [0.22, 1, 0.36, 1] as const;

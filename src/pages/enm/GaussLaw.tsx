@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
-import VideoExplain from '../../components/videoExplain';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
+import VideoExplain from '../../components/system/videoExplain';
 
 type SurfaceShape = 'sphere' | 'cylinder' | 'cube';
 

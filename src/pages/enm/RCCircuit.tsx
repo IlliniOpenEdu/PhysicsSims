@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
-import { ConceptBox } from '../../components/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
 
 type Mode = 'ideal' | 'lab';
 type Phase = 'charge' | 'discharge';

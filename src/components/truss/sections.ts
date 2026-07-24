@@ -4,7 +4,7 @@
 //  comes from the solver's helper — no inline material numbers.
 // ─────────────────────────────────────────────
 
-import { solidRoundI } from '../../solvers/truss/index';
+import { solidRoundI } from '../../hooks/truss/solvers/truss/index';
 import {
   E_ALUMINUM,
   E_STEEL,

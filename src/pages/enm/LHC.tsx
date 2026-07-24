@@ -6,7 +6,7 @@ import { LiveReadout } from '../../components/collider/LiveReadout';
 import { ModeToggle } from '../../components/collider/ModeToggle';
 import { RingViewCanvas } from '../../components/collider/RingViewCanvas';
 import { TunnelViewCanvas } from '../../components/collider/TunnelViewCanvas';
-import { VideoExplain } from '../../components/videoExplain';
+import { VideoExplain } from '../../components/system/videoExplain';
 import { COLLIDER_LABEL } from '../../lib/enm/collider/constants';
 import { useColliderSimulation } from '../../hooks/lhc/useColliderSimulation';
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
-import { ConceptBox } from '../../components/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
 
 type Vec2 = { x: number; y: number };
 

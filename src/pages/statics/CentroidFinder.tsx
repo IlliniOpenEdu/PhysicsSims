@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ConceptBox } from '../../components/ConceptBox';
+import { ConceptBox } from '../../components/system/ConceptBox';
 import { formatSI, toSigFigs } from '../../utils/formatters';
 import { clamp, vec2, type Vec2 } from '../../utils/mathUtils';
 

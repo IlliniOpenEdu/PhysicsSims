@@ -134,6 +134,7 @@ function SupportGlyph({ node }: { node: EditorNode }) {
           color="#94a3b8"
           transparent
           opacity={node.support === 'roller' ? 0.55 : 0.85}
+          wireframe={node.support === 'custom'}
         />
       </mesh>
       {node.support === 'roller' && (

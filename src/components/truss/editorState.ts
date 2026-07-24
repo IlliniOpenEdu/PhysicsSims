@@ -7,19 +7,21 @@
 
 import {
   TrussError,
+  analyzeRestraints,
   solveTruss,
-  type DofKind,
   type Load,
   type Support,
   type TrussElement,
   type TrussErrorCode,
   type TrussNode,
   type TrussSolution,
-} from '../../solvers/truss/index';
+} from '../../hooks/truss/solvers/truss/index';
+import { supportDofs, type SupportKind, type SupportRestraint } from './supports';
+
+export type { SupportKind, SupportRestraint } from './supports';
 
 export type ViewMode = '2d' | '3d';
 export type Tool = 'select' | 'add-node' | 'member' | 'delete';
-export type SupportKind = 'none' | 'pin' | 'roller';
 
 export interface EditorNode {
   id: number;
@@ -27,6 +29,8 @@ export interface EditorNode {
   y: number;
   z: number; // used only in 3D mode
   support: SupportKind;
+  /** Restrained axes when support === 'custom'; ignored for named kinds. */
+  restraint?: SupportRestraint;
   /** Point load components (N). */
   load: { fx: number; fy: number; fz: number };
 }
@@ -53,8 +57,10 @@ export type SolveState =
       solvedNodeIds: Set<number>;
       /** True when a planar structure in 3D mode had z auto-restrained. */
       planarZRestrained: boolean;
+      /** Non-null when the supports cannot stop every rigid-body motion. */
+      restraintWarning: string | null;
     }
-  | { kind: 'error'; code: TrussErrorCode; message: string }
+  | { kind: 'error'; code: TrussErrorCode; message: string; restraintWarning: string | null }
   | { kind: 'empty' };
 
 const PLANAR_EPS = 1e-9;
@@ -98,18 +104,24 @@ export function solveEditorState(
     sigmaYield: m.sigmaYield,
   }));
 
+  // Boundary conditions come from the shared resolver — restrained axes
+  // only, never support labels.
   const supports: Support[] = [];
   for (const n of active) {
-    const dofs: DofKind[] = [];
-    if (n.support === 'pin') {
-      dofs.push('tx', 'ty');
-      if (is3d) dofs.push('tz');
-    } else if (n.support === 'roller') {
-      dofs.push('ty');
-    }
+    const dofs = supportDofs(n.support, n.restraint, is3d);
     if (planar && !dofs.includes('tz')) dofs.push('tz');
     if (dofs.length > 0) supports.push({ node: n.id, dofs });
   }
+
+  // Rigid-body check on the resolved DOF: counts of pins/rollers say
+  // nothing about 3D stability — a 2D-style pin + roller still yaws.
+  const restraint = analyzeRestraints(tNodes, supports);
+  const restraintWarning = restraint.sufficient
+    ? null
+    : `Supports restrain ${restraint.restrainedRank} of ${restraint.required} rigid-body motions — unrestrained: ${restraint.freeModes.join(', ')}. ` +
+      (is3d
+        ? 'A 2D-style pin + roller cannot hold a 3D structure — fix more axes (e.g. a custom support restraining x or z) or add supports.'
+        : 'Add supports or restrain more axes.');
 
   const loads: Load[] = [];
   for (const n of active) {
@@ -124,10 +136,11 @@ export function solveEditorState(
       solution: solveTruss(tNodes, elements, supports, loads),
       solvedNodeIds: connected,
       planarZRestrained: planar,
+      restraintWarning,
     };
   } catch (e) {
     if (e instanceof TrussError) {
-      return { kind: 'error', code: e.code, message: e.message };
+      return { kind: 'error', code: e.code, message: e.message, restraintWarning };
     }
     throw e;
   }

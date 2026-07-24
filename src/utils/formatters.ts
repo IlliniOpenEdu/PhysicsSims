@@ -60,6 +60,18 @@ export function formatDeg(radians: number, decimals = 1): string {
 }
 
 /**
+ * Pressure formatting — picks Pa/kPa/MPa/GPa automatically
+ * formatPressure(101325) → "101 kPa"
+ */
+export function formatPressure(pascals: number, sig = 3): string {
+  const abs = Math.abs(pascals);
+  if (abs >= 1e9) return formatSI(pascals / 1e9, 'GPa', sig);
+  if (abs >= 1e6) return formatSI(pascals / 1e6, 'MPa', sig);
+  if (abs >= 1e3) return formatSI(pascals / 1e3, 'kPa', sig);
+  return formatSI(pascals, 'Pa', sig);
+}
+
+/**
  * Time formatting — picks best unit automatically
  * formatTime(0.003) → "3.00 ms"
  * formatTime(65)    → "1m 05s"

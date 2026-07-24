@@ -1,7 +1,7 @@
 import {
   CodeProblem as CodeProblemCard,
   type CodeProblem as CodeProblemItem,
-} from '../components/CodeProblem';
+} from '../components/system/CodeProblem';
 
 type CodeProblemEntry = {
   problem: CodeProblemItem;

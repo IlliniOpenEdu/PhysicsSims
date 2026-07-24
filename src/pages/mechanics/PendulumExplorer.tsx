@@ -1,8 +1,8 @@
 // id="pendulum_explorer"
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
-import { ConceptBox } from '../../components/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
 import { useUrlStateSync } from '../../hooks/useUrlStateSync';
 
 type ReleaseMode = 'angle' | 'height';

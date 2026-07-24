@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { ConceptBox } from '../../components/ConceptBox';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 
 type Mode = 'conduction' | 'convection' | 'radiation';
 type MaterialKey = 'copper' | 'steel' | 'wood' | 'air';

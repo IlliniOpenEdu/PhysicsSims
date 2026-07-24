@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { type PointerEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 
 type Vec2 = { x: number; y: number };
 

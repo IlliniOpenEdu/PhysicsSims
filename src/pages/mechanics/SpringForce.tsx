@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 
 type ControlsState = {
   mass: number;

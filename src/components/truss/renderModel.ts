@@ -4,7 +4,7 @@
 //  everything physical comes straight from the solver output.
 // ─────────────────────────────────────────────
 
-import type { MemberFailure, MemberForce, TrussSolution } from '../../solvers/truss/index';
+import type { MemberFailure, MemberForce, TrussSolution } from '../../hooks/truss/solvers/truss/index';
 import { formatAuto, formatSI, toSigFigs } from '../../utils/formatters';
 import { clamp } from '../../utils/mathUtils';
 

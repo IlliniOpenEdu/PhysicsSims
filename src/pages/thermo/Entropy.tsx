@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ConceptBox } from '../../components/ConceptBox';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 import { K_BOLTZMANN } from '../../utils/constants';
 import { formatSci, formatSI } from '../../utils/formatters';
 import { type InitialCondition, useEntropy } from '../../hooks/thermo/useEntropy';

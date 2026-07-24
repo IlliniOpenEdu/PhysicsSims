@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ConceptBox } from '../../components/ConceptBox';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 
 type Body = {
   id: number;

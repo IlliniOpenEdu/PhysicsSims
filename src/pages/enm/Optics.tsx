@@ -16,7 +16,7 @@ import {
   REFRACTIVE_INDEX,
   SPEED_OF_LIGHT,
 } from '../../lib/enm/light';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 

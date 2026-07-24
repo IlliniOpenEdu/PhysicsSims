@@ -1,8 +1,8 @@
 // id="5r6p2z"
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ConceptBox } from '../../components/ConceptBox';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 
 type Vec2 = { x: number; y: number };
 

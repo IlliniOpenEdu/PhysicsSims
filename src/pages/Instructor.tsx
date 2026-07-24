@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../components/SliderWithInput';
+import { SliderWithInput } from '../components/system/SliderWithInput';
 import {
 	MODULE_PARAMS,
 	defaultParamValues,
@@ -109,7 +109,9 @@ const MODULE_GROUPS: ModuleGroup[] = [
 			{ path: '/internal-energy', label: 'Internal Energy of an Ideal Gas' },
 			{ path: '/entropy', label: 'Entropy / microstate' },
 			{ path: '/carnot-cycle', label: 'Carnot Cycle' },
-			{ path: '/kinetic-theory', label: 'Kinetic Theory of Gases' }
+			{ path: '/kinetic-theory', label: 'Kinetic Theory of Gases' },
+			{ path: '/heat-engine', label: 'Heat Engine Builder' },
+			{ path: '/gibbs-phase', label: 'Gibbs Free Energy & Phase Stability (L8–L9)' }
 		],
 	},
 ];

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
-import { ConceptBox } from '../../components/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
 
 const C0 = 299792458;
 const EPSILON_0 = 8.8541878128e-12;

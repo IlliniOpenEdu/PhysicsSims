@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 
 type VelocityMode = 'magnitude_angle' | 'vx_vy';
 

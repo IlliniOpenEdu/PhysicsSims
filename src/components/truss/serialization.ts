@@ -6,8 +6,10 @@
 //  solveEditorState bridge as the live editor.
 // ─────────────────────────────────────────────
 
-import type { EditorMember, EditorNode, SupportKind, ViewMode } from './editorState';
+import { snapNearZero } from '../../utils/mathUtils';
+import type { EditorMember, EditorNode, SupportKind, SupportRestraint, ViewMode } from './editorState';
 import { CUSTOM_SECTION_ID, findSection } from './sections';
+import { SUPPORT_KINDS } from './supports';
 
 export const TRUSS_FILE_FORMAT = 'physics-sims/truss';
 export const TRUSS_FILE_VERSION = 1;
@@ -19,8 +21,6 @@ export interface TrussModel {
 }
 
 export type ParseResult = { ok: true; model: TrussModel } | { ok: false; error: string };
-
-const SUPPORT_KINDS: SupportKind[] = ['none', 'pin', 'roller'];
 
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 
@@ -37,11 +37,25 @@ export function serializeTruss(
       mode,
       nodes: nodes.map((n) => ({
         id: n.id,
-        x: n.x,
-        y: n.y,
-        z: n.z,
+        // snap near-zero residue (e.g. from trig or 3D drags) before export
+        x: snapNearZero(n.x),
+        y: snapNearZero(n.y),
+        z: snapNearZero(n.z),
         support: n.support,
-        load: { fx: n.load.fx, fy: n.load.fy, fz: n.load.fz },
+        ...(n.support === 'custom'
+          ? {
+              restraint: {
+                ux: !!n.restraint?.ux,
+                uy: !!n.restraint?.uy,
+                uz: !!n.restraint?.uz,
+              },
+            }
+          : {}),
+        load: {
+          fx: snapNearZero(n.load.fx),
+          fy: snapNearZero(n.load.fy),
+          fz: snapNearZero(n.load.fz),
+        },
       })),
       members: members.map((m) => ({
         id: m.id,
@@ -110,6 +124,14 @@ export function parseTrussFile(text: string): ParseResult {
     if (!SUPPORT_KINDS.includes(support as SupportKind)) {
       return err(`nodes[${k}]: "support" must be one of ${SUPPORT_KINDS.join(', ')}`);
     }
+    let restraint: SupportRestraint | undefined;
+    if (n.restraint !== undefined) {
+      if (typeof n.restraint !== 'object' || n.restraint === null) {
+        return err(`nodes[${k}]: "restraint" must be an object of ux/uy/uz booleans`);
+      }
+      const r = n.restraint as Record<string, unknown>;
+      restraint = { ux: r.ux === true, uy: r.uy === true, uz: r.uz === true };
+    }
     const rawLoad = (n.load ?? {}) as Record<string, unknown>;
     if (typeof rawLoad !== 'object' || rawLoad === null) {
       return err(`nodes[${k}]: "load" must be an object`);
@@ -125,6 +147,7 @@ export function parseTrussFile(text: string): ParseResult {
       y: n.y,
       z: n.z === undefined ? 0 : n.z,
       support: support as SupportKind,
+      ...(restraint ? { restraint } : {}),
       load: { fx: load.fx, fy: load.fy, fz: load.fz },
     });
   }
@@ -175,6 +198,7 @@ export interface TrussSummary {
   memberCount: number;
   pins: number;
   rollers: number;
+  customs: number;
   loadedNodes: number;
   /** Sum of point-load magnitudes (N). */
   totalLoad: number;
@@ -186,11 +210,13 @@ export interface TrussSummary {
 export function summarizeTruss(model: TrussModel): TrussSummary {
   let pins = 0;
   let rollers = 0;
+  let customs = 0;
   let loadedNodes = 0;
   let totalLoad = 0;
   for (const n of model.nodes) {
     if (n.support === 'pin') pins++;
     else if (n.support === 'roller') rollers++;
+    else if (n.support === 'custom') customs++;
     const mag = Math.hypot(n.load.fx, n.load.fy, n.load.fz);
     if (mag > 0) {
       loadedNodes++;
@@ -207,6 +233,7 @@ export function summarizeTruss(model: TrussModel): TrussSummary {
     memberCount: model.members.length,
     pins,
     rollers,
+    customs,
     loadedNodes,
     totalLoad,
     sections: [...sections],

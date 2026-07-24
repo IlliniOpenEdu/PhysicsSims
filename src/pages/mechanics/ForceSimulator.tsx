@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
 import { useUrlStateSync } from '../../hooks/useUrlStateSync';
 import type { UrlStateSyncOptions } from '../../hooks/useUrlStateSync';
 

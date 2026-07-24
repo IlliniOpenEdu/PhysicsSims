@@ -96,13 +96,15 @@ function drawArrow(
 function drawSupportGlyph(
   ctx: CanvasRenderingContext2D,
   p: Vec2,
-  kind: 'pin' | 'roller',
+  kind: Exclude<EditorNode['support'], 'none'>,
 ): void {
   const w = 9;
   const h = 12;
   ctx.strokeStyle = '#94a3b8';
   ctx.fillStyle = 'rgba(148,163,184,0.25)';
   ctx.lineWidth = 1.5;
+  // custom supports draw dashed — the restrained axes are user-defined
+  if (kind === 'custom') ctx.setLineDash([4, 3]);
   ctx.beginPath();
   ctx.moveTo(p.x, p.y);
   ctx.lineTo(p.x - w, p.y + h);
@@ -134,6 +136,7 @@ function drawSupportGlyph(
       ctx.stroke();
     }
   }
+  ctx.setLineDash([]);
 }
 
 export function TrussCanvas2D({

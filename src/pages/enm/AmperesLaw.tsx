@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SliderWithInput } from '../../components/SliderWithInput';
-import { ConceptBox } from '../../components/ConceptBox';
+import { SliderWithInput } from '../../components/system/SliderWithInput';
+import { ConceptBox } from '../../components/system/ConceptBox';
 
 const MU_0 = 4 * Math.PI * 1e-7;
 

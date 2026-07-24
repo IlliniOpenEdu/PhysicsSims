@@ -63,8 +63,15 @@ const trig = (v: number): number => (Math.abs(v) < 1e-12 ? 0 : v);
 const SUPPORT_OPTIONS: { value: SupportKind; label2d: string; label3d: string }[] = [
   { value: 'none', label2d: 'free', label3d: 'free' },
   { value: 'pin', label2d: 'pin (x + y fixed)', label3d: 'pin (x, y, z fixed)' },
-  { value: 'roller', label2d: 'roller (y fixed)', label3d: 'roller (y fixed)' },
+  { value: 'roller', label2d: 'roller (y fixed)', label3d: 'roller (y only — not lateral)' },
+  { value: 'custom', label2d: 'custom axes…', label3d: 'custom axes…' },
 ];
+
+const RESTRAINT_AXES = [
+  { key: 'ux', label: 'x' },
+  { key: 'uy', label: 'y' },
+  { key: 'uz', label: 'z' },
+] as const;
 
 function NodePanel({
   node,
@@ -122,6 +129,32 @@ function NodePanel({
           ))}
         </select>
       </label>
+
+      {node.support === 'custom' && (
+        <div className="flex items-center justify-between gap-2 text-xs text-slate-300">
+          <span className="text-slate-500">Fixed axes</span>
+          <span className="flex items-center gap-2.5">
+            {RESTRAINT_AXES.filter((a) => a.key !== 'uz' || mode === '3d').map((a) => {
+              const restraint = node.restraint ?? { ux: false, uy: false, uz: false };
+              return (
+                <label key={a.key} className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    checked={restraint[a.key]}
+                    onChange={(e) =>
+                      editor.patchNode(node.id, {
+                        restraint: { ...restraint, [a.key]: e.target.checked },
+                      })
+                    }
+                    className="accent-sky-400"
+                  />
+                  {a.label}
+                </label>
+              );
+            })}
+          </span>
+        </div>
+      )}
 
       <div className="rounded-lg border border-rose-400/20 bg-rose-400/[0.05] p-2.5">
         <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-rose-200/80">

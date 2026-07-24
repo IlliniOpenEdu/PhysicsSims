@@ -17,6 +17,7 @@ import {
 } from '../../components/truss/editorState';
 import type { TrussPreset } from '../../components/truss/presets';
 import { TRUSS_PRESETS } from '../../components/truss/presets';
+import { supportRestraint } from '../../components/truss/supports';
 import { CUSTOM_SECTION_ID, findSection } from '../../components/truss/sections';
 
 const nextId = (items: { id: number }[]): number =>
@@ -64,10 +65,20 @@ export function useTrussEditor() {
     setNodes((prev) => prev.map((n) => (n.id === id ? { ...n, ...patch } : n)));
   }, []);
 
-  const setSupport = useCallback(
-    (id: number, support: SupportKind) => patchNode(id, { support }),
-    [patchNode],
-  );
+  const setSupport = useCallback((id: number, support: SupportKind) => {
+    setNodes((prev) =>
+      prev.map((n) => {
+        if (n.id !== id) return n;
+        // Switching to custom starts from the axes the old kind restrained,
+        // so the node doesn't silently lose its boundary conditions.
+        const restraint =
+          support === 'custom' && n.support !== 'custom'
+            ? supportRestraint(n.support, n.restraint, true)
+            : n.restraint;
+        return { ...n, support, restraint };
+      }),
+    );
+  }, []);
 
   const setLoad = useCallback(
     (id: number, load: { fx: number; fy: number; fz: number }) => patchNode(id, { load }),

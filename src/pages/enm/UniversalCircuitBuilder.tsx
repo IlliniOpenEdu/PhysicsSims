@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ConceptBox } from '../../components/ConceptBox';
+import { ConceptBox } from '../../components/system/ConceptBox';
 import { CircuitCanvas } from '../../components/circuit/CircuitCanvas';
 import type { CanvasTool } from '../../components/circuit/CircuitCanvas';
 import { Toolbox } from '../../components/circuit/Toolbox';

@@ -7,8 +7,8 @@
 import {
   E_STEEL,
   SIGMA_YIELD_STEEL,
-} from '../../utils/constants';
-import { solidRoundI, solveTruss } from './index';
+} from '../../../../utils/constants';
+import { analyzeRestraints, solidRoundI, solveTruss } from './index';
 import type { Load, Support, TrussElement, TrussNode, TrussSolution } from './index';
 
 // Runs under Node (tsx); the app tsconfig only loads DOM + vite types, so
@@ -230,6 +230,63 @@ const reaction = (sol: TrussSolution, node: number, dof: string): number =>
   checkNum(name, 'R_left = P/2 [N]', P / 2, reaction(sol, 0, 'ty'));
   checkNum(name, 'R_right = P/2 [N]', P / 2, reaction(sol, 2, 'ty'));
   checkNum(name, 'R_left,x = 0 [N]', 0, reaction(sol, 0, 'tx'));
+}
+
+// ── Case 5: rigid-body restraint analysis ────
+// Stability must follow restrained DOF, not support labels. A 2D-style
+// pin + vertical roller on a non-planar 3D structure restrains all three
+// translations plus rotation about z, but the model can still roll about
+// the x-axis through its supports and yaw about the vertical (y) axis.
+{
+  const name = '5. Restraint distribution (3D)';
+  const nodes: TrussNode[] = [
+    { id: 0, pos: { x: 0, y: 0, z: 0 } },
+    { id: 1, pos: { x: 4, y: 0, z: 0 } },
+    { id: 2, pos: { x: 2, y: 2, z: 1 } },
+  ];
+
+  const bad = analyzeRestraints(nodes, [
+    { node: 0, dofs: ['tx', 'ty', 'tz'] }, // pin
+    { node: 1, dofs: ['ty'] }, // vertical roller — no lateral restraint
+  ]);
+  checkTrue(name, '2D-style pin+roller flagged', !bad.sufficient);
+  checkNum(name, 'restrained rank (of 6)', 4, bad.restrainedRank);
+  checkTrue(name, 'yaw reported free', bad.freeModes.includes('rotation about y (yaw)'));
+  checkTrue(name, 'roll reported free', bad.freeModes.includes('rotation about x'));
+
+  // Spreading the same number of extra restraints across axes fixes it:
+  // roller also holds z, and an off-axis node holds y.
+  const good = analyzeRestraints(nodes, [
+    { node: 0, dofs: ['tx', 'ty', 'tz'] },
+    { node: 1, dofs: ['ty', 'tz'] },
+    { node: 2, dofs: ['ty'] },
+  ]);
+  checkTrue(name, 'spread restraints sufficient', good.sufficient);
+  checkNum(name, 'full rank', 6, good.restrainedRank);
+}
+
+// ── Case 5b: restraint analysis in 2D ────────
+{
+  const name = '5b. Restraint distribution (2D)';
+  const nodes: TrussNode[] = [
+    { id: 0, pos: { x: 0, y: 0 } },
+    { id: 1, pos: { x: 4, y: 0 } },
+    { id: 2, pos: { x: 2, y: 3 } },
+  ];
+  const ok = analyzeRestraints(nodes, [
+    { node: 0, dofs: ['tx', 'ty'] },
+    { node: 1, dofs: ['ty'] },
+  ]);
+  checkTrue(name, 'pin + roller sufficient in 2D', ok.sufficient);
+  checkNum(name, 'rank (of 3)', 3, ok.restrainedRank);
+
+  // Two vertical rollers: y and in-plane rotation held, x translation free.
+  const slide = analyzeRestraints(nodes, [
+    { node: 0, dofs: ['ty'] },
+    { node: 1, dofs: ['ty'] },
+  ]);
+  checkTrue(name, 'two rollers insufficient', !slide.sufficient);
+  checkTrue(name, 'x translation reported free', slide.freeModes.includes('translation x'));
 }
 
 // ── Report ───────────────────────────────────

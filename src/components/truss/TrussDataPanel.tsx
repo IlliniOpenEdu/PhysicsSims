@@ -177,7 +177,13 @@ export function TrussDataPanel({ mode, nodes, members, onLoad }: Props) {
                   <Fact label="members" value={String(preview.summary.memberCount)} />
                   <Fact
                     label="supports"
-                    value={`${preview.summary.pins} pin · ${preview.summary.rollers} roller`}
+                    value={[
+                      `${preview.summary.pins} pin`,
+                      `${preview.summary.rollers} roller`,
+                      ...(preview.summary.customs > 0
+                        ? [`${preview.summary.customs} custom`]
+                        : []),
+                    ].join(' · ')}
                   />
                   <Fact
                     label="loads"
@@ -191,6 +197,9 @@ export function TrussDataPanel({ mode, nodes, members, onLoad }: Props) {
                 <p className="mt-1.5 text-slate-500">
                   sections: <span className="text-slate-400">{preview.summary.sections.join(', ') || '—'}</span>
                 </p>
+                {preview.check.kind !== 'empty' && preview.check.restraintWarning && (
+                  <p className="mt-1.5 text-amber-300/90">⚠ {preview.check.restraintWarning}</p>
+                )}
                 <button
                   type="button"
                   onClick={() => onLoad(parsed.model)}

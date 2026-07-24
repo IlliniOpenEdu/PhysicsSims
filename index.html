@@ -21,6 +21,13 @@
     <meta property="og:url" content="https://illiniopenedu.github.io/PhysicsSims/"/>
     <meta property="og:image" content="https://illiniopenedu.github.io/PhysicsSims/phiLogo.png" />
     <title>PhysicsSims</title>
+    <script>
+      try {
+        if (localStorage.getItem('physicssims-theme') === 'light') {
+          document.documentElement.classList.add('theme-light');
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body class="antialiased">
     <div id="root"></div>

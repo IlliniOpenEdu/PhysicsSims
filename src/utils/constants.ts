@@ -2,7 +2,7 @@
 //  constants.ts
 //  Universal physics constants for PhysicsSims
 // 
-//  Effective now, import this file in every module that needs these constants, instead of hardcoding them.
+//  Effective now, import this file in every module that needs these constants, instead of hardcoding them. (pls)
 // ─────────────────────────────────────────────
 
 // ── Mechanics ────────────────────────────────
@@ -31,7 +31,43 @@ export const K_WOOD   = 0.12;
 export const K_AIR    = 0.026;
 export const K_GLASS  = 1.0;
 
-// ── Structural materials ─────────────────────
+// ── Phase thermodynamics (molar, representative teaching values) ──────────────
+// Per-phase enthalpies H (J/mol, solid of each substance as the zero reference),
+// entropies S (J/(mol·K)) with the essential ordering S_gas > S_liquid > S_solid,
+// and condensed-phase molar volumes V (m³/mol). H and S are treated as
+// T-independent so G = H − TS is linear in T; values are anchored to reproduce
+// the real melting/boiling/sublimation points and Clausius–Clapeyron slopes.
+
+// Water (H₂O) — anomalous: V_liquid < V_solid ⇒ negative fusion slope
+export const WATER_L_FUS  = 6010;     // J/mol latent heat of fusion (273 K)
+export const WATER_L_VAP  = 40650;    // J/mol latent heat of vaporization (373 K)
+export const WATER_L_SUB  = WATER_L_FUS + WATER_L_VAP; // J/mol — L_sub = L_fus + L_vap
+export const WATER_H_SOLID  = 0;                        // J/mol (reference)
+export const WATER_H_LIQUID = WATER_H_SOLID + WATER_L_FUS; // J/mol
+export const WATER_H_GAS    = WATER_H_LIQUID + WATER_L_VAP; // J/mol
+export const WATER_S_SOLID  = 41;       // J/(mol·K) ice near 273 K
+export const WATER_S_LIQUID = 63;       // J/(mol·K) liquid near 273 K
+export const WATER_S_GAS    = 171.9;    // J/(mol·K) anchored so boiling sits at 373 K, 1 atm
+export const WATER_V_SOLID  = 1.965e-5; // m³/mol ice (19.65 cm³/mol)
+export const WATER_V_LIQUID = 1.80e-5;  // m³/mol (18.0 cm³/mol) — smaller than ice!
+export const WATER_T_CRIT   = 647;      // K critical temperature
+
+// Carbon dioxide (CO₂) — "normal": V_liquid > V_solid ⇒ positive fusion slope,
+// triple point above 1 atm so it sublimates at ambient pressure
+export const CO2_L_FUS  = 9020;     // J/mol latent heat of fusion (217 K)
+export const CO2_L_VAP  = 16700;    // J/mol latent heat of vaporization near the triple point
+export const CO2_L_SUB  = CO2_L_FUS + CO2_L_VAP; // J/mol — L_sub = L_fus + L_vap
+export const CO2_H_SOLID  = 0;                      // J/mol (reference)
+export const CO2_H_LIQUID = CO2_H_SOLID + CO2_L_FUS;   // J/mol
+export const CO2_H_GAS    = CO2_H_LIQUID + CO2_L_VAP;  // J/mol
+export const CO2_S_SOLID  = 70;       // J/(mol·K)
+export const CO2_S_LIQUID = 111.6;    // J/(mol·K) anchored to the 217 K triple point
+export const CO2_S_GAS    = 202.3;    // J/(mol·K) anchored to the 5.2 bar triple pressure
+export const CO2_V_SOLID  = 2.82e-5;  // m³/mol dry ice
+export const CO2_V_LIQUID = 3.74e-5;  // m³/mol at the triple point
+export const CO2_T_CRIT   = 304.1;    // K critical temperature
+
+// ── Structural materials ── For Truss Modules ───────────────────
 // Young's modulus (Pa)
 export const E_STEEL    = 200e9; // structural steel (A36)
 export const E_ALUMINUM = 69e9;  // aluminum 6061-T6

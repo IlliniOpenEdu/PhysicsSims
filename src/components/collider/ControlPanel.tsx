@@ -1,4 +1,4 @@
-import { SliderWithInput } from '../SliderWithInput';
+import { SliderWithInput } from '../system/SliderWithInput';
 import type { ColliderControls, ParticleType } from '../../lib/enm/collider/types';
 import { formatSI } from '@/utils/formatters';
 

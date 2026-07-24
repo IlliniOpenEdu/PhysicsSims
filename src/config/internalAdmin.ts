@@ -108,6 +108,8 @@ export const KNOWN_SIM_PATHS = [
   '/entropy',
   '/carnot-cycle',
   '/kinetic-theory',
+  '/heat-engine',
+  '/gibbs-phase',
 ] as const;
 
 const getDefaultSimulationVisibility = (): Record<string, boolean> => {

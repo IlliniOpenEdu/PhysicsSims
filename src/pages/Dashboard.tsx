@@ -83,6 +83,8 @@ const SIMS: SimItem[] = [
   { track: 'thermodynamics', title: 'Entropy Simulator', path: '/entropy', description: 'Visualize entropy changes in a system of particles with adjustable temperature and volume.', preview: `${base}thumbnails/entropy.png` },
   { track: 'thermodynamics', title: 'Carnot Cycle', path: '/carnot-cycle', description: 'Trace the four reversible legs of a Carnot engine on paired P–V and T–S diagrams. Vary reservoir temperatures, compression ratio, and γ to see efficiency and work respond.', preview: `${base}thumbnails/thermo.png` },
   { track: 'thermodynamics', title: 'Kinetic Theory of Gases', path: '/kinetic-theory', description: 'Watch pressure emerge from wall collisions and the Maxwell–Boltzmann distribution assemble itself. Live histogram, pressure gauge, and speed-colored particles.', preview: `${base}thumbnails/thermo.png` },
+  { track: 'thermodynamics', title: 'Heat Engine Builder', path: '/heat-engine', description: 'Build Otto, Diesel, Stirling, and Brayton cycles from ideal-gas process legs on a live P–V diagram. Drag state points, toggle γ, and compare each engine\'s efficiency against the Carnot bound.', preview: `${base}thumbnails/thermo.png` },
+  { track: 'thermodynamics', title: 'Gibbs Free Energy & Phase Stability', path: '/gibbs-phase', description: 'Lecture 8–9: watch G = H − TS pick the stable phase, then click phase boundaries to inspect Clausius–Clapeyron slopes, latent heats, triple-point consistency, and the critical point on the shared P–T diagram.', preview: `${base}thumbnails/thermo.png` },
 
 ];
 
